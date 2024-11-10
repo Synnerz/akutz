@@ -33,7 +33,7 @@ class Akutz {
             if (!res1.isDirectory) return
 
             for (res2 in res1.listFiles()!!) {
-                if (res2.extension != "js") continue
+                if (res2.extension != "js" || res2.name != "index.js") continue
                 println("EXECUTING JS FILE: ${res2.name}")
                 JSImpl.execute(res2)
             }
