@@ -1,0 +1,18 @@
+[
+  {
+    "modid": "${modid}",
+    "name": "Akutz",
+    "description": "A framework mod that allows for javascript execution",
+    "version": "${version}",
+    "mcversion": "${mcversion}",
+    "url": "https://github.com/synnerz/akutz",
+    "updateUrl": "",
+    "authorList": [
+      "DocilElm"
+    ],
+    "credits": "",
+    "logoFile": "",
+    "screenshots": [],
+    "dependencies": []
+  }
+]
