@@ -1,14 +1,13 @@
-package com.github.synnerz.akutz.engine
+package com.github.synnerz.akutz.engine.impl
 
 import com.caoccao.javet.buddy.interop.proxy.JavetReflectionObjectFactory
 import com.caoccao.javet.interception.jvm.JavetJVMInterceptor
 import com.caoccao.javet.interop.V8Host
 import com.caoccao.javet.interop.V8Runtime
 import com.caoccao.javet.interop.converters.JavetProxyConverter
-import com.github.synnerz.akutz.Akutz
 import java.io.File
 
-object JSImpl {
+object Impl {
     private var v8runtime: V8Runtime? = null
 
     fun print(msg: Any) {
@@ -22,18 +21,15 @@ object JSImpl {
             println("valPromise: $valpromise")
             println("value: $value")
         }
-        // TODO: maybe make a "module" manager where it saves their current directory
-        // so we can dynamically load their own dependencies
+        // TODO: fix imports not working properly yet (good enough for testing though)
         v8runtime!!.setV8ModuleResolver { runtime, resourceName, v8ModuleReferrer ->
-            if ("./utils.js" == resourceName) {
-                println("v8modulereferrer: ${v8ModuleReferrer.resourceName}")
-                // "test" refers to the path of the module
-                val moduleScript = File("${Akutz.configLocation.path}/test/$resourceName").readText()
-                return@setV8ModuleResolver runtime.getExecutor(moduleScript)
-                    .setResourceName(resourceName).compileV8Module()
-            } else {
-                return@setV8ModuleResolver null
-            }
+            // THIS IS TEMPORAL SOLUTION
+            val requestedFrom = v8ModuleReferrer.resourceName.replace("index.js", "")
+            // TEMPORAL SOLUTION
+            val requestedModule = File(requestedFrom, resourceName.replace("./", ""))
+            runtime.getExecutor(requestedModule.readText())
+                .setResourceName(requestedModule.path)
+                .compileV8Module()
         }
         val javetProxyConverter = JavetProxyConverter()
         javetProxyConverter.config.setReflectionObjectFactory(JavetReflectionObjectFactory.getInstance())
@@ -48,6 +44,6 @@ object JSImpl {
     fun remove() {}
 
     fun execute(script: File) {
-        v8runtime?.getExecutor(script.readText())?.setResourceName(script.name)?.setModule(true)?.executeVoid() ?: return
+        v8runtime!!.getExecutor(script.readText()).setResourceName(script.path).setModule(true).executeVoid()
     }
 }
