@@ -8,6 +8,7 @@ import com.caoccao.javet.interop.engine.IJavetEnginePool
 import com.caoccao.javet.interop.engine.JavetEnginePool
 import com.caoccao.javet.values.reference.V8Module
 import java.io.File
+import java.nio.charset.Charset
 import java.nio.file.Paths
 import kotlin.io.path.readText
 
@@ -49,9 +50,9 @@ object Impl {
         javetJVMInterceptor = JavetJVMInterceptor(v8runtime)
         javetJVMInterceptor!!.register(v8runtime!!.globalObject)
 
-        v8runtime!!.getExecutor("globalThis.Java = { type: (clazz) => javet.package[clazz] }\n"
-                + "const impl = Java.type(\"com.github.synnerz.akutz.engine.impl.Impl\").INSTANCE\n"
-                + "globalThis.print = (msg) => impl.print(msg)"
+        v8runtime!!.getExecutor(
+            Impl::class.java.classLoader.getResourceAsStream("javascript/providedLibs.js")!!
+                .bufferedReader(Charset.defaultCharset()).use { it.readText() }
         ).executeVoid()
     }
 
