@@ -15,11 +15,12 @@ object ModuleManager {
         }
 
         installedModules.forEach {
+            if (it.entry == null) return
             Impl.execute(File(it.directory, it.entry!!))
         }
     }
 
-    fun parseModule(dir: File) : ModuleMetadata {
+    private fun parseModule(dir: File) : ModuleMetadata {
         val mfile = File(dir, "metadata.json")
         var metadata = ModuleMetadata()
 
@@ -30,7 +31,7 @@ object ModuleManager {
                 metadata.moduleName = dir.name
                 metadata.directory = dir
             } catch (exception: Exception) {
-                println("Module $dir has invalid metadata.json")
+                println("Module ${dir.name} has invalid metadata.json")
             }
         }
 
