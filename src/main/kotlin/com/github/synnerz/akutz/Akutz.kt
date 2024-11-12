@@ -1,8 +1,10 @@
 package com.github.synnerz.akutz
 
+import com.github.synnerz.akutz.command.AkutzCommand
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import com.google.gson.Gson
+import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
@@ -25,6 +27,7 @@ class Akutz {
     @Mod.EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
         Impl.setup()
+        ClientCommandHandler.instance.registerCommand(AkutzCommand)
     }
 
     @Mod.EventHandler
