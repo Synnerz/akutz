@@ -35,10 +35,15 @@ object Impl {
         val javetProxyConverter = JavetProxyConverter()
         javetProxyConverter.config.setReflectionObjectFactory(JavetReflectionObjectFactory.getInstance())
 
-        v8runtime?.setConverter(javetProxyConverter)
+        v8runtime!!.setConverter(javetProxyConverter)
 
         val javetJVMInterceptor = JavetJVMInterceptor(v8runtime)
-        javetJVMInterceptor.register(v8runtime?.globalObject)
+        javetJVMInterceptor.register(v8runtime!!.globalObject)
+
+        v8runtime!!.getExecutor("globalThis.Java = { type: (clazz) => javet.package[clazz] }\n"
+                + "const impl = Java.type(\"com.github.synnerz.akutz.engine.impl.Impl\").INSTANCE\n"
+                + "globalThis.print = (msg) => impl.print(msg)"
+        ).executeVoid()
     }
 
     // TODO: probably
