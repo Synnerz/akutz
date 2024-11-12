@@ -6,6 +6,9 @@ import com.caoccao.javet.interop.V8Host
 import com.caoccao.javet.interop.V8Runtime
 import com.caoccao.javet.interop.converters.JavetProxyConverter
 import java.io.File
+import java.nio.charset.StandardCharsets
+import java.nio.file.Files
+import java.nio.file.Paths
 
 object Impl {
     private var v8runtime: V8Runtime? = null
@@ -21,14 +24,12 @@ object Impl {
             println("valPromise: $valpromise")
             println("value: $value")
         }
-        // TODO: fix imports not working properly yet (good enough for testing though)
         v8runtime!!.setV8ModuleResolver { runtime, resourceName, v8ModuleReferrer ->
-            // THIS IS TEMPORAL SOLUTION
-            val requestedFrom = v8ModuleReferrer.resourceName.replace("index.js", "")
-            // TEMPORAL SOLUTION
-            val requestedModule = File(requestedFrom, resourceName.replace("./", ""))
-            runtime.getExecutor(requestedModule.readText())
-                .setResourceName(requestedModule.path)
+            val requestedFrom = Paths.get(v8ModuleReferrer.resourceName).parent
+            val requestedModule = requestedFrom.resolve(if (resourceName.endsWith(".js")) resourceName else "$resourceName.js").normalize()
+            val source = String(Files.readAllBytes(requestedModule), StandardCharsets.UTF_8)
+            runtime.getExecutor(source)
+                .setResourceName(requestedModule.toString())
                 .compileV8Module()
         }
         val javetProxyConverter = JavetProxyConverter()
