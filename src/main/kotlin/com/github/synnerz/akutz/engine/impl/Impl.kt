@@ -63,9 +63,9 @@ object Impl {
         if (v8runtime == null) return
         for (v8Module in modulesLoaded) {
             v8runtime!!.removeV8Module(v8Module.resourceName)
-            modulesLoaded.remove(v8Module)
             println("removed module: ${v8Module.resourceName}")
         }
+        modulesLoaded.clear()
         v8runtime!!.lowMemoryNotification()
         v8runtime = null
     }
