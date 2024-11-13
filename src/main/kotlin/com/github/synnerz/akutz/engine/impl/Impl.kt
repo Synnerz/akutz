@@ -6,7 +6,9 @@ import com.caoccao.javet.interop.V8Runtime
 import com.caoccao.javet.interop.converters.JavetProxyConverter
 import com.caoccao.javet.interop.engine.IJavetEnginePool
 import com.caoccao.javet.interop.engine.JavetEnginePool
-import com.caoccao.javet.values.reference.V8Module
+import com.caoccao.javet.values.V8Value
+import com.caoccao.javet.values.reference.*
+import com.github.synnerz.akutz.Akutz
 import java.io.File
 import java.nio.charset.Charset
 import java.nio.file.Paths
@@ -15,10 +17,46 @@ object Impl {
     private val enginePool: IJavetEnginePool<V8Runtime> = JavetEnginePool()
     private var v8runtime: V8Runtime? = null
     private var javetJVMInterceptor: JavetJVMInterceptor? = null
-    private var modulesLoaded = mutableListOf<V8Module>()
+    private var modulesLoaded = mutableListOf<IV8Module>()
 
     fun print(msg: Any) {
         println(msg)
+    }
+
+    fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
+        v8runtime ?: return cb(null)
+        val src = Paths.get(
+            Paths.get(Akutz.configLocation.path).toString(),
+            Paths.get(caller).parent.resolve(path).normalize().toString()
+        ).normalize()
+        val resourceName = src.toString()
+
+        val lockF = v8runtime!!.javaClass.getDeclaredField("v8ModuleLock")
+        lockF.setAccessible(true)
+        val mapF = v8runtime!!.javaClass.getDeclaredField("v8ModuleMap")
+        mapF.setAccessible(true)
+        synchronized(lockF.get(v8runtime)) {
+            val mod = (mapF.get(v8runtime) as Map<*, *>)[resourceName]
+            if (mod != null) return cb((mod as IV8Module).namespace as IV8ValueObject)
+        }
+
+        val mod = v8runtime?.getExecutor(src)?.compileV8Module()
+        val res = mod?.execute<V8ValuePromise>()
+        res ?: return cb(null)
+        modulesLoaded.add(mod)
+        res.register(object : IV8ValuePromise.IListener {
+            override fun onCatch(v8Value: V8Value?) {
+                cb(null)
+            }
+
+            override fun onFulfilled(v8Value: V8Value?) {
+                cb(mod.namespace as IV8ValueObject)
+            }
+
+            override fun onRejected(v8Value: V8Value?) {
+                cb(null)
+            }
+        })
     }
 
     fun setup() {

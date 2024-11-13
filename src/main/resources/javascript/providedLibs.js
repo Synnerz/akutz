@@ -13,6 +13,20 @@ function getRelFileName() {
   return stack.split('\n')[3].slice('    at .\\config\\Akutz\\'.length).split(':').slice(0, -2).join(':');
 }
 
+globalThis.$import = function $import(path, rel = getRelFileName()) {
+  const stack = new Error().stack;
+  if (!stack) throw 'cannot resolve path';
+  return new Promise((res, rej) => {
+    impl.loadModuleDynamic(rel, path.endsWith('.js') ? path : path + '.js', val => {
+      if (val) res(val);
+      else rej('failed to import file');
+    });
+  });
+};
+globalThis.require = function require(path) {
+  return $import(path, getRelFileName());
+};
+
 const Paths = Java.type('java.nio.file.Paths');
 const configLocation = Paths.get(Java.type('com.github.synnerz.akutz.Akutz').Companion.getConfigLocation().getAbsolutePath());
 Object.defineProperties(globalThis, {
