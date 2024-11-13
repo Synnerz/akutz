@@ -4,15 +4,9 @@ globalThis.Java = {
 
 const getClassName = path => path.substring(path.lastIndexOf(".") + 1)
 
-const loadClass = (clazz) => {
-  const ins = Java.type(clazz)
-  globalThis[getClassName(clazz)] = ins
-}
+const loadClass = (clazz) => globalThis[getClassName(clazz)] = Java.type(clazz)
 
-const loadInstance = (clazz) => {
-  const ins = Java.type(clazz)
-  globalThis[getClassName(clazz)] = ins.INSTANCE
-}
+const loadInstance = (clazz) => globalThis[getClassName(clazz)] = Java.type(clazz).INSTANCE
 
 const getInstance = (clazz) => Java.type(clazz).INSTANCE
 
