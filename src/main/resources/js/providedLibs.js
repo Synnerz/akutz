@@ -36,25 +36,27 @@ globalThis.$import = (path, rel = getRelFileName()) => {
   })
 }
 
-globalThis.require = (path) => $import(path, getRelFileName())
+globalThis.require = () => {
+  throw "CommonJS modules are not supported viz. `require` and `module.exports`. Please use ECMAScript Modules instead. If you need dynamic imports (as `import()` is also not supported), please use the polyfill `$import()` instead."
+}
 
 const Paths = Java.type("java.nio.file.Paths")
 const configLocation = Paths.get(Java.type("com.github.synnerz.akutz.Akutz").getConfigLocation().getAbsolutePath())
 
 Object.defineProperties(globalThis, {
   __filename: {
-      configurable: false,
-      enumerable: false,
-      get() {
-        return configLocation.resolve(getRelFileName()).normalize().toString()
-      }
+    configurable: false,
+    enumerable: false,
+    get() {
+      return configLocation.resolve(getRelFileName()).normalize().toString()
+    }
   },
   __dirname: {
-      configurable: false,
-      enumerable: false,
-      get() {
-        return configLocation.resolve(getRelFileName()).getParent().normalize().toString()
-      }
+    configurable: false,
+    enumerable: false,
+    get() {
+      return configLocation.resolve(getRelFileName()).getParent().normalize().toString()
+    }
   }
 })
 
