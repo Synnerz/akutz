@@ -87,7 +87,7 @@ object Impl {
         javetJVMInterceptor!!.register(v8runtime!!.globalObject)
 
         v8runtime!!.getExecutor(
-            Impl::class.java.classLoader.getResourceAsStream("javascript/providedLibs.js")!!
+            Impl::class.java.classLoader.getResourceAsStream("js/providedLibs.js")!!
                 .bufferedReader(Charset.defaultCharset()).use { it.readText() }
         ).executeVoid()
     }
