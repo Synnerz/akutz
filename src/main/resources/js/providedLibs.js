@@ -67,6 +67,5 @@ loadClass("com.github.synnerz.akutz.api.wrappers.World")
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 
 const ForgeEvent = Java.type("com.github.synnerz.akutz.api.events.ForgeEvent")
-const Class = Java.type("java.lang.Class")
 
 const registerForge = (clazz, fn) => new ForgeEvent(fn, clazz)
