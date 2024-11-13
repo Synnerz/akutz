@@ -45,3 +45,6 @@ Object.defineProperties(globalThis, {
     }
   }
 });
+
+globalThis.net = { minecraft: Java.type('net.minecraft') };
+globalThis.java = Java.type('java');
