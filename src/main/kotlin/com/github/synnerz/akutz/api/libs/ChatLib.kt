@@ -24,6 +24,6 @@ object ChatLib {
     @JvmStatic
     fun command(command: String, clientSide: Boolean = false) {
         if (clientSide) ClientCommandHandler.instance.executeCommand(Player.getPlayer()!!, "/$command")
-        say("/$command")
+        else say("/$command")
     }
 }
