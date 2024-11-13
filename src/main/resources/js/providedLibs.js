@@ -42,20 +42,20 @@ const Paths = Java.type("java.nio.file.Paths")
 const configLocation = Paths.get(Java.type("com.github.synnerz.akutz.Akutz").getConfigLocation().getAbsolutePath())
 
 Object.defineProperties(globalThis, {
-__filename: {
-  configurable: false,
-  enumerable: false,
-  get() {
-    return configLocation.resolve(getRelFileName()).normalize().toString()
+  __filename: {
+      configurable: false,
+      enumerable: false,
+      get() {
+        return configLocation.resolve(getRelFileName()).normalize().toString()
+      }
+  },
+  __dirname: {
+      configurable: false,
+      enumerable: false,
+      get() {
+        return configLocation.resolve(getRelFileName()).getParent().normalize().toString()
+      }
   }
-},
-__dirname: {
-  configurable: false,
-  enumerable: false,
-  get() {
-    return configLocation.resolve(getRelFileName()).getParent().normalize().toString()
-  }
-}
 })
 
 globalThis.net = Java.type("net")
@@ -65,3 +65,8 @@ loadClass("com.github.synnerz.akutz.api.wrappers.Player")
 loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
+
+const ForgeEvent = Java.type("com.github.synnerz.akutz.api.events.ForgeEvent")
+const Class = Java.type("java.lang.Class")
+
+const registerForge = (clazz, fn) => new ForgeEvent(fn, clazz)

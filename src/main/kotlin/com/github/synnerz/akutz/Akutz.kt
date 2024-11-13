@@ -1,10 +1,12 @@
 package com.github.synnerz.akutz
 
+import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.command.AkutzCommand
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import com.google.gson.Gson
 import net.minecraftforge.client.ClientCommandHandler
+import net.minecraftforge.common.MinecraftForge
 import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
@@ -29,6 +31,7 @@ class Akutz {
     fun preInit(event: FMLPreInitializationEvent) {
         Impl.setup()
         ClientCommandHandler.instance.registerCommand(AkutzCommand)
+        MinecraftForge.EVENT_BUS.register(ForgeEvent)
     }
 
     @Mod.EventHandler
