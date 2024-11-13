@@ -10,7 +10,6 @@ import com.caoccao.javet.values.reference.V8Module
 import java.io.File
 import java.nio.charset.Charset
 import java.nio.file.Paths
-import kotlin.io.path.readText
 
 object Impl {
     private val enginePool: IJavetEnginePool<V8Runtime> = JavetEnginePool()
@@ -34,8 +33,7 @@ object Impl {
                 .parent
                 ?.resolve("$resourceName${if (resourceName.endsWith(".js")) "" else ".js"}")
                 ?.normalize()
-            val module = runtime.getExecutor(requestedModule!!.readText())
-                ?.setResourceName(requestedModule.toString())
+            val module = runtime.getExecutor(requestedModule!!)
                 ?.compileV8Module()
 
             modulesLoaded.add(module!!)
