@@ -28,7 +28,7 @@ globalThis.require = function require(path) {
 };
 
 const Paths = Java.type('java.nio.file.Paths');
-const configLocation = Paths.get(Java.type('com.github.synnerz.akutz.Akutz').Companion.getConfigLocation().getAbsolutePath());
+const configLocation = Paths.get(Java.type('com.github.synnerz.akutz.Akutz').getConfigLocation().getAbsolutePath());
 Object.defineProperties(globalThis, {
   __filename: {
     configurable: false,
@@ -46,5 +46,5 @@ Object.defineProperties(globalThis, {
   }
 });
 
-globalThis.net = { minecraft: Java.type('net.minecraft') };
+globalThis.net = Java.type('net');
 globalThis.java = Java.type('java');
