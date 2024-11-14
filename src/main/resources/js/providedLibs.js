@@ -110,6 +110,12 @@ function $wrap(val) {
       if (typeof p === "symbol") return Reflect.has(t, p)
       return propMap.has(p)
     },
+    ownKeys(t) {
+      const s = new Set(Reflect.ownKeys(t))
+      propMap.forEach((v, k) => s.add(k))
+      s.add("prototype")
+      return Array.from(s.keys())
+    },
     getOwnPropertyDescriptor(t, p) {
       return {
         value: this.get(t, p, t),
