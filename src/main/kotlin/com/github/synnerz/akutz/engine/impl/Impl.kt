@@ -9,6 +9,7 @@ import com.caoccao.javet.interop.engine.JavetEnginePool
 import com.caoccao.javet.values.V8Value
 import com.caoccao.javet.values.reference.*
 import com.github.synnerz.akutz.Akutz
+import com.github.synnerz.akutz.api.libs.FileLib
 import java.io.File
 import java.nio.charset.Charset
 import java.nio.file.Paths
@@ -88,8 +89,7 @@ object Impl {
         javetJVMInterceptor!!.register(v8runtime!!.globalObject)
 
         v8runtime!!.getExecutor(
-            Impl::class.java.classLoader.getResourceAsStream("js/providedLibs.js")!!
-                .bufferedReader(Charset.defaultCharset()).use { it.readText() }
+            FileLib.readFromResource("js/providedLibs.js")!!
         ).setResourceName("js/providedLibs.js").setModule(true).executeVoid()
     }
 
@@ -113,9 +113,6 @@ object Impl {
     fun execute(script: File) {
         v8runtime!!.getExecutor(script.readText()).setResourceName(script.path).setModule(true).executeVoid()
     }
-
-    fun readMappingsFile() = Impl::class.java.classLoader.getResourceAsStream("mappings.json")!!
-        .bufferedReader(Charset.defaultCharset()).use { it.readText() }
 
     fun isLoaded() : Boolean = v8runtime != null
 }
