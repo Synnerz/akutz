@@ -97,7 +97,7 @@ function $wrap(val) {
     get(t, p, r) {
       if (typeof p === "symbol") return Reflect.get(t, p, r)
       const d = propMap.get(p)
-      if (!d) throw "Unknown property: " + p
+      if (!d) return Reflect.get(t, p, r)
       if (d.t === "m") return $wrapFunc(t, className, p)
       try {
         var val = Reflect.get(t, p, r)
@@ -108,7 +108,7 @@ function $wrap(val) {
     },
     has(t, p) {
       if (typeof p === "symbol") return Reflect.has(t, p)
-      return propMap.has(p)
+      return propMap.has(p) || Reflect.has(t, p)
     },
     ownKeys(t) {
       const s = new Set(Reflect.ownKeys(t))
@@ -117,6 +117,7 @@ function $wrap(val) {
       return Array.from(s.keys())
     },
     getOwnPropertyDescriptor(t, p) {
+      if (!this.has(t, p)) return
       return {
         value: this.get(t, p, t),
         configurable: true,
@@ -126,7 +127,7 @@ function $wrap(val) {
     set(t, p, v, r) {
       if (typeof p === "symbol") return Reflect.set(t, p, v, r)
       const d = propMap.get(p)
-      if (!d) throw "Unknown property: " + p
+      if (!d) return Reflect.set(t, p, v, r)
       if (d.t !== "f") throw `Cannot set property ${p} as it is a method`
       try {
         Reflect.set(t, p, v, r)
