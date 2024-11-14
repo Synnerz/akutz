@@ -4,8 +4,10 @@ import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.engine.impl.Impl
 import java.io.File
 
-// Taken from ChatTriggers under MIT license
-// https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/engine/module/ModuleMetadata.kt
+/**
+ * Taken from ChatTriggers under MIT License
+ * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/engine/module/ModuleMetadata.kt)
+ */
 object ModuleManager {
     fun setup() {
         Akutz.configLocation.mkdirs()
