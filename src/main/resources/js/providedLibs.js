@@ -79,10 +79,14 @@ function getField(className, c, n) {
   }
   return f
 }
+const jClass = java.lang.Class
+function getClass(c) {
+  return jClass.isInstance(c) ? c : c.getClass()
+}
 function $wrap(val) {
-  if (!(val instanceof jObject)) return val
+  if (!jObject.isInstance(val)) return val
 
-  const className = val.getClass().getName().replace(/\./g, "/")
+  const className = getClass(val).getName().replace(/\./g, "/")
   const propMap = mappings.get(className)
   if (!propMap) throw "Cannot find mappings for class: " + className
 
@@ -90,11 +94,11 @@ function $wrap(val) {
     get(t, p, r) {
       const d = propMap.get(p)
       if (!d) throw "Unknown property: " + p
-      if (d.t === "f") return $wrapFunc(t, className, p)
+      if (d.t === "m") return $wrapFunc(t, className, p)
       try {
         var val = Reflect.get(t, p, r)
       } catch (_) {
-        val = getField(className, t.getClass(), d.n).get(t)
+        val = getField(className, getClass(t), d.n).get(t)
       }
       return $wrap(val)
     },
@@ -118,7 +122,7 @@ function $wrap(val) {
       try {
         Reflect.set(t, p, v, r)
       } catch (_) {
-        getField(className, t.getClass(), d.n).set(t, v)
+        getField(className, getClass(t), d.n).set(t, v)
       }
       return true
     }
@@ -135,7 +139,6 @@ const jMethodTypes = {
   J: java.lang.Long.TYPE,
   S: java.lang.Short.TYPE,
 }
-const jClass = java.lang.Class
 function $wrapFunc(val, className, n) {
   const d = mappings.get(className).get(n)
   const meth = `${className}/${n}`
@@ -151,7 +154,7 @@ function $wrapFunc(val, className, n) {
       else throw "Unknown type " + c
       i++
     }
-    m = c.getMethod(d.n, ...args)
+    m = getClass(val).getMethod(d.n, ...args)
     if (!m) throw `Failed to get Method of method ${d.n} (${p}) in Class ${className}`
     m.setAccessible(true)
     reflMethCache.set(meth, m)
