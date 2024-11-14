@@ -109,4 +109,7 @@ object Impl {
     fun execute(script: File) {
         v8runtime!!.getExecutor(script.readText()).setResourceName(script.path).setModule(true).executeVoid()
     }
+
+    fun readMappingsFile() = Impl::class.java.classLoader.getResourceAsStream("mappings.json")!!
+        .bufferedReader(Charset.defaultCharset()).use { it.readText() }
 }
