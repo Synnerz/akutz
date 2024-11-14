@@ -9,6 +9,7 @@ import com.caoccao.javet.interop.engine.JavetEnginePool
 import com.caoccao.javet.values.V8Value
 import com.caoccao.javet.values.reference.*
 import com.github.synnerz.akutz.Akutz
+import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.api.libs.FileLib
 import java.io.File
 import java.nio.file.Paths
@@ -89,6 +90,8 @@ object Impl {
     }
 
     fun clear() {
+        if (!isLoaded()) return
+
         if (javetJVMInterceptor != null) {
             javetJVMInterceptor!!.register(v8runtime!!.globalObject)
         }
@@ -101,6 +104,8 @@ object Impl {
             v8runtime!!.removeV8Module(v8Module.resourceName)
         }
         modulesLoaded.clear()
+        ForgeEvent.unregisterEvents()
+        Loader.clearEvents()
         v8runtime!!.lowMemoryNotification()
         v8runtime = null
     }
