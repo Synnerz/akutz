@@ -63,9 +63,11 @@ Object.defineProperties(globalThis, {
 globalThis.net = Java.type("net")
 globalThis.java = Java.type("java")
 
+loadClass("com.github.synnerz.akutz.api.libs.FileLib")
+
 const objToMap = o => new Map(Object.entries(o))
 /** @type {Map<string, Map<string, { t: 'f', n: string } | { t: 'm', n: string, s: string }>>} */
-const mappings = JSON.parse(impl.readMappingsFile(), (k, v) => typeof v === "object" && typeof v.t !== "string" ? objToMap(v) : v)
+const mappings = JSON.parse(FileLib.readFromResource("mappings.json"), (k, v) => typeof v === "object" && typeof v.t !== "string" ? objToMap(v) : v)
 const jObject = java.lang.Object
 const reflPropCache = new Map()
 function getField(className, c, n) {
@@ -169,7 +171,6 @@ loadClass("com.github.synnerz.akutz.api.wrappers.Player")
 loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
-loadClass("com.github.synnerz.akutz.api.libs.FileLib")
 
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
