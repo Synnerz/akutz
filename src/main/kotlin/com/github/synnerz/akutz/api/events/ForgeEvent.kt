@@ -4,6 +4,10 @@ import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.*
 
+/**
+ * Taken from ChatTriggers under MIT License
+ * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/triggers/ForgeTrigger.kt)
+ */
 class ForgeEvent(
     method: (args: Array<out Any?>) -> Unit,
     val clazz: Class<*>

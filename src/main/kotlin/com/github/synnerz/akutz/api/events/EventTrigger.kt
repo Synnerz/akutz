@@ -3,6 +3,10 @@ package com.github.synnerz.akutz.api.events
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.impl.Loader
 
+/**
+ * Taken from ChatTriggers under MIT License
+ * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/triggers/Trigger.kt)
+ */
 abstract class EventTrigger protected constructor(
     var method: (args: Array<out Any?>) -> Unit,
     var type: EventType
