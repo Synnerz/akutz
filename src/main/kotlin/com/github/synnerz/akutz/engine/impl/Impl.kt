@@ -112,4 +112,6 @@ object Impl {
 
     fun readMappingsFile() = Impl::class.java.classLoader.getResourceAsStream("mappings.json")!!
         .bufferedReader(Charset.defaultCharset()).use { it.readText() }
+
+    fun isLoaded() : Boolean = v8runtime != null
 }

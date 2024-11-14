@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz.command
 
 import com.github.synnerz.akutz.api.commands.BaseCommand
+import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import net.minecraft.client.entity.EntityPlayerSP
@@ -11,12 +12,14 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
         if (args.isEmpty()) return showHelp(player)
         when (args[0]) {
             "load", "reload" -> {
+                ForgeEvent.unregisterEvents()
                 Impl.clear()
                 Impl.setup()
                 ModuleManager.setup()
                 player.addChatMessage(ChatComponentText("Successfully loaded akutz"))
             }
             "unload" -> {
+                ForgeEvent.unregisterEvents()
                 Impl.clear()
                 player.addChatMessage(ChatComponentText("Successfully unloaded akutz"))
             }
