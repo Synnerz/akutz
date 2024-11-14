@@ -11,7 +11,8 @@ const loadInstance = (clazz, name = getClassName(clazz)) => globalThis[name] = J
 const getInstance = (clazz) => Java.type(clazz).INSTANCE
 
 const impl = getInstance("com.github.synnerz.akutz.engine.impl.Impl")
-globalThis.print = (msg) => impl.print(msg === undefined ? "undefined" : msg === null ? "null" : msg)
+const System = Java.type("java.lang.System")
+globalThis.print = (msg) => System.out.println(msg === undefined ? "undefined" : msg === null ? "null" : msg)
 
 const getRelFileName = () => {
   const stack = new Error().stack
