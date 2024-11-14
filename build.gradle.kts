@@ -14,7 +14,7 @@ val mcVersion: String by project
 val version: String by project
 val mixinGroup = "$baseGroup.mixin"
 val modid: String by project
-// val transformerFile = file("src/main/resources/accesstransformer.cfg")
+val transformerFile = file("src/main/resources/akutz_at.cfg")
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -39,10 +39,8 @@ loom {
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
         mixinConfig("mixins.$modid.json")
-//	    if (transformerFile.exists()) {
-//			println("Installing access transformer")
-//		    accessTransformer(transformerFile)
-//	    }
+	    if (transformerFile.exists())
+            accessTransformer(transformerFile)
     }
     mixin {
         defaultRefmapName.set("mixins.$modid.refmap.json")
@@ -82,6 +80,7 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.15.5")
     shadowImpl("com.caoccao.javet:javet-v8-windows-x86_64:4.0.0")
     shadowImpl("com.caoccao.javet.buddy:javet-buddy:0.4.0")
+    shadowImpl("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
 }
 
 tasks.withType(JavaCompile::class) {
@@ -95,8 +94,8 @@ tasks.withType(org.gradle.jvm.tasks.Jar::class) {
         this["ForceLoadAsMod"] = "true"
         this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
         this["MixinConfigs"] = "mixins.$modid.json"
-//	    if (transformerFile.exists())
-//			this["FMLAT"] = "${modid}_at.cfg"
+	    if (transformerFile.exists())
+			this["FMLAT"] = "${modid}_at.cfg"
     }
 }
 
@@ -110,7 +109,7 @@ tasks.processResources {
         expand(inputs.properties)
     }
 
-    // rename("accesstransformer.cfg", "META-INF/${modid}_at.cfg")
+     rename("akutz_at.cfg", "META-INF/${modid}_at.cfg")
 }
 
 
