@@ -1,5 +1,7 @@
 package com.github.synnerz.akutz.api.events
 
+import com.github.synnerz.akutz.engine.impl.Loader
+
 /**
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/triggers/TriggerType.kt)
@@ -67,6 +69,6 @@ enum class EventType {
     Other;
 
     fun triggerAll(vararg args: Any?) {
-//        ModuleManager.trigger(this, args)
+        Loader.execute(this, args)
     }
 }
