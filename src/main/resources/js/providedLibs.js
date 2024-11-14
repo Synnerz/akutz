@@ -105,9 +105,6 @@ function $wrap(val) {
     has(t, p) {
       return propMap.has(p)
     },
-    ownKeys(t) {
-      return propMap.keys()
-    },
     getOwnPropertyDescriptor(t, p) {
       return {
         value: this.get(t, p, t),
