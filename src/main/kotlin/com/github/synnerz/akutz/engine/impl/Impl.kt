@@ -17,6 +17,7 @@ object Impl {
     private val enginePool: IJavetEnginePool<V8Runtime> = JavetEnginePool()
     private var v8runtime: V8Runtime? = null
     private var javetJVMInterceptor: JavetJVMInterceptor? = null
+    private var javetProxyConverter: JavetProxyConverter? = null
     private var modulesLoaded = mutableListOf<IV8Module>()
 
     fun print(msg: Any) {
@@ -78,10 +79,10 @@ object Impl {
 
             return@setV8ModuleResolver module
         }
-        val javetProxyConverter = JavetProxyConverter()
-        javetProxyConverter.config.setReflectionObjectFactory(JavetReflectionObjectFactory.getInstance())
+        javetProxyConverter = JavetProxyConverter()
+        javetProxyConverter!!.config.setReflectionObjectFactory(JavetReflectionObjectFactory.getInstance())
 
-        v8runtime!!.setConverter(javetProxyConverter)
+        v8runtime!!.setConverter(javetProxyConverter!!)
 
         javetJVMInterceptor = JavetJVMInterceptor(v8runtime)
         javetJVMInterceptor!!.register(v8runtime!!.globalObject)
@@ -96,10 +97,13 @@ object Impl {
         if (javetJVMInterceptor != null) {
             javetJVMInterceptor!!.register(v8runtime!!.globalObject)
         }
+        if (javetProxyConverter != null) {
+            javetProxyConverter!!.config.setReflectionObjectFactory(null)
+            javetProxyConverter = null
+        }
         if (v8runtime == null) return
         for (v8Module in modulesLoaded) {
             v8runtime!!.removeV8Module(v8Module.resourceName)
-            println("removed module: ${v8Module.resourceName}")
         }
         modulesLoaded.clear()
         v8runtime!!.lowMemoryNotification()
