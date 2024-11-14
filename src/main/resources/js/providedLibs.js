@@ -95,6 +95,7 @@ function $wrap(val) {
 
   return new Proxy(val, {
     get(t, p, r) {
+      if (typeof p === "symbol") return Reflect.get(t, p, r)
       const d = propMap.get(p)
       if (!d) throw "Unknown property: " + p
       if (d.t === "m") return $wrapFunc(t, className, p)
@@ -106,6 +107,7 @@ function $wrap(val) {
       return $wrap(val)
     },
     has(t, p) {
+      if (typeof p === "symbol") return Reflect.has(t, p)
       return propMap.has(p)
     },
     getOwnPropertyDescriptor(t, p) {
@@ -116,6 +118,7 @@ function $wrap(val) {
       }
     },
     set(t, p, v, r) {
+      if (typeof p === "symbol") return Reflect.set(t, p, v, r)
       const d = propMap.get(p)
       if (!d) throw "Unknown property: " + p
       if (d.t !== "f") throw `Cannot set property ${p} as it is a method`
@@ -176,6 +179,6 @@ loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
 globalThis.register = (eventType, cb) => {
-    if (typeof cb !== "function") return print(`${cb} is not a valid function, please make sure to pass in an actual function.`)
-    return EventTrigger.register(eventType.includes(".") ? Java.type(eventType) : eventType, cb)
+  if (typeof cb !== "function") return print(`${cb} is not a valid function, please make sure to pass in an actual function.`)
+  return EventTrigger.register(eventType.includes(".") ? Java.type(eventType) : eventType, cb)
 }
