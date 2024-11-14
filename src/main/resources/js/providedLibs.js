@@ -169,6 +169,7 @@ loadClass("com.github.synnerz.akutz.api.wrappers.Player")
 loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
+loadClass("com.github.synnerz.akutz.api.libs.FileLib")
 
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
