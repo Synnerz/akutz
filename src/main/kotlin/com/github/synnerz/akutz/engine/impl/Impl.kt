@@ -89,7 +89,7 @@ object Impl {
         v8runtime!!.getExecutor(
             Impl::class.java.classLoader.getResourceAsStream("js/providedLibs.js")!!
                 .bufferedReader(Charset.defaultCharset()).use { it.readText() }
-        ).executeVoid()
+        ).setResourceName("js/providedLibs.js").setModule(true).executeVoid()
     }
 
     fun clear() {
