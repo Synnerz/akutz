@@ -22,8 +22,10 @@ abstract class EventTrigger protected constructor(
     fun setPriority(prio: Priority) = apply {
         this.priority = prio
 
-        unregister()
-        register()
+        if (registered) {
+            unregister()
+            register()
+        }
     }
 
     open fun register() = apply {
