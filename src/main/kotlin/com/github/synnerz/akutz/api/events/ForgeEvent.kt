@@ -4,29 +4,48 @@ import net.minecraftforge.fml.common.eventhandler.Event
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import java.util.*
 
-class ForgeEvent(private val method: (args: Any?) -> Unit, clazz: Class<*>) : Comparable<ForgeEvent> {
-    constructor(method: (args: Any?) -> Unit, clazz: String) : this(method, Class.forName(clazz))
+class ForgeEvent(
+    method: (args: Array<out Any?>) -> Unit,
+    val clazz: Class<*>
+) : EventTrigger(method, EventType.Forge) {
 
     init {
-        forgeTriggers.getOrPut(clazz) { sortedSetOf() }.add(this)
+        require(Event::class.java.isAssignableFrom(clazz)) {
+            "ForgeEvent Could not find the given Event class. Please assign a proper Event class and not ${clazz.simpleName}"
+        }
+
+        forgeEvents.getOrPut(clazz) { sortedSetOf() }.add(this)
     }
 
-    fun trigger(args: Any?) {
-        method(args)
+    override fun register(): EventTrigger {
+        forgeEvents.getOrPut(clazz) { sortedSetOf() }.add(this)
+        return super.register()
+    }
+
+    override fun unregister(): EventTrigger {
+        forgeEvents[clazz]?.remove(this)
+        return super.unregister()
+    }
+
+    override fun trigger(args: Array<out Any?>) {
+        callMethod(args)
     }
 
     companion object {
-        private val forgeTriggers = mutableMapOf<Class<*>, SortedSet<ForgeEvent>>()
+        private val forgeEvents = mutableMapOf<Class<*>, SortedSet<ForgeEvent>>()
+
+        fun unregisterEvents() {
+            forgeEvents.values.flatten().forEach {
+                it.unregister()
+            }
+            forgeEvents.clear()
+        }
 
         @SubscribeEvent
         fun onEvent(event: Event) {
             if (Thread.currentThread().name == "Server thread") return
 
-            forgeTriggers[event::class.java]?.forEach { it.trigger(arrayOf(event)) }
+            forgeEvents[event::class.java]?.forEach { it.trigger(arrayOf(event)) }
         }
-    }
-
-    override fun compareTo(other: ForgeEvent): Int {
-        return hashCode() - other.hashCode()
     }
 }
