@@ -11,7 +11,7 @@ abstract class EventTrigger protected constructor(
     var method: (args: Array<out Any?>) -> Unit,
     var type: EventType
 ) : Comparable<EventTrigger> {
-    private var registered: Boolean = false
+    var registered: Boolean = false
     private var priority: Priority = Priority.NORMAL
 
     init {
