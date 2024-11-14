@@ -89,8 +89,19 @@ object FileLib {
 
     // ChatTriggers itself does not provide this as public api, but it might be useful
     // to have as public for some users
+    @JvmStatic
     fun absoluteLocation(moduleName: String, location: String): String {
         return Akutz.configLocation.path + File.separator + moduleName + File.separator + location
+    }
+
+    // We provide this method so JS can use it in case we need it for future features
+    @JvmStatic
+    fun readFromResource(resourceName: String): String? {
+        val normalized = resourceName.replace("\\", "/")
+        val name = if (normalized.startsWith("/")) normalized else "/$normalized"
+        val resourceStream = javaClass.getResourceAsStream(name) ?: return null
+
+        return resourceStream.bufferedReader().readText()
     }
 
     // TODO: unzip feature
