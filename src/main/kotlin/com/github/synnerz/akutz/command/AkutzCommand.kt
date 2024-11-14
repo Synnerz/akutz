@@ -12,8 +12,6 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
 
         when (args[0]) {
             "load", "reload" -> {
-                if (Impl.isLoaded()) return ChatLib.chat("Akutz is already loaded")
-
                 Impl.clear()
                 Impl.setup()
                 ModuleManager.setup()
