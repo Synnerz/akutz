@@ -31,6 +31,16 @@ class CommandEvent(
     @JvmOverloads
     fun setName(commandName: String, overrideExisting: Boolean = false) = setCommandName(commandName, overrideExisting)
 
+    override fun register(): EventTrigger {
+        command?.register()
+        return this
+    }
+
+    override fun unregister(): EventTrigger {
+        command!!.unregister()
+        return this
+    }
+
     fun reInstance() {
         if (command != null && !command!!.initialized) return
 

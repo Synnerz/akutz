@@ -36,6 +36,7 @@ class Command @JvmOverloads constructor(
     fun unregister() {
         if (!initialized) return
 
+        initialized = false
         ClientCommandHandler.instance.commandSet.remove(this)
         ClientCommandHandler.instance.commands.remove(name)
         activeCommands.remove(name)
