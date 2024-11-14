@@ -4,9 +4,9 @@ globalThis.Java = {
 
 const getClassName = path => path.substring(path.lastIndexOf(".") + 1)
 
-const loadClass = (clazz) => globalThis[getClassName(clazz)] = Java.type(clazz)
+const loadClass = (clazz, name = getClassName(clazz)) => globalThis[name] = Java.type(clazz)
 
-const loadInstance = (clazz) => globalThis[getClassName(clazz)] = Java.type(clazz).INSTANCE
+const loadInstance = (clazz, name = getClassName(clazz)) => globalThis[name] = Java.type(clazz).INSTANCE
 
 const getInstance = (clazz) => Java.type(clazz).INSTANCE
 
@@ -170,6 +170,9 @@ loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 
-const ForgeEvent = Java.type("com.github.synnerz.akutz.api.events.ForgeEvent")
+loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
-const registerForge = (clazz, fn) => new ForgeEvent(fn, clazz)
+const register = (eventType, cb) => {
+    if (typeof cb !== "function") return print(`${cb} is not a valid function, please make sure to pass in an actual function.`)
+    return EventTrigger.register(eventType.includes(".") ? Java.type(eventType) : eventType, cb)
+}
