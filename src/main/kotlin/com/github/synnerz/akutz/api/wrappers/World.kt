@@ -17,22 +17,19 @@ object World {
     @JvmStatic
     fun getTime(): Long = getWorld()?.worldTime ?: -1L
 
-    object border {
-        @JvmStatic
+    @JvmField
+    val border = object {
         fun getCenterX(): Double = getWorld()!!.worldBorder.centerX
 
-        @JvmStatic
         fun getCenterZ(): Double = getWorld()!!.worldBorder.centerZ
     }
 
-    object spawn {
-        @JvmStatic
+    @JvmField
+    val spawn = object {
         fun getX(): Int = getWorld()!!.spawnPoint.x
 
-        @JvmStatic
         fun getY(): Int = getWorld()!!.spawnPoint.y
 
-        @JvmStatic
         fun getZ(): Int = getWorld()!!.spawnPoint.z
     }
 }
