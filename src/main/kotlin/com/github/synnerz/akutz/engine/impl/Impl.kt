@@ -11,7 +11,6 @@ import com.caoccao.javet.values.reference.*
 import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.libs.FileLib
 import java.io.File
-import java.nio.charset.Charset
 import java.nio.file.Paths
 
 object Impl {
@@ -20,10 +19,6 @@ object Impl {
     private var javetJVMInterceptor: JavetJVMInterceptor? = null
     private var javetProxyConverter: JavetProxyConverter? = null
     private var modulesLoaded = mutableListOf<IV8Module>()
-
-    fun print(msg: Any) {
-        println(msg)
-    }
 
     fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
         v8runtime ?: return cb(null)
