@@ -47,7 +47,7 @@ class CommandEvent(
     fun setName(commandName: String, overrideExisting: Boolean = false) = setCommandName(commandName, overrideExisting)
 
     override fun register(): EventTrigger {
-        if (registered) return this
+        if (registered && command!!.initialized) return this
 
         command?.register()
         registered = true
