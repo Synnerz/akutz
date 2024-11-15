@@ -39,6 +39,8 @@ class Command @JvmOverloads constructor(
         initialized = false
         ClientCommandHandler.instance.commandSet.remove(this)
         ClientCommandHandler.instance.commands.remove(name)
+        if (aliases.isNotEmpty()) aliases.forEach(ClientCommandHandler.instance.commands::remove)
+
         activeCommands.remove(name)
     }
 
