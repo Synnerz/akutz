@@ -14,9 +14,19 @@ class CommandEvent(
     private var overrideExisting: Boolean = false
     private val aliases = mutableListOf<String>()
     private var command: Command? = null
+    private val tabCompletions = mutableListOf<String>()
+    private var cb: ((Array<out String>) -> ArrayList<String>)? = null
 
     override fun trigger(args: Array<out Any?>) {
         callMethod(args)
+    }
+
+    fun setTabCompletions(vararg arg: String) = apply {
+        tabCompletions.addAll(arg)
+    }
+
+    fun setTabCompletions(cb: (args: Array<out String>) -> ArrayList<String>) = apply {
+        this.cb = cb
     }
 
     fun setAliases(vararg args: String) = apply {
@@ -58,7 +68,7 @@ class CommandEvent(
         if (!registered) return
 
         unregister()
-        command = Command(this, commandName, aliases)
+        command = Command(this, commandName, aliases, overrideExisting, tabCompletions, cb)
         register()
     }
 }
