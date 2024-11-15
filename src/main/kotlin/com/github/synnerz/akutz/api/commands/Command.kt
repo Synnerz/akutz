@@ -2,6 +2,8 @@ package com.github.synnerz.akutz.api.commands
 
 import com.github.synnerz.akutz.api.events.EventTrigger
 import net.minecraft.client.entity.EntityPlayerSP
+import net.minecraft.command.ICommandSender
+import net.minecraft.util.BlockPos
 import net.minecraftforge.client.ClientCommandHandler
 
 /**
@@ -12,7 +14,9 @@ class Command @JvmOverloads constructor(
     private val event: EventTrigger,
     private val name: String,
     private var aliases: MutableList<String>,
-    private val overrideExisting: Boolean = false
+    private val overrideExisting: Boolean = false,
+    private val tabCompletions: MutableList<String>,
+    private val cb: ((Array<out String>) -> ArrayList<String>)? = null
 ) : BaseCommand(name, aliases) {
     @JvmField
     var initialized: Boolean = false
@@ -20,6 +24,14 @@ class Command @JvmOverloads constructor(
     override fun getCommandAliases(): List<String> = aliases
 
     override fun processCommand(player: EntityPlayerSP, args: Array<String>) = event.trigger(args)
+
+    override fun addTabCompletionOptions(
+        sender: ICommandSender?,
+        args: Array<out String>?,
+        pos: BlockPos?
+    ): MutableList<String> {
+        return cb?.invoke(args ?: arrayOf())?.toMutableList() ?: tabCompletions
+    }
 
     fun register() {
         if (initialized) return
