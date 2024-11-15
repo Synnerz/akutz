@@ -111,7 +111,9 @@ object Impl {
     }
 
     fun execute(script: File) {
-        v8runtime!!.getExecutor(script.readText()).setResourceName(script.path).setModule(true).executeVoid()
+        val module = v8runtime!!.getExecutor(script.readText()).setResourceName(script.path).setModule(true).compileV8Module()
+        module.executeVoid()
+        modulesLoaded.add(module)
     }
 
     fun isLoaded() : Boolean = v8runtime != null
