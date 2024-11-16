@@ -189,3 +189,16 @@ globalThis.register = (eventType, cb) => {
   if (typeof cb !== "function") return print(`${cb} is not a valid function, please make sure to pass in an actual function.`)
   return EventTrigger.register(eventType.includes(".") ? Java.type(eventType) : eventType, (args) => cb(...args))
 }
+
+globalThis.cancel = (event) => {
+    try {
+      EventTrigger.cancel(event)
+      return true
+    } catch (error) {
+      if (event.isCancelable()) {
+        event.setCanceled(true)
+        return true
+      }
+      return false
+    }
+}
