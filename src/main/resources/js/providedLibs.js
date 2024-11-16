@@ -71,17 +71,17 @@ const objToMap = o => new Map(Object.entries(o))
 const mappings = JSON.parse(FileLib.readFromResource("mappings.json"), (k, v) => typeof v === "object" && typeof v.t !== "string" ? objToMap(v) : v)
 const jObject = java.lang.Object
 const reflPropCache = new Map()
-function getField(className, c, n) {
+function getField(className, c, n, o) {
   const prop = `${className}/${n}`
   let f = reflPropCache.get(prop)
   if (!f) {
     do {
       try {
-        f = c.getDeclaredField(d.n)
+        f = c.getDeclaredField(n)
         break
       } catch (_) { }
     } while (c = c.getSuperclass())
-    if (!f) throw `Failed to get Field of field ${d.n} (${p}) in Class ${className}`
+    if (!f) throw `Failed to get Field of field ${n} (${o}) in Class ${className}`
     m.setAccessible(true)
     reflPropCache.set(prop, f)
   }
@@ -126,7 +126,7 @@ function $wrap(val) {
       try {
         var v = Reflect.get(val, p, r)
       } catch (_) {
-        v = getField(className, clazz, d.n).get(val)
+        v = getField(className, clazz, d.n, p).get(val)
       }
       return $wrap(v)
     },
@@ -153,7 +153,7 @@ function $wrap(val) {
       try {
         Reflect.set(val, p, v, r)
       } catch (_) {
-        getField(className, clazz, d.n).set(val, v)
+        getField(className, clazz, d.n, p).set(val, v)
       }
       return true
     }
@@ -192,7 +192,7 @@ function $wrapFunc(val, className, n) {
         break
       } catch (_) { }
     } while (c = c.getSuperclass())
-    if (!m) throw `Failed to get Method of method ${d.n} (${p}) in Class ${className}`
+    if (!m) throw `Failed to get Method of method ${d.n} (${n}) in Class ${className}`
     m.setAccessible(true)
     reflMethCache.set(meth, m)
   }
