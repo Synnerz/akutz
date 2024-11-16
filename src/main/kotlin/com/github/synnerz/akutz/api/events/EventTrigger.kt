@@ -44,7 +44,10 @@ abstract class EventTrigger protected constructor(
 
     open fun isRegistered() : Boolean = registered
 
-    abstract fun trigger(args: Array<out Any?>)
+    // Leaving this as "open" so EventTriggers with custom trigger method can override
+    open fun trigger(args: Array<out Any?>) {
+        callMethod(args)
+    }
 
     fun callMethod(args: Array<out Any?>) {
         if (!Impl.isLoaded()) return

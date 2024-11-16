@@ -31,10 +31,6 @@ class ForgeEvent(
         return super.unregister()
     }
 
-    override fun trigger(args: Array<out Any?>) {
-        callMethod(args)
-    }
-
     companion object {
         private val forgeEvents = mutableMapOf<Class<*>, SortedSet<ForgeEvent>>()
 
