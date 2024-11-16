@@ -5,6 +5,7 @@ import com.github.synnerz.akutz.command.AkutzCommand
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import com.github.synnerz.akutz.listeners.ClientListener
+import com.github.synnerz.akutz.listeners.WorldListener
 import com.google.gson.Gson
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.common.MinecraftForge
@@ -34,7 +35,8 @@ class Akutz {
         ClientCommandHandler.instance.registerCommand(AkutzCommand)
         listOf(
             ForgeEvent,
-            ClientListener
+            ClientListener,
+            WorldListener
         ).forEach(MinecraftForge.EVENT_BUS::register)
     }
 
