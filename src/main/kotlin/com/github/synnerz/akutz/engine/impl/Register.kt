@@ -28,6 +28,7 @@ object Register {
         registerMethod("renderchat", EventType.RenderChat, MethodType.Cancelable)
         registerMethod("spawnparticle", EventType.SpawnParticle, MethodType.Cancelable)
         registerMethod("messagesent", EventType.MessageSent, MethodType.Cancelable)
+        registerMethod("renderscoreboard", EventType.RenderScoreboard, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
