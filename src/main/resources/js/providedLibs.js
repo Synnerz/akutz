@@ -187,5 +187,5 @@ loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
 globalThis.register = (eventType, cb) => {
   if (typeof cb !== "function") return print(`${cb} is not a valid function, please make sure to pass in an actual function.`)
-  return EventTrigger.register(eventType.includes(".") ? Java.type(eventType) : eventType, cb)
+  return EventTrigger.register(eventType.includes(".") ? Java.type(eventType) : eventType, (args) => cb(...args))
 }
