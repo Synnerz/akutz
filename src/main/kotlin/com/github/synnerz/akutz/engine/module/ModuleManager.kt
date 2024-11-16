@@ -21,13 +21,21 @@ object ModuleManager {
         }
 
         classLoader = ModifiedURLClassLoader()
-        installedModules!!.forEach { classLoader!!.addAllURLs(it.jars!!.map { File(it).toURI().toURL() }) }
+        installedModules!!.forEach {
+            val serverMeta = ModuleUpdater.getMetadata(it.moduleName!!)
+            if (serverMeta != null) {
+                if (ModuleUpdater.compareVersion(serverMeta.version!!, it.version!!) > 0) {
+                    println("Updating module ${it.moduleName!!} from version ${it.version} to ${serverMeta.version}")
+                    ModuleUpdater.downloadModule(it.moduleName!!)
+                }
+            } else println("Failed to get metadata for module ${it.moduleName!!}")
+            classLoader!!.addAllURLs(it.jars!!.map { File(it).toURI().toURL() })
+        }
     }
 
     fun teardown() {
         classLoader?.close()
         classLoader = null
-        installedModules = null
     }
 
     fun start() {
@@ -35,6 +43,11 @@ object ModuleManager {
             if (it.entry == null) return
             Impl.execute(File(it.directory, it.entry!!))
         }
+    }
+
+    fun import(module: String) {
+        if (installedModules!!.any { it.moduleName == module }) throw Exception("Module already installed")
+        ModuleUpdater.downloadModule(module)
     }
 
     private fun parseModule(dir: File): ModuleMetadata {
