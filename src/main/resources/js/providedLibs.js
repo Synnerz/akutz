@@ -229,3 +229,5 @@ globalThis.cancel = (event) => {
     return false
   }
 }
+
+globalThis.toV8Value = val => impl.forceWrap(val)
