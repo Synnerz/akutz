@@ -3,6 +3,7 @@ package com.github.synnerz.akutz.engine.impl
 import com.caoccao.javet.buddy.interop.proxy.JavetReflectionObjectFactory
 import com.caoccao.javet.interception.jvm.JavetJVMInterceptor
 import com.caoccao.javet.interop.V8Runtime
+import com.caoccao.javet.interop.converters.JavetObjectConverter
 import com.caoccao.javet.interop.converters.JavetProxyConverter
 import com.caoccao.javet.interop.engine.IJavetEnginePool
 import com.caoccao.javet.interop.engine.JavetEnginePool
@@ -77,6 +78,9 @@ object Impl {
             return@setV8ModuleResolver module
         }
         javetProxyConverter = JavetProxyConverter()
+        javetProxyConverter!!.config.setProxyListEnabled(true)
+        javetProxyConverter!!.config.setProxyMapEnabled(true)
+        javetProxyConverter!!.config.setProxySetEnabled(true)
         javetProxyConverter!!.config.setReflectionObjectFactory(JavetReflectionObjectFactory.getInstance())
 
         v8runtime!!.setConverter(javetProxyConverter!!)
@@ -118,4 +122,7 @@ object Impl {
     }
 
     fun isLoaded() : Boolean = v8runtime != null
+
+    private val javetObjectConverter = JavetObjectConverter()
+    fun forceWrap(obj: Any?) = javetObjectConverter.toV8Value<V8Value>(v8runtime, obj)
 }
