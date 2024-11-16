@@ -75,7 +75,12 @@ function getField(className, c, n) {
   const prop = `${className}/${n}`
   let f = reflPropCache.get(prop)
   if (!f) {
-    f = c.getField(d.n)
+    do {
+      try {
+        f = c.getDeclaredField(d.n)
+        break
+      } catch (_) { }
+    } while (c = c.getSuperclass())
     if (!f) throw `Failed to get Field of field ${d.n} (${p}) in Class ${className}`
     m.setAccessible(true)
     reflPropCache.set(prop, f)
@@ -84,37 +89,53 @@ function getField(className, c, n) {
 }
 const jClass = java.lang.Class
 function getClass(c) {
-  return jClass.isInstance(c) ? c : c.getClass()
+  return jClass.isInstance(c) ? c : c.getClass?.()
+}
+const javaObjectKeysCache = new Map()
+function javaObjectKeys(c) {
+  if (javaObjectKeysCache.has(c)) return javaObjectKeysCache.get(c)
+  const s = new Set()
+  while (c) {
+    c.getDeclaredFields().forEach(v => s.add(v.getName()))
+    c.getDeclaredMethods().forEach(v => s.add(v.getName()))
+    c = c.getSuperclass()
+  }
+  javaObjectKeysCache.set(c, s)
+  return s
 }
 function $wrap(val) {
   if (!jObject.isInstance(val)) return val
 
-  const className = getClass(val).getName().replace(/\./g, "/")
+  const clazz = getClass(val)
+  if (!clazz) return val
+  const className = clazz.getName().replace(/\./g, "/")
   const propMap = mappings.get(className)
   if (!propMap) throw "Cannot find mappings for class: " + className
+  {
+    const s = new Set(javaObjectKeys(clazz))
+    propMap.forEach((v, k) => s.add(k))
+    var ownKeys = Array.from(s.keys())
+  }
 
-  return new Proxy(val, {
+  return new Proxy({}, {
     get(t, p, r) {
-      if (typeof p === "symbol") return Reflect.get(t, p, r)
+      if (typeof p === "symbol") return Reflect.get(val, p, r)
       const d = propMap.get(p)
-      if (!d) return Reflect.get(t, p, r)
-      if (d.t === "m") return $wrapFunc(t, className, p)
+      if (!d) return Reflect.get(val, p, r)
+      if (d.t === "m") return $wrapFunc(val, className, p)
       try {
-        var val = Reflect.get(t, p, r)
+        var v = Reflect.get(val, p, r)
       } catch (_) {
-        val = getField(className, getClass(t), d.n).get(t)
+        v = getField(className, clazz, d.n).get(val)
       }
-      return $wrap(val)
+      return $wrap(v)
     },
     has(t, p) {
-      if (typeof p === "symbol") return Reflect.has(t, p)
-      return propMap.has(p) || Reflect.has(t, p)
+      if (typeof p === "symbol") return Reflect.has(val, p)
+      return propMap.has(p) || Reflect.has(val, p)
     },
     ownKeys(t) {
-      const s = new Set(Reflect.ownKeys(t))
-      propMap.forEach((v, k) => s.add(k))
-      s.add("prototype")
-      return Array.from(s.keys())
+      return ownKeys
     },
     getOwnPropertyDescriptor(t, p) {
       if (!this.has(t, p)) return
@@ -125,14 +146,14 @@ function $wrap(val) {
       }
     },
     set(t, p, v, r) {
-      if (typeof p === "symbol") return Reflect.set(t, p, v, r)
+      if (typeof p === "symbol") return Reflect.set(val, p, v, r)
       const d = propMap.get(p)
-      if (!d) return Reflect.set(t, p, v, r)
+      if (!d) return Reflect.set(val, p, v, r)
       if (d.t !== "f") throw `Cannot set property ${p} as it is a method`
       try {
-        Reflect.set(t, p, v, r)
+        Reflect.set(val, p, v, r)
       } catch (_) {
-        getField(className, getClass(t), d.n).set(t, v)
+        getField(className, clazz, d.n).set(val, v)
       }
       return true
     }
@@ -160,18 +181,24 @@ function $wrapFunc(val, className, n) {
     while (i < desc.length) {
       const c = desc[i]
       if (c in jMethodTypes) args.push(jMethodTypes[c])
-      else if (c === "L") args.push(jClass.forName(desc.slice(i + 1, i = desc.indexOf(";", i + 1))))
+      else if (c === "L") args.push(jClass.forName(desc.slice(i + 1, i = desc.indexOf(";", i + 1)).replace(/\//g, ".")))
       else throw "Unknown type " + c
       i++
     }
-    m = getClass(val).getMethod(d.n, ...args)
+    let c = getClass(val)
+    do {
+      try {
+        m = c.getDeclaredMethod(d.n, ...args)
+        break
+      } catch (_) { }
+    } while (c = c.getSuperclass())
     if (!m) throw `Failed to get Method of method ${d.n} (${p}) in Class ${className}`
     m.setAccessible(true)
     reflMethCache.set(meth, m)
   }
-  return new Proxy(val, {
+  return new Proxy(Function.prototype, {
     apply(t, h, a) {
-      return $wrap(m.invoke(h, ...a))
+      return $wrap(m.invoke(val, ...a))
     }
   })
 }
@@ -191,14 +218,14 @@ globalThis.register = (eventType, cb) => {
 }
 
 globalThis.cancel = (event) => {
-    try {
-      EventTrigger.cancel(event)
+  try {
+    EventTrigger.cancel(event)
+    return true
+  } catch (error) {
+    if (event.isCancelable()) {
+      event.setCanceled(true)
       return true
-    } catch (error) {
-      if (event.isCancelable()) {
-        event.setCanceled(true)
-        return true
-      }
-      return false
     }
+    return false
+  }
 }
