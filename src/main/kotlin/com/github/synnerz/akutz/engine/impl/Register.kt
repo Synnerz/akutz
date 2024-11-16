@@ -49,4 +49,8 @@ object Register {
     fun registerRenderWorld(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
         return NormalTrigger(method, EventType.RenderWorld)
     }
+
+    fun registerPostGuiRender(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+        return NormalTrigger(method, EventType.PostGuiRender)
+    }
 }
