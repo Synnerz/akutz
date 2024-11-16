@@ -93,7 +93,8 @@ object Impl {
         if (!isLoaded()) return
 
         if (javetJVMInterceptor != null) {
-            javetJVMInterceptor!!.register(v8runtime!!.globalObject)
+            javetJVMInterceptor!!.unregister(v8runtime!!.globalObject)
+            javetJVMInterceptor = null
         }
         if (javetProxyConverter != null) {
             javetProxyConverter!!.config.setReflectionObjectFactory(null)
