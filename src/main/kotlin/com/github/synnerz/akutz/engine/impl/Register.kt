@@ -37,4 +37,12 @@ object Register {
     fun registerTick(method: (args: Array<out Any?>) -> Unit): EventTrigger {
         return NormalTrigger(method, EventType.Tick)
     }
+
+    fun registerWorldLoad(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+        return NormalTrigger(method, EventType.WorldLoad)
+    }
+
+    fun registerWorldUnload(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+        return NormalTrigger(method, EventType.WorldUnload)
+    }
 }
