@@ -45,4 +45,8 @@ object Register {
     fun registerWorldUnload(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
         return NormalTrigger(method, EventType.WorldUnload)
     }
+
+    fun registerRenderWorld(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+        return NormalTrigger(method, EventType.RenderWorld)
+    }
 }

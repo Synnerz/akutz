@@ -2,6 +2,7 @@ package com.github.synnerz.akutz.listeners
 
 import com.github.synnerz.akutz.api.events.EventType
 import net.minecraftforge.client.event.RenderGameOverlayEvent
+import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 
@@ -23,6 +24,11 @@ object WorldListener {
 
         EventType.WorldLoad.triggerAll()
         triggerWorldLoad = false
+    }
+
+    @SubscribeEvent
+    fun onRenderWorld(event: RenderWorldLastEvent) {
+        EventType.RenderWorld.triggerAll(event.partialTicks)
     }
 
     @SubscribeEvent
