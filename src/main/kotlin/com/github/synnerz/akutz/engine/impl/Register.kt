@@ -26,6 +26,7 @@ object Register {
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
         registerMethod("renderoverlay", EventType.RenderOverlay, MethodType.Cancelable)
         registerMethod("renderchat", EventType.RenderChat, MethodType.Cancelable)
+        registerMethod("spawnparticle", EventType.SpawnParticle, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
