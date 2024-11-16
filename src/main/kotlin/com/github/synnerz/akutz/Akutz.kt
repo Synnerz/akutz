@@ -4,6 +4,7 @@ import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.command.AkutzCommand
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
+import com.github.synnerz.akutz.listeners.ClientListener
 import com.google.gson.Gson
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.common.MinecraftForge
@@ -31,7 +32,10 @@ class Akutz {
     fun preInit(event: FMLPreInitializationEvent) {
         Impl.setup()
         ClientCommandHandler.instance.registerCommand(AkutzCommand)
-        MinecraftForge.EVENT_BUS.register(ForgeEvent)
+        listOf(
+            ForgeEvent,
+            ClientListener
+        ).forEach(MinecraftForge.EVENT_BUS::register)
     }
 
     @Mod.EventHandler
