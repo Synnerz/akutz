@@ -53,4 +53,8 @@ object Register {
     fun registerPostGuiRender(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
         return NormalTrigger(method, EventType.PostGuiRender)
     }
+
+    fun registerGuiOpened(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+        return NormalTrigger(method, EventType.GuiOpened)
+    }
 }
