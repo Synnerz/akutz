@@ -21,6 +21,8 @@ object Register {
         registerMethod("renderworld", EventType.RenderWorld)
         registerMethod("postguirender", EventType.PostGuiRender)
         registerMethod("guirender", EventType.GuiRender)
+        registerMethod("preitemrender", EventType.PreItemRender)
+        registerMethod("renderslothighlight", EventType.RenderSlotHighlight)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
@@ -30,6 +32,7 @@ object Register {
         registerMethod("messagesent", EventType.MessageSent, MethodType.Cancelable)
         registerMethod("renderscoreboard", EventType.RenderScoreboard, MethodType.Cancelable)
         registerMethod("rendertitle", EventType.RenderTitle, MethodType.Cancelable)
+        registerMethod("renderslot", EventType.RenderSlot, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
