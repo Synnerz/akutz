@@ -80,7 +80,6 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.15.5")
     shadowImpl("com.caoccao.javet:javet-v8-windows-x86_64:4.0.0")
     shadowImpl("com.caoccao.javet.buddy:javet-buddy:0.4.0")
-    shadowImpl("org.jetbrains.kotlin:kotlin-reflect:1.9.0")
 }
 
 tasks.withType(JavaCompile::class) {
