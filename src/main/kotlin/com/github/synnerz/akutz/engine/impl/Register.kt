@@ -69,4 +69,8 @@ object Register {
     fun registerGuiRender(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
         return NormalTrigger(method, EventType.GuiRender)
     }
+
+    fun registerSoundPlay(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+        return NormalTrigger(method, EventType.SoundPlay)
+    }
 }
