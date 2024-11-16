@@ -13,14 +13,17 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
         when (args[0]) {
             "load", "reload" -> {
                 Impl.clear()
-                Impl.setup()
+                ModuleManager.teardown()
                 ModuleManager.setup()
+                Impl.setup()
+                ModuleManager.start()
                 ChatLib.chat("Akutz was loaded")
             }
             "unload" -> {
                 if (!Impl.isLoaded()) return ChatLib.chat("Akutz has already been unloaded")
 
                 Impl.clear()
+                ModuleManager.teardown()
                 ChatLib.chat("Akutz was unloaded")
             }
             else -> ChatLib.chat(getHelp())

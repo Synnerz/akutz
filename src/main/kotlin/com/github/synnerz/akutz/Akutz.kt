@@ -31,6 +31,7 @@ class Akutz {
 
     @Mod.EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
+        ModuleManager.setup()
         Impl.setup()
         ClientCommandHandler.instance.registerCommand(AkutzCommand)
         listOf(
@@ -43,6 +44,6 @@ class Akutz {
     @Mod.EventHandler
     fun init(event: FMLInitializationEvent) {
         // TODO: run this on a different thread (?)
-        ModuleManager.setup()
+        ModuleManager.start()
     }
 }
