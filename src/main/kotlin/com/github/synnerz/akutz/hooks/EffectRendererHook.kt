@@ -1,4 +1,4 @@
-package com.github.synnerz.akutz.api.hooks
+package com.github.synnerz.akutz.hooks
 
 import com.github.synnerz.akutz.api.events.Cancelable
 import com.github.synnerz.akutz.api.events.EventType

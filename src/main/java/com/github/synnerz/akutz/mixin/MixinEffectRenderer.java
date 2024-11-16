@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.mixin;
 
-import com.github.synnerz.akutz.api.hooks.EffectRendererHook;
+import com.github.synnerz.akutz.hooks.EffectRendererHook;
 import net.minecraft.client.particle.EffectRenderer;
 import net.minecraft.client.particle.EntityFX;
 import org.spongepowered.asm.mixin.Mixin;
