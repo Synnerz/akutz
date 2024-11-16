@@ -16,7 +16,7 @@ object Register {
 
         // Normal events
         registerMethod("tick", EventType.Tick)
-        registerMethod("worldload", EventType.WorldUnload)
+        registerMethod("worldload", EventType.WorldLoad)
         registerMethod("worldunload", EventType.WorldUnload)
         registerMethod("renderworld", EventType.RenderWorld)
         registerMethod("postguirender", EventType.PostGuiRender)
