@@ -1,8 +1,6 @@
 package com.github.synnerz.akutz.engine.impl
 
-import com.github.synnerz.akutz.api.events.CommandEvent
-import com.github.synnerz.akutz.api.events.EventTrigger
-import com.github.synnerz.akutz.api.events.ForgeEvent
+import com.github.synnerz.akutz.api.events.*
 import kotlin.reflect.KCallable
 import kotlin.reflect.full.memberFunctions
 
@@ -34,5 +32,9 @@ object Register {
 
     fun registerCommand(method: (args: Array<out Any?>) -> Unit): CommandEvent {
         return CommandEvent(method)
+    }
+
+    fun registerTick(method: (args: Array<out Any?>) -> Unit): EventTrigger {
+        return NormalTrigger(method, EventType.Tick)
     }
 }
