@@ -29,6 +29,7 @@ object Register {
         registerMethod("spawnparticle", EventType.SpawnParticle, MethodType.Cancelable)
         registerMethod("messagesent", EventType.MessageSent, MethodType.Cancelable)
         registerMethod("renderscoreboard", EventType.RenderScoreboard, MethodType.Cancelable)
+        registerMethod("rendertitle", EventType.RenderTitle, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
