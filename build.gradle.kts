@@ -76,9 +76,9 @@ dependencies {
         isTransitive = false
     }
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
-    shadowImpl("com.caoccao.javet:javet-core:4.0.0")
+    shadowImpl("com.caoccao.javet:javet:4.1.0")
     implementation("net.bytebuddy:byte-buddy:1.15.5")
-    shadowImpl("com.caoccao.javet:javet-v8-windows-x86_64:4.0.0")
+    shadowImpl("com.caoccao.javet:javet-v8-windows-x86_64:4.1.0")
     shadowImpl("com.caoccao.javet.buddy:javet-buddy:0.4.0")
 }
 
