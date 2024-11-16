@@ -4,6 +4,7 @@ import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.wrappers.World
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.event.GuiOpenEvent
+import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
@@ -39,6 +40,19 @@ object ClientListener {
             RenderGameOverlayEvent.ElementType.CHAT -> EventType.RenderChat.triggerAll(event)
             else -> null
         }
+        GlStateManager.popMatrix()
+    }
+
+    @SubscribeEvent
+    fun onGuiRender(event: GuiScreenEvent.BackgroundDrawnEvent) {
+        GlStateManager.pushMatrix()
+
+        EventType.GuiRender.triggerAll(
+            event.mouseX,
+            event.mouseY,
+            event.gui
+        )
+
         GlStateManager.popMatrix()
     }
 }
