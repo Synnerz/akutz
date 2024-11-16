@@ -2,8 +2,10 @@ package com.github.synnerz.akutz.listeners
 
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.wrappers.World
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent
+import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 
@@ -27,5 +29,16 @@ object ClientListener {
     @SubscribeEvent
     fun onGuiOpened(event: GuiOpenEvent) {
         EventType.GuiOpened.triggerAll(event)
+    }
+
+    @SubscribeEvent
+    fun onRenderGameOverlay(event: RenderGameOverlayEvent.Pre) {
+        GlStateManager.pushMatrix()
+        when (event.type) {
+            RenderGameOverlayEvent.ElementType.TEXT -> EventType.RenderOverlay.triggerAll(event)
+            RenderGameOverlayEvent.ElementType.CHAT -> EventType.RenderChat.triggerAll(event)
+            else -> null
+        }
+        GlStateManager.popMatrix()
     }
 }

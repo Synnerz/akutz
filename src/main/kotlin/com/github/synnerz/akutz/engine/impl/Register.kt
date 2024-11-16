@@ -57,4 +57,12 @@ object Register {
     fun registerGuiOpened(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
         return NormalTrigger(method, EventType.GuiOpened)
     }
+
+    fun registerRenderOverlay(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+        return NormalTrigger(method, EventType.RenderOverlay)
+    }
+
+    fun registerRenderChat(method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+        return NormalTrigger(method, EventType.RenderChat)
+    }
 }
