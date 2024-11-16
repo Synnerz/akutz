@@ -3,6 +3,6 @@ package com.github.synnerz.akutz.api.events
 enum class MethodType {
     Normal,
     Command,
-    Cancellable,
+    Cancelable,
     SoundPlay
 }

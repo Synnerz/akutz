@@ -22,10 +22,10 @@ object Register {
         registerMethod("postguirender", EventType.PostGuiRender)
         registerMethod("guirender", EventType.GuiRender)
 
-        // Cancellable events
-        registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancellable)
-        registerMethod("renderoverlay", EventType.RenderOverlay, MethodType.Cancellable)
-        registerMethod("renderchat", EventType.RenderChat, MethodType.Cancellable)
+        // Cancelable events
+        registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
+        registerMethod("renderoverlay", EventType.RenderOverlay, MethodType.Cancelable)
+        registerMethod("renderchat", EventType.RenderChat, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
@@ -35,7 +35,7 @@ object Register {
         val cb: (((Array<out Any?>) -> Unit) -> EventTrigger) = when (type) {
             MethodType.Normal -> { mm: (args: Array<out Any?>) -> Unit -> NormalTrigger(mm, eventType!!) }
             MethodType.Command -> { mm: (args: Array<out Any?>) -> Unit -> CommandEvent(mm) }
-            MethodType.Cancellable -> { mm: (args: Array<out Any?>) -> Unit -> CancelableEvent(mm, eventType!!) }
+            MethodType.Cancelable -> { mm: (args: Array<out Any?>) -> Unit -> CancelableEvent(mm, eventType!!) }
             MethodType.SoundPlay -> { mm: (args: Array<out Any?>) -> Unit -> SoundPlayEvent(mm) }
         }
 
