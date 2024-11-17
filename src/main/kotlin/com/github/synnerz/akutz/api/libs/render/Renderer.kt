@@ -45,14 +45,18 @@ object Renderer {
     @JvmOverloads
     @JvmStatic
     fun prepareDraw(color: Color, pushMatrix: Boolean = true) = apply {
+        if (pushMatrix) GlStateManager.pushMatrix()
+        pushedMatrix = pushMatrix
+
+        GlStateManager.enableBlend()
+        GlStateManager.disableTexture2D()
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
         GlStateManager.color(
             color.getRf().toFloat(),
             color.getGf().toFloat(),
             color.getBf().toFloat(),
             color.getAf().toFloat()
         )
-        if (pushMatrix) GlStateManager.pushMatrix()
-        pushedMatrix = pushMatrix
     }
 
     @JvmOverloads
@@ -60,7 +64,10 @@ object Renderer {
     fun finishDraw() = apply {
         if (pushedMatrix) GlStateManager.popMatrix()
         pushedMatrix = false
+        
         lineWidth(1f)
+        GlStateManager.enableTexture2D()
+        GlStateManager.disableBlend()
     }
 
     @JvmStatic
