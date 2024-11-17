@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz.api.wrappers
 
 import net.minecraft.client.entity.EntityPlayerSP
+import java.util.UUID
 
 /**
  * Taken from ChatTriggers under MIT License
@@ -30,4 +31,25 @@ object Player {
 
     @JvmStatic
     fun getName(): String = Client.getMinecraft().session.username
+
+    @JvmStatic
+    fun getUUID(): String = getUUIDObj().toString()
+
+    @JvmStatic
+    fun getUUIDObj(): UUID = Client.getMinecraft().session.profile.id
+
+    @JvmStatic
+    fun getHP(): Float = getPlayer()?.health ?: 0f
+
+    @JvmStatic
+    fun isMoving(): Boolean = getPlayer()?.movementInput?.let { it.moveForward != 0F || it.moveStrafe != 0F } ?: false
+
+    @JvmStatic
+    fun isSneaking(): Boolean = getPlayer()?.isSneaking ?: false
+
+    @JvmStatic
+    fun isSprinting(): Boolean = getPlayer()?.isSprinting ?: false
+
+    @JvmStatic
+    fun isFlying(): Boolean = !(getPlayer()?.isPushedByWater ?: true)
 }
