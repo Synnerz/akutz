@@ -21,14 +21,12 @@ class ForgeEvent(
         forgeEvents.getOrPut(clazz) { sortedSetOf() }.add(this)
     }
 
-    override fun register(): EventTrigger {
+    override fun onRegister() = apply {
         forgeEvents.getOrPut(clazz) { sortedSetOf() }.add(this)
-        return super.register()
     }
 
-    override fun unregister(): EventTrigger {
+    override fun onUnregister() = apply {
         forgeEvents[clazz]?.remove(this)
-        return super.unregister()
     }
 
     companion object {
@@ -36,7 +34,7 @@ class ForgeEvent(
 
         fun unregisterEvents() {
             forgeEvents.values.flatten().forEach {
-                it.unregister()
+                it.onUnregister()
             }
             forgeEvents.clear()
         }

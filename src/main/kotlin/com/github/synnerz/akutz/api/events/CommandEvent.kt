@@ -46,29 +46,19 @@ class CommandEvent(
     @JvmOverloads
     fun setName(commandName: String, overrideExisting: Boolean = false) = setCommandName(commandName, overrideExisting)
 
-    override fun register(): EventTrigger {
-        if (registered && command!!.initialized) return this
-
+    override fun onRegister() = apply {
         command?.register()
-        registered = true
-        Loader.addEvent(this)
-        return this
     }
 
-    override fun unregister(): EventTrigger {
-        if (!registered || command == null) return this
-
+    override fun onUnregister() = apply {
         command!!.unregister()
-        registered = false
-        Loader.removeEvent(this)
-        return this
     }
 
     fun reInstance() {
-        if (!registered) return
+        if (!actuallyRegistered) return
 
-        unregister()
+        onUnregister()
         command = Command(this, commandName, aliases, overrideExisting, tabCompletions, cb)
-        register()
+        onRegister()
     }
 }
