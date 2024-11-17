@@ -12,16 +12,16 @@ class Color(
     fun getG() = g
     fun getB() = b
     fun getA() = a
-    fun getRF(): Double = r / 255.0
-    fun getGF(): Double = g / 255.0
-    fun getBF(): Double = b / 255.0
-    fun getAF(): Double = a / 255.0
+    fun getRf(): Double = r / 255.0
+    fun getGf(): Double = g / 255.0
+    fun getBf(): Double = b / 255.0
+    fun getAf(): Double = a / 255.0
     fun asRGB(): Long = ((r shl 16) or (g shl 8) or b).toLong()
     fun asRGBA(): Long = ((r shl 24) or (g shl 16) or (b shl 8) or a).toLong()
     fun asARGB(): Long = ((a shl 24) or (r shl 16) or (g shl 8) or b).toLong()
-    fun asRGBF() = doubleArrayOf(getRF(), getGF(), getBF())
-    fun asRGBAF() = doubleArrayOf(getRF(), getGF(), getBF(), getAF())
-    fun asARGBF() = doubleArrayOf(getAF(), getRF(), getGF(), getBF())
+    fun asRGBf() = doubleArrayOf(getRF(), getGF(), getBF())
+    fun asRGBAf() = doubleArrayOf(getRF(), getGF(), getBF(), getAF())
+    fun asARGBf() = doubleArrayOf(getAF(), getRF(), getGF(), getBF())
     fun asAWTColor() = AWTColor(r, g, b, a)
 
     companion object {
