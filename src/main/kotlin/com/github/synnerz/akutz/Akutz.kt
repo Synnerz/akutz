@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz
 
 import com.github.synnerz.akutz.api.events.ForgeEvent
+import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.command.AkutzCommand
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
@@ -37,7 +38,8 @@ class Akutz {
         listOf(
             ForgeEvent,
             ClientListener,
-            WorldListener
+            WorldListener,
+            Renderer.screen
         ).forEach(MinecraftForge.EVENT_BUS::register)
     }
 

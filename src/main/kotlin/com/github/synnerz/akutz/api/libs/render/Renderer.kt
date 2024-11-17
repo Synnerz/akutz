@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.libs.render
 
+import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.objects.render.Color
 import net.minecraft.client.Minecraft
@@ -60,7 +61,6 @@ object Renderer {
         )
     }
 
-    @JvmOverloads
     @JvmStatic
     fun finishDraw() = apply {
         if (pushedMatrix) GlStateManager.popMatrix()
@@ -258,7 +258,6 @@ object Renderer {
             if (event.phase != TickEvent.Phase.START) return
             if (sr != null && !Display.wasResized()) return
             sr = ScaledResolution(Minecraft.getMinecraft())
-            // TODO: fire off an event
         }
 
         fun getWidth() = sr?.scaledWidth ?: 0
