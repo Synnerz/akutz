@@ -8,10 +8,10 @@ import com.github.synnerz.akutz.engine.impl.Loader
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/triggers/Trigger.kt)
  */
-abstract class EventTrigger protected constructor(
+abstract class BaseEvent protected constructor(
     var method: (args: Array<out Any?>) -> Unit,
     var type: EventType
-) : Comparable<EventTrigger> {
+) : Comparable<BaseEvent> {
     var registered: Boolean = false
     var actuallyRegistered: Boolean = false
     private var priority: Priority = Priority.NORMAL
@@ -93,7 +93,7 @@ abstract class EventTrigger protected constructor(
         }
     }
 
-    override fun compareTo(other: EventTrigger): Int {
+    override fun compareTo(other: BaseEvent): Int {
         val ordCmp = priority.ordinal - other.priority.ordinal
         return if (ordCmp == 0)
             hashCode() - other.hashCode()

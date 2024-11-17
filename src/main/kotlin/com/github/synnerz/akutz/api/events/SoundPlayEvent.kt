@@ -6,7 +6,7 @@ package com.github.synnerz.akutz.api.events
  */
 class SoundPlayEvent(
     method: (args: Array<out Any?>) -> Unit
-) : EventTrigger(method, EventType.SoundPlay) {
+) : BaseEvent(method, EventType.SoundPlay) {
     private var soundCriteria: String? = null
 
     fun setCriteria(criteria: String) = apply {

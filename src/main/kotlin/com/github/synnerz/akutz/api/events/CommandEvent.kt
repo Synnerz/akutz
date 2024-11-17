@@ -1,7 +1,6 @@
 package com.github.synnerz.akutz.api.events
 
 import com.github.synnerz.akutz.api.commands.Command
-import com.github.synnerz.akutz.engine.impl.Loader
 
 /**
  * Taken from ChatTriggers under MIT License
@@ -9,7 +8,7 @@ import com.github.synnerz.akutz.engine.impl.Loader
  */
 class CommandEvent(
     method: (args: Array<out Any?>) -> Unit
-) : EventTrigger(method, EventType.Command) {
+) : BaseEvent(method, EventType.Command) {
     private lateinit var commandName: String
     private var overrideExisting: Boolean = false
     private val aliases = mutableListOf<String>()

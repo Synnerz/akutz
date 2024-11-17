@@ -9,7 +9,7 @@ import net.minecraftforge.fml.common.eventhandler.Event
 class CancelableEvent(
     method: (args: Array<out Any?>) -> Unit,
     type: EventType
-) : EventTrigger(method, type) {
+) : BaseEvent(method, type) {
     private var triggerIfCanceled = true
 
     fun triggerIfCanceled(bool: Boolean) = apply {

@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.eventhandler.Event
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/engine/IRegister.kt)
  */
 object Register {
-    val eventMap = mutableMapOf<String, (((Array<out Any?>) -> Unit) -> EventTrigger)>()
+    val eventMap = mutableMapOf<String, (((Array<out Any?>) -> Unit) -> BaseEvent)>()
 
     init {
         // Command
@@ -41,8 +41,8 @@ object Register {
     }
 
     fun registerMethod(eventName: String, eventType: EventType? = null, type: MethodType = MethodType.Normal) {
-        val cb: (((Array<out Any?>) -> Unit) -> EventTrigger) = when (type) {
-            MethodType.Normal -> { mm: (args: Array<out Any?>) -> Unit -> NormalTrigger(mm, eventType!!) }
+        val cb: (((Array<out Any?>) -> Unit) -> BaseEvent) = when (type) {
+            MethodType.Normal -> { mm: (args: Array<out Any?>) -> Unit -> NormalEvent(mm, eventType!!) }
             MethodType.Command -> { mm: (args: Array<out Any?>) -> Unit -> CommandEvent(mm) }
             MethodType.Cancelable -> { mm: (args: Array<out Any?>) -> Unit -> CancelableEvent(mm, eventType!!) }
             MethodType.SoundPlay -> { mm: (args: Array<out Any?>) -> Unit -> SoundPlayEvent(mm) }
@@ -51,7 +51,7 @@ object Register {
         eventMap["register$eventName"] = cb
     }
 
-    fun register(eventType: Any, method: (args: Array<out Any?>) -> Unit) : EventTrigger {
+    fun register(eventType: Any, method: (args: Array<out Any?>) -> Unit) : BaseEvent {
         if (eventType is Class<*>)
             return ForgeEvent(method, eventType)
 

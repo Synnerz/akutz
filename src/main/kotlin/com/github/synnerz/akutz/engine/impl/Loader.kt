@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.engine.impl
 
-import com.github.synnerz.akutz.api.events.EventTrigger
+import com.github.synnerz.akutz.api.events.BaseEvent
 import com.github.synnerz.akutz.api.events.EventType
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ConcurrentSkipListSet
@@ -10,15 +10,15 @@ import java.util.concurrent.ConcurrentSkipListSet
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/engine/langs/js/JSLoader.kt)
  */
 object Loader {
-    private val events = ConcurrentHashMap<EventType, ConcurrentSkipListSet<EventTrigger>>()
+    private val events = ConcurrentHashMap<EventType, ConcurrentSkipListSet<BaseEvent>>()
 
-    private fun createEventSet() = ConcurrentSkipListSet<EventTrigger>()
+    private fun createEventSet() = ConcurrentSkipListSet<BaseEvent>()
 
     fun execute(type: EventType, args: Array<out Any?>) {
         events[type]?.forEach { it.trigger(args) }
     }
 
-    fun addEvent(event: EventTrigger) {
+    fun addEvent(event: BaseEvent) {
         events.getOrPut(event.type, ::createEventSet).add(event)
     }
 
@@ -26,7 +26,7 @@ object Loader {
         events.clear()
     }
 
-    fun removeEvent(event: EventTrigger) {
+    fun removeEvent(event: BaseEvent) {
         events[event.type]?.remove(event)
     }
 }

@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.events
 
-class NormalTrigger(
+class NormalEvent(
     method: (args: Array<out Any?>) -> Unit,
     type: EventType
-) : EventTrigger(method, type)
+) : BaseEvent(method, type)

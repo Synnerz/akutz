@@ -11,7 +11,7 @@ import java.util.*
 class ForgeEvent(
     method: (args: Array<out Any?>) -> Unit,
     val clazz: Class<*>
-) : EventTrigger(method, EventType.Forge) {
+) : BaseEvent(method, EventType.Forge) {
 
     init {
         require(Event::class.java.isAssignableFrom(clazz)) {

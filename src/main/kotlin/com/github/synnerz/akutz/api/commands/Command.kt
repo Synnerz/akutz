@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.commands
 
-import com.github.synnerz.akutz.api.events.EventTrigger
+import com.github.synnerz.akutz.api.events.BaseEvent
 import net.minecraft.client.entity.EntityPlayerSP
 import net.minecraft.command.ICommandSender
 import net.minecraft.util.BlockPos
@@ -11,7 +11,7 @@ import net.minecraftforge.client.ClientCommandHandler
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/commands/Command.kt)
  */
 class Command @JvmOverloads constructor(
-    private val event: EventTrigger,
+    private val event: BaseEvent,
     private val name: String,
     private var aliases: MutableList<String>,
     private val overrideExisting: Boolean = false,
