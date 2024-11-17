@@ -220,6 +220,10 @@ loadClass("com.github.synnerz.akutz.api.objects.state.StateExp")
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
 globalThis.GlStateManager = wrap(Java.type("net.minecraft.client.renderer.GlStateManager"))
+loadClass("org.lwjgl.opengl.GL11")
+globalThis.MCTessellator = wrap(Renderer.getTessellator())
+globalThis.WorldRenderer = wrap(Renderer.getWorldRenderer())
+globalThis.DefaultVertexFormats = wrap(Java.type("net.minecraft.client.renderer.vertex.DefaultVertexFormats"))
 
 globalThis.register = (eventType, cb) => {
   if (typeof cb !== "function") return print(`${cb} is not a valid function, please make sure to pass in an actual function.`)
