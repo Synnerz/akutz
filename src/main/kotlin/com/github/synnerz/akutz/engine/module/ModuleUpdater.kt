@@ -34,11 +34,17 @@ object ModuleUpdater {
         return 0
     }
 
-    fun downloadModule(module: String) {
+    fun downloadModule(module: String): Boolean {
         val url = getUrl(module, "download.zip")
         val zipPath = File(Akutz.configLocation, "$module-download.zip")
-        url.openStream().use { stream ->
-            zipPath.outputStream().use { stream.copyTo(it) }
+        try {
+            url.openStream()?.use { stream ->
+                zipPath.outputStream().use { stream.copyTo(it) }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+            println("Module with name $module was not found in the repo")
+            return false
         }
 
         val dest = File(Akutz.configLocation, module)
@@ -61,5 +67,6 @@ object ModuleUpdater {
         }
 
         zipPath.delete()
+        return true
     }
 }

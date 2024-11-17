@@ -54,9 +54,10 @@ object ModuleManager {
 
     fun import(module: String) {
         if (installedModules!!.any { it.moduleName == module }) throw Exception("Module already installed")
-        ModuleUpdater.downloadModule(module)
-        teardown()
-        setup()
+        if (ModuleUpdater.downloadModule(module)) {
+            teardown()
+            setup()
+        }
     }
 
     private fun parseModule(dir: File): ModuleMetadata {
