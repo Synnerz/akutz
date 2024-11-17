@@ -209,7 +209,6 @@ loadClass("com.github.synnerz.akutz.api.wrappers.Player")
 loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
-loadClass("com.github.synnerz.akutz.api.libs.FileLib")
 loadClass("com.github.synnerz.akutz.api.libs.render.Renderer")
 
 loadClass("com.github.synnerz.akutz.api.objects.render.Color")
