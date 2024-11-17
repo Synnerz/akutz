@@ -23,7 +23,7 @@ object ModuleManager {
         classLoader = ModifiedURLClassLoader()
         installedModules!!.forEach {
             var lmaoNotScuffed = false
-            it.requires!!.forEach { r ->
+            it.requires?.forEach { r ->
                 if (installedModules!!.any { v -> v.moduleName == r }) return
                 import(r)
                 lmaoNotScuffed = true
@@ -70,7 +70,6 @@ object ModuleManager {
                 metadata.moduleName = dir.name
                 metadata.directory = dir
                 metadata.jars = (metadata.jars ?: emptyList()).map { File(dir, it).path }
-                metadata.requires = metadata.requires ?: emptyList()
             } catch (exception: Exception) {
                 println("Module ${dir.name} has invalid metadata.json")
             }
