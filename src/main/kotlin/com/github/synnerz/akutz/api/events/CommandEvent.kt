@@ -36,14 +36,11 @@ class CommandEvent(
     }
 
     @JvmOverloads
-    fun setCommandName(commandName: String, overrideExisting: Boolean = false) = apply {
+    fun setName(commandName: String, overrideExisting: Boolean = false) = apply {
         this.commandName = commandName
         this.overrideExisting = overrideExisting
         reInstance()
     }
-
-    @JvmOverloads
-    fun setName(commandName: String, overrideExisting: Boolean = false) = setCommandName(commandName, overrideExisting)
 
     override fun onRegister() = apply {
         command?.register()
