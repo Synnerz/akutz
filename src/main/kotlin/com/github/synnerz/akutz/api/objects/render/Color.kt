@@ -24,6 +24,26 @@ class Color(
     fun asARGBf() = doubleArrayOf(getAf(), getRf(), getGf(), getBf())
     fun asAWTColor() = AWTColor(r, g, b, a)
 
+    fun asShade(amount: Double): Color {
+        val v = amount.coerceIn(0.0, 1.0)
+        return Color(
+            (r * v).toInt(),
+            (g * v).toInt(),
+            (b * v).toInt(),
+            a
+        )
+    }
+
+    fun asTint(amount: Double): Color {
+        val v = amount.coerceIn(0.0, 1.0)
+        return Color(
+            ((255 - r) * v).toInt() + 255,
+            ((255 - g) * v).toInt() + 255,
+            ((255 - b) * v).toInt() + 255,
+            a
+        )
+    }
+
     companion object {
         @JvmStatic
         fun fromRGB(color: Long) = Color(
@@ -57,5 +77,53 @@ class Color(
             (b * 255).toInt().coerceIn(0, 255),
             (a * 255).toInt().coerceIn(0, 255)
         )
+
+        @JvmStatic
+        val BLACK = Color(0, 0, 0, 255)
+
+        @JvmStatic
+        val DARK_BLUE = Color(0, 0, 190, 255)
+
+        @JvmStatic
+        val DARK_GREEN = Color(0, 190, 0, 255)
+
+        @JvmStatic
+        val DARK_AQUA = Color(0, 190, 190, 255)
+
+        @JvmStatic
+        val DARK_RED = Color(190, 0, 0, 255)
+
+        @JvmStatic
+        val DARK_PURPLE = Color(190, 0, 190, 255)
+
+        @JvmStatic
+        val GOLD = Color(217, 163, 52, 255)
+
+        @JvmStatic
+        val GRAY = Color(190, 190, 190, 255)
+
+        @JvmStatic
+        val DARK_GRAY = Color(63, 63, 63, 255)
+
+        @JvmStatic
+        val BLUE = Color(63, 63, 254, 255)
+
+        @JvmStatic
+        val GREEN = Color(63, 254, 63, 255)
+
+        @JvmStatic
+        val AQUA = Color(63, 254, 254, 255)
+
+        @JvmStatic
+        val RED = Color(254, 63, 63, 255)
+
+        @JvmStatic
+        val LIGHT_PURPLE = Color(254, 63, 254, 255)
+
+        @JvmStatic
+        val YELLOW = Color(254, 254, 63, 255)
+
+        @JvmStatic
+        val WHITE = Color(255, 255, 255, 255)
     }
 }
