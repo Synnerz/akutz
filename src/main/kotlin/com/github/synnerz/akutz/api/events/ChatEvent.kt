@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.events
 
+import com.caoccao.javet.values.reference.V8ValueRegExp
 import com.github.synnerz.akutz.api.libs.ChatLib
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 
@@ -10,82 +11,156 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent
 class ChatEvent(
     method: (args: Array<out Any?>) -> Unit
 ) : BaseEvent(method, EventType.Chat) {
-    private lateinit var chatCriteria: Any
-    private var formatted: Boolean = false
     private var caseInsensitive: Boolean = false
-    private lateinit var criteriaPattern: Regex
-    private val parameters = mutableListOf<Parameter?>()
+    private var formatted: Boolean = false
+    private var mode: Int = 0
+    private var regex: Regex? = null
+    private val parameters = mutableSetOf<Parameter>()
     private var triggerIfCanceled: Boolean = true
+    private var rawCritS: String? = null
+    private var rawCritR: V8ValueRegExp? = null
+    private var dirty = true
 
-    fun triggerIfCanceled(bool: Boolean) = apply {
-        this.triggerIfCanceled = bool
+    private val HAS_GROUP_MATCH = "\\$\\{(?:\\*|\\w+)}".toRegex()
+    private val ESCAPE_REGEX = "[/\\-\\\\^$*+?.()|\\[\\]{}]".toRegex()
+    private val REPLACE_ANON_MATCH = "\\\$\\{\\*?}".toRegex()
+    private val REPLACE_NAMED_MATCH = "\\\$\\{\\w+}".toRegex()
+    private val HAS_FORMATTING_CODE = "[&\u00a7]".toRegex()
+
+    private fun mark() = apply { dirty = true }
+
+    private fun updateCriteria() {
+        mode = 0
+        regex = null
+        formatted = true
+        if (rawCritS != null) {
+            formatted = HAS_FORMATTING_CODE in rawCritS!!
+            if (!caseInsensitive && HAS_GROUP_MATCH !in rawCritS!!) mode = 1
+            else {
+                mode = 2
+                val regexStr = rawCritS!!
+                    .replace(ESCAPE_REGEX, "\\$0")
+                    .replace(REPLACE_ANON_MATCH, "(?:.+)")
+                    .replace(REPLACE_NAMED_MATCH, "(.+)")
+
+                val flags = mutableSetOf(RegexOption.UNIX_LINES)
+                if (caseInsensitive) flags.add(RegexOption.IGNORE_CASE)
+                RegexOption.CANON_EQ
+
+                regex = Regex(regexStr, flags)
+            }
+        } else if (this.rawCritR != null) {
+            this.mode = 2
+
+            val src = ChatLib.replaceFormatting(rawCritR!!.getPropertyString("source"))
+            formatted = HAS_FORMATTING_CODE in src
+
+            val flags = mutableSetOf(RegexOption.UNIX_LINES)
+            if (caseInsensitive || rawCritR!!.getPropertyBoolean("ignoreCase")) flags.add(RegexOption.IGNORE_CASE)
+            if (rawCritR!!.getPropertyBoolean("m")) flags.add(RegexOption.MULTILINE)
+            if (rawCritR!!.getPropertyBoolean("s")) flags.add(RegexOption.DOT_MATCHES_ALL)
+
+            regex = Regex(src, flags)
+        }
     }
 
-    // TODO: unfinished
-    fun setCriteria(criteria: Any) = apply {
-        this.chatCriteria = criteria
+    private fun doesMatchCriteria(str: String): List<Any>? {
+        if (mode == 1) {
+            if (parameters.size == 0) {
+                if (rawCritS != str) return null
+            } else {
+                val i = str.indexOf(rawCritS!!)
+                if (i < 0) return null
+                if (parameters.contains(Parameter.START) && i > 0) return null
+                if (parameters.contains(Parameter.END) && i < str.length - rawCritS!!.length) return null
+                // if (parameters.contains(Parameter.CONTAINS)) {}
+            }
+        }
+        if (mode == 2) {
+            val m: MatchResult? =
+                if (parameters.size == 0 || parameters.contains(Parameter.START)) regex!!.matchAt(str, 0)
+                else regex!!.matchEntire(str)
+            if (m == null) return null
+
+            if ((parameters.size == 0 || parameters.contains(Parameter.END)) && m.range.last < str.length - 1) return null
+            // if (parameters.contains(Parameter.CONTAINS)) {}
+            return m.groupValues.drop(1)
+        }
+        return listOf()
+    }
+
+    fun triggerIfCanceled(bool: Boolean) = apply {
+        triggerIfCanceled = bool
+    }
+
+    fun setCriteria(criteria: String) = apply {
+        rawCritS = ChatLib.replaceFormatting(criteria)
+        rawCritR = null
+        mark()
+    }
+
+    fun setCriteria(criteria: V8ValueRegExp) = apply {
+        rawCritS = null
+        rawCritR = criteria
+        mark()
     }
 
     fun addParameter(param: String) = apply {
-        parameters.add(Parameter.getParameterByName(param))
+        addParameters(param)
     }
 
-    fun addParameter(vararg params: String) = apply {
-        params.forEach(::addParameter)
+    fun addParameters(vararg params: String) = apply {
+        params.forEach { parameters.add(Parameter.getParameterByName(it)) }
+        if (mode == 2) mark()
     }
 
     fun setParameter(param: String) = apply {
-        parameters.clear()
-        addParameter(param)
+        setParameters(param)
     }
 
     fun setParameters(vararg param: String) = apply {
         parameters.clear()
-        addParameter(*param)
+        addParameters(*param)
     }
 
     fun setStart() = apply {
-        addParameter("start")
+        setParameter("start")
     }
 
     fun setEnd() = apply {
-        addParameter("end")
+        setParameter("end")
     }
 
     fun setContains() = apply {
-        addParameter("contains")
+        setParameter("contains")
     }
 
     fun setExact() = apply {
         parameters.clear()
+        if (mode == 2) mark()
     }
 
     fun setCaseInsensitive() = apply {
         caseInsensitive = true
-        if (::chatCriteria.isInitialized)
-            setCriteria(chatCriteria)
+        mark()
     }
 
     override fun trigger(args: Array<out Any?>) {
-        require(args[0] is String && args[1] is ClientChatReceivedEvent) {
-            "Argument 1 must be a String, Argument 2 must be a ClientChatReceivedEvent"
+        require(args[0] is String && args[1] is String && args[2] is ClientChatReceivedEvent) {
+            "Argument 1, 2 must be a String, Argument 3 must be a ClientChatReceivedEvent"
         }
 
-        val chatEvent = args[1] as ClientChatReceivedEvent
+        if (dirty) updateCriteria()
+        dirty = false
+
+        val chatEvent = args[2] as ClientChatReceivedEvent
         if (!triggerIfCanceled && chatEvent.isCanceled) return
 
-        val chatMessage = ChatLib.getChatMessage(chatEvent, formatted)
-        // TODO: this part should use [criteriaPattern] and not [chatCriteria]
-        val variables = if (::chatCriteria.isInitialized) matchesCriteria(chatMessage) else ArrayList()
-        if (variables == null) return
-
+        val message = (if (formatted) args[0] else args[1]) as String
+        val variables = doesMatchCriteria(message)?.toMutableList() ?: return
         variables.add(chatEvent)
-        callMethod(variables.toTypedArray())
-    }
 
-    // TODO: whenever setCriteria is finished
-    private fun matchesCriteria(msg: String) : MutableList<Any>? {
-        return mutableListOf()
+        callMethod(variables.toTypedArray())
     }
 
     /**
@@ -106,7 +181,7 @@ class ChatEvent(
             fun getParameterByName(name: String) =
                 entries.find { param ->
                     param.names.any { it.lowercase() == name }
-                }
+                } ?: throw IllegalArgumentException("Unknown parameter: $name")
         }
     }
 }
