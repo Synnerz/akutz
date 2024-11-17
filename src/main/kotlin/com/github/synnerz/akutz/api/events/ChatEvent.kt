@@ -45,7 +45,6 @@ class ChatEvent(
 
                 val flags = mutableSetOf(RegexOption.UNIX_LINES)
                 if (caseInsensitive) flags.add(RegexOption.IGNORE_CASE)
-                RegexOption.CANON_EQ
 
                 regex = Regex(regexStr, flags)
             }
