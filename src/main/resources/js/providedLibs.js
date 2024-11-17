@@ -210,6 +210,7 @@ loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 loadClass("com.github.synnerz.akutz.api.libs.FileLib")
+loadClass("com.github.synnerz.akutz.api.libs.render.Renderer")
 
 loadClass("com.github.synnerz.akutz.api.objects.render.Color")
 loadClass("com.github.synnerz.akutz.api.objects.render.Image")
@@ -217,6 +218,8 @@ loadClass("com.github.synnerz.akutz.api.objects.state.StateVar")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateExp")
 
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
+
+globalThis.GlStateManager = wrap(Java.type("net.minecraft.client.renderer.GlStateManager"))
 
 globalThis.register = (eventType, cb) => {
   if (typeof cb !== "function") return print(`${cb} is not a valid function, please make sure to pass in an actual function.`)
