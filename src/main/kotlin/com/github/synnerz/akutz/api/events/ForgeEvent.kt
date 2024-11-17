@@ -23,10 +23,12 @@ class ForgeEvent(
 
     override fun onRegister() = apply {
         forgeEvents.getOrPut(clazz) { sortedSetOf() }.add(this)
+        super.onRegister()
     }
 
     override fun onUnregister() = apply {
         forgeEvents[clazz]?.remove(this)
+        super.onUnregister()
     }
 
     companion object {

@@ -48,10 +48,12 @@ class CommandEvent(
 
     override fun onRegister() = apply {
         command?.register()
+        super.onRegister()
     }
 
     override fun onUnregister() = apply {
         command!!.unregister()
+        super.onUnregister()
     }
 
     fun reInstance() {
