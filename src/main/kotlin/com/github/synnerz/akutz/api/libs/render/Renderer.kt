@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.libs.render
 
+import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.objects.render.Color
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
@@ -248,11 +249,10 @@ object Renderer {
         }
     }
 
-    object screen {
-        @JvmStatic
+    @JvmField
+    val screen = object {
         private var sr: ScaledResolution? = null
 
-        @JvmStatic
         @SubscribeEvent
         fun onRenderOverlayPre(event: TickEvent.RenderTickEvent) {
             if (event.phase != TickEvent.Phase.START) return
@@ -261,13 +261,10 @@ object Renderer {
             // TODO: fire off an event
         }
 
-        @JvmStatic
         fun getWidth() = sr?.scaledWidth ?: 0
 
-        @JvmStatic
         fun getHeight() = sr?.scaledHeight ?: 0
 
-        @JvmStatic
         fun getScale() = sr?.scaleFactor ?: 1
     }
 }
