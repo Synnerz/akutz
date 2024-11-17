@@ -1,4 +1,4 @@
-package com.github.synnerz.akutz.api.objects
+package com.github.synnerz.akutz.api.objects.render
 
 import java.awt.Color as AWTColor
 

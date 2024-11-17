@@ -210,7 +210,7 @@ loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 
-loadClass("com.github.synnerz.akutz.api.objects.Color")
+loadClass("com.github.synnerz.akutz.api.objects.render.Color")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateVar")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateExp")
 
