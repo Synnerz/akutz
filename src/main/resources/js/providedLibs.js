@@ -210,6 +210,9 @@ loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 
+loadClass("com.github.synnerz.akutz.api.objects.StateVar")
+loadClass("com.github.synnerz.akutz.api.objects.StateExp")
+
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
 globalThis.register = (eventType, cb) => {
