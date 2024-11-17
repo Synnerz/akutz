@@ -23,6 +23,8 @@ object Register {
         registerMethod("guirender", EventType.GuiRender)
         registerMethod("preitemrender", EventType.PreItemRender)
         registerMethod("renderslothighlight", EventType.RenderSlotHighlight)
+        registerMethod("guiclosed", EventType.GuiClosed)
+        registerMethod("gameload", EventType.GameLoad)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
