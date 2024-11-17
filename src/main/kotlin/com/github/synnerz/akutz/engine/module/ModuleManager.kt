@@ -22,6 +22,13 @@ object ModuleManager {
 
         classLoader = ModifiedURLClassLoader()
         installedModules!!.forEach {
+            var lmaoNotScuffed = false
+            it.requires!!.forEach { r ->
+                if (installedModules!!.any { v -> v.moduleName == r }) return
+                import(r)
+                lmaoNotScuffed = true
+            }
+            if (lmaoNotScuffed) return@forEach
             val serverMeta = ModuleUpdater.getMetadata(it.moduleName!!)
             if (serverMeta != null) {
                 if (ModuleUpdater.compareVersion(serverMeta.version!!, it.version!!) > 0) {
@@ -48,6 +55,8 @@ object ModuleManager {
     fun import(module: String) {
         if (installedModules!!.any { it.moduleName == module }) throw Exception("Module already installed")
         ModuleUpdater.downloadModule(module)
+        teardown()
+        setup()
     }
 
     private fun parseModule(dir: File): ModuleMetadata {
@@ -61,6 +70,7 @@ object ModuleManager {
                 metadata.moduleName = dir.name
                 metadata.directory = dir
                 metadata.jars = (metadata.jars ?: emptyList()).map { File(dir, it).path }
+                metadata.requires ?: emptyList<String>()
             } catch (exception: Exception) {
                 println("Module ${dir.name} has invalid metadata.json")
             }

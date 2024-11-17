@@ -11,5 +11,6 @@ data class ModuleMetadata(
     val creator: String? = null,
     var directory: File? = null,
     var moduleName: String? = null,
-    var jars: List<String>? = null
+    var jars: List<String>? = null,
+    var requires: List<String>? = null
 )
