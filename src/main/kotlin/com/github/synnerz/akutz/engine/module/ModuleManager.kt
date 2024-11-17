@@ -70,7 +70,7 @@ object ModuleManager {
                 metadata.moduleName = dir.name
                 metadata.directory = dir
                 metadata.jars = (metadata.jars ?: emptyList()).map { File(dir, it).path }
-                metadata.requires ?: emptyList<String>()
+                metadata.requires = metadata.requires ?: emptyList()
             } catch (exception: Exception) {
                 println("Module ${dir.name} has invalid metadata.json")
             }
