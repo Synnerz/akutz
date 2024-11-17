@@ -3,15 +3,15 @@ package com.github.synnerz.akutz.api.objects
 import java.awt.Color as AWTColor
 
 class Color(
+    @JvmField
     val r: Int,
+    @JvmField
     val g: Int,
+    @JvmField
     val b: Int,
+    @JvmField
     val a: Int = 255
 ) {
-    fun getR() = r
-    fun getG() = g
-    fun getB() = b
-    fun getA() = a
     fun getRf(): Double = r / 255.0
     fun getGf(): Double = g / 255.0
     fun getBf(): Double = b / 255.0
@@ -19,9 +19,9 @@ class Color(
     fun asRGB(): Long = ((r shl 16) or (g shl 8) or b).toLong()
     fun asRGBA(): Long = ((r shl 24) or (g shl 16) or (b shl 8) or a).toLong()
     fun asARGB(): Long = ((a shl 24) or (r shl 16) or (g shl 8) or b).toLong()
-    fun asRGBf() = doubleArrayOf(getRF(), getGF(), getBF())
-    fun asRGBAf() = doubleArrayOf(getRF(), getGF(), getBF(), getAF())
-    fun asARGBf() = doubleArrayOf(getAF(), getRF(), getGF(), getBF())
+    fun asRGBf() = doubleArrayOf(getRf(), getGf(), getBf())
+    fun asRGBAf() = doubleArrayOf(getRf(), getGf(), getBf(), getAf())
+    fun asARGBf() = doubleArrayOf(getAf(), getRf(), getGf(), getBf())
     fun asAWTColor() = AWTColor(r, g, b, a)
 
     companion object {
