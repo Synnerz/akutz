@@ -210,8 +210,8 @@ loadClass("com.github.synnerz.akutz.api.wrappers.World")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 
-loadClass("com.github.synnerz.akutz.api.objects.StateVar")
-loadClass("com.github.synnerz.akutz.api.objects.StateExp")
+loadClass("com.github.synnerz.akutz.api.objects.state.StateVar")
+loadClass("com.github.synnerz.akutz.api.objects.state.StateExp")
 
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
