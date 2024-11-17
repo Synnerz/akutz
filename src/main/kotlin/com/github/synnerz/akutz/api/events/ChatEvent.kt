@@ -84,7 +84,7 @@ class ChatEvent(
     }
 
     // TODO: whenever setCriteria is finished
-    private fun matchesCriteria(msg: String) : MutableList<Any> {
+    private fun matchesCriteria(msg: String) : MutableList<Any>? {
         return mutableListOf()
     }
 
