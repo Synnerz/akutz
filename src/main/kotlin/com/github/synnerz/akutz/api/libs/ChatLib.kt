@@ -11,8 +11,8 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent
  */
 object ChatLib {
     private val removeCodesRegex = "[\\u00a7&][0-9a-fk-or]".toRegex()
-    private val addCodesRegex = "(?<!\\\\\\\\)&(?![^0-9a-fk-or]|\$)".toRegex()
-    private val replaceCodesRegex = "\\u00a7(?![^0-9a-fk-or]|\$)".toRegex()
+    private val addCodesRegex = "(?<!\\\\\\\\)&(?=[0-9a-fk-or])".toRegex()
+    private val replaceCodesRegex = "\\u00a7(?=[0-9a-fk-or])".toRegex()
 
     @JvmStatic
     fun chat(msg: String) {
