@@ -258,6 +258,7 @@ object Renderer {
             if (event.phase != TickEvent.Phase.START) return
             if (sr != null && !Display.wasResized()) return
             sr = ScaledResolution(Minecraft.getMinecraft())
+            EventType.ScreenResize.triggerAll(sr)
         }
 
         fun getWidth() = sr?.scaledWidth ?: 0

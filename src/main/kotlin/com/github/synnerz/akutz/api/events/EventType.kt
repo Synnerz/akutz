@@ -66,6 +66,7 @@ enum class EventType {
     // Misc
     Forge,
     Command,
+    ScreenResize,
     Other;
 
     fun triggerAll(vararg args: Any?) {
