@@ -25,6 +25,7 @@ object Register {
         registerMethod("renderslothighlight", EventType.RenderSlotHighlight)
         registerMethod("guiclosed", EventType.GuiClosed)
         registerMethod("gameload", EventType.GameLoad)
+        registerMethod("screenresize", EventType.ScreenResize)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
