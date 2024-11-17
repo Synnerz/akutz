@@ -2,6 +2,7 @@ package com.github.synnerz.akutz.command
 
 import com.github.synnerz.akutz.api.commands.BaseCommand
 import com.github.synnerz.akutz.api.libs.ChatLib
+import com.github.synnerz.akutz.api.objects.render.Image
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import net.minecraft.client.entity.EntityPlayerSP
@@ -24,6 +25,7 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
 
                 Impl.clear()
                 ModuleManager.teardown()
+                Image.IMAGES.toList().forEach { it.destroy() }
                 ChatLib.chat("Akutz was unloaded")
             }
             else -> ChatLib.chat(getHelp())
