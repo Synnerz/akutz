@@ -207,6 +207,7 @@ globalThis.wrap = val => $wrap(val)
 
 loadClass("com.github.synnerz.akutz.api.wrappers.Player")
 loadClass("com.github.synnerz.akutz.api.wrappers.World")
+loadClass("com.github.synnerz.akutz.api.wrappers.Client")
 
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 loadClass("com.github.synnerz.akutz.api.libs.render.Renderer")
