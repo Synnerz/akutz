@@ -65,7 +65,7 @@ object Renderer {
     fun finishDraw() = apply {
         if (pushedMatrix) GlStateManager.popMatrix()
         pushedMatrix = false
-        
+
         lineWidth(1f)
         GlStateManager.enableTexture2D()
         GlStateManager.disableBlend()
@@ -247,6 +247,35 @@ object Renderer {
             glDisable(GL_STENCIL_TEST)
             GlStateManager.popAttrib()
         }
+    }
+
+    @JvmOverloads
+    @JvmStatic
+    fun drawTexturedRect(
+        x: Double,
+        y: Double,
+        w: Double,
+        h: Double,
+        u: Double = 0.0,
+        v: Double = 0.0,
+        tw: Double = w,
+        th: Double = h,
+        uw: Double = w,
+        vh: Double = h
+    ) = apply {
+        val f = 1 / tw;
+        val g = 1 / th;
+        val m = u * f
+        val n = v * g
+        val mw = uw * f
+        val nh = vh * g
+
+        worldRen.begin(7, DefaultVertexFormats.POSITION_TEX)
+        worldRen.pos(x, y + h, 0.0).tex(m, n + nh).endVertex()
+        worldRen.pos(x + w, y + h, 0.0).tex(m + mw, n + nh).endVertex()
+        worldRen.pos(x + w, y, 0.0).tex(m + mw, n).endVertex()
+        worldRen.pos(x, y, 0.0).tex(m, n).endVertex()
+        tess.draw()
     }
 
     @JvmField

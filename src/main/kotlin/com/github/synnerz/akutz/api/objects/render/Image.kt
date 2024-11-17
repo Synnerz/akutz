@@ -1,5 +1,7 @@
 package com.github.synnerz.akutz.api.objects.render
 
+import com.github.synnerz.akutz.api.libs.render.Renderer
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.texture.DynamicTexture
 import java.awt.image.BufferedImage
 import java.io.File
@@ -69,7 +71,9 @@ class Image(
         if (needBake) bake()
         if (texture == null) return@apply
 
-        // TODO
+        GlStateManager.enableTexture2D()
+        GlStateManager.bindTexture(texture!!.glTextureId)
+        Renderer.drawTexturedRect(x, y, width, height)
     }
 
     companion object {
