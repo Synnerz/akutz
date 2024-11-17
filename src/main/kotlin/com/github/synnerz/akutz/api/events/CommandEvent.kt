@@ -52,7 +52,7 @@ class CommandEvent(
     }
 
     override fun onUnregister() = apply {
-        command!!.unregister()
+        command?.unregister()
         super.onUnregister()
     }
 
