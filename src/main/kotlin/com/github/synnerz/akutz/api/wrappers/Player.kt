@@ -1,6 +1,5 @@
 package com.github.synnerz.akutz.api.wrappers
 
-import net.minecraft.client.Minecraft
 import net.minecraft.client.entity.EntityPlayerSP
 
 /**
@@ -9,7 +8,7 @@ import net.minecraft.client.entity.EntityPlayerSP
  */
 object Player {
     @JvmStatic
-    fun getPlayer(): EntityPlayerSP? = Minecraft.getMinecraft().thePlayer
+    fun getPlayer(): EntityPlayerSP? = Client.getMinecraft().thePlayer
 
     @JvmStatic
     fun getX(): Double = getPlayer()?.posX ?: 0.0
@@ -30,5 +29,5 @@ object Player {
     fun getLastZ(): Double = getPlayer()?.lastTickPosZ ?: 0.0
 
     @JvmStatic
-    fun getName(): String = Minecraft.getMinecraft().session.username
+    fun getName(): String = Client.getMinecraft().session.username
 }

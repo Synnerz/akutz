@@ -1,6 +1,5 @@
 package com.github.synnerz.akutz.api.wrappers
 
-import net.minecraft.client.Minecraft
 import net.minecraft.client.multiplayer.WorldClient
 
 /**
@@ -9,7 +8,7 @@ import net.minecraft.client.multiplayer.WorldClient
  */
 object World {
     @JvmStatic
-    fun getWorld(): WorldClient? = Minecraft.getMinecraft().theWorld
+    fun getWorld(): WorldClient? = Client.getMinecraft().theWorld
 
     @JvmStatic
     fun isLoaded(): Boolean = getWorld() != null

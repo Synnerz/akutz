@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.wrappers
 
+import com.github.synnerz.akutz.api.libs.render.Renderer
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiChat
 import net.minecraft.client.gui.GuiNewChat
@@ -7,7 +8,6 @@ import net.minecraft.client.gui.GuiPlayerTabOverlay
 import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.network.NetHandlerPlayClient
-import net.minecraft.client.renderer.entity.RenderManager
 import net.minecraft.inventory.Slot
 import org.lwjgl.opengl.Display
 
@@ -18,9 +18,6 @@ import org.lwjgl.opengl.Display
 object Client {
     @JvmStatic
     fun getMinecraft(): Minecraft = Minecraft.getMinecraft()
-
-    @JvmStatic
-    fun getRenderManager(): RenderManager = getMinecraft().renderManager
 
     @JvmStatic
     fun getConnection(): NetHandlerPlayClient? = getMinecraft().netHandler
@@ -79,10 +76,10 @@ object Client {
 
     @JvmField
     val camera = object {
-        fun getX(): Double = getRenderManager().viewerPosX
+        fun getX(): Double = Renderer.getRenderManager().viewerPosX
 
-        fun getY(): Double = getRenderManager().viewerPosY
+        fun getY(): Double = Renderer.getRenderManager().viewerPosY
 
-        fun getZ(): Double = getRenderManager().viewerPosZ
+        fun getZ(): Double = Renderer.getRenderManager().viewerPosZ
     }
 }
