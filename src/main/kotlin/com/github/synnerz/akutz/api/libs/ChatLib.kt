@@ -44,7 +44,7 @@ object ChatLib {
 
     @JvmStatic
     fun addColor(str: String): String {
-        return str.replace(addCodesRegex, "\\u00a7")
+        return str.replace(addCodesRegex, "\u00a7")
     }
 
     @JvmOverloads
