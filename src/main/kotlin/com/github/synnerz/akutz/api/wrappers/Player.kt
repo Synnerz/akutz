@@ -1,6 +1,9 @@
 package com.github.synnerz.akutz.api.wrappers
 
+import com.github.synnerz.akutz.api.wrappers.entity.Entity
+import com.github.synnerz.akutz.api.wrappers.world.block.Block
 import net.minecraft.client.entity.EntityPlayerSP
+import net.minecraft.util.MovingObjectPosition
 import java.util.UUID
 
 /**
@@ -52,4 +55,20 @@ object Player {
 
     @JvmStatic
     fun isFlying(): Boolean = !(getPlayer()?.isPushedByWater ?: true)
+
+    @JvmStatic
+    fun lookingAt(): Any? {
+        if (!World.isLoaded()) return null
+        val obj = Client.getMinecraft().objectMouseOver ?: return null
+
+        return when(obj.typeOfHit) {
+            MovingObjectPosition.MovingObjectType.BLOCK -> {
+                val block = Block(World.getBlockStateAt(obj.blockPos).block, obj.blockPos)
+                // TODO: make sign wrapper (?)
+                block
+            }
+            MovingObjectPosition.MovingObjectType.ENTITY -> Entity(obj.entityHit)
+            else -> null
+        }
+    }
 }
