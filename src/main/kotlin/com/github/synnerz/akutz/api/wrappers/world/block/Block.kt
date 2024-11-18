@@ -5,6 +5,10 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.util.BlockPos
 import net.minecraft.block.Block as MCBlock
 
+/**
+ * Taken from ChatTriggers under MIT License
+ * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/wrappers/world/block/Block.kt)
+ */
 open class Block(
     val mcBlock: MCBlock,
     val mcPos: BlockPos
