@@ -47,5 +47,7 @@ class Akutz {
     fun init(event: FMLInitializationEvent) {
         // TODO: run this on a different thread (?)
         ModuleManager.start()
+
+        Runtime.getRuntime().addShutdownHook(Thread(Impl::shutdown))
     }
 }
