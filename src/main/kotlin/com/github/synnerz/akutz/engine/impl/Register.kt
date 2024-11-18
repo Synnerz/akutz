@@ -30,6 +30,7 @@ object Register {
         registerMethod("blockbreak", EventType.BlockBreak)
         registerMethod("postrenderentity", EventType.PostRenderEntity)
         registerMethod("postrendertileentity", EventType.PostRenderTileEntity)
+        registerMethod("serverdisconnect", EventType.ServerDisconnect)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
