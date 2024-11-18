@@ -26,6 +26,8 @@ object Register {
         registerMethod("guiclosed", EventType.GuiClosed)
         registerMethod("gameload", EventType.GameLoad)
         registerMethod("screenresize", EventType.ScreenResize)
+        registerMethod("attackentity", EventType.AttackEntity)
+        registerMethod("blockbreak", EventType.BlockBreak)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
