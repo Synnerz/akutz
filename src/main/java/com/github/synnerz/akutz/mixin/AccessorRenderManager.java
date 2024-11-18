@@ -15,4 +15,10 @@ public interface AccessorRenderManager {
 
     @Accessor("renderPosZ")
     double getRenderZ();
+
+    @Accessor("playerViewX")
+    float getViewX();
+
+    @Accessor("playerViewY")
+    float getViewY();
 }

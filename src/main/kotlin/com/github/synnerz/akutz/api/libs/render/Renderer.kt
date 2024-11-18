@@ -129,7 +129,7 @@ class Renderer : Base() {
         val fr = getFontRenderer()
         var _y = y
         ChatLib.addColor(text).split('\n').forEach {
-            fr.drawString(it, x, _y, Color.WHITE.asARGB().toInt(), shadow)
+            fr.drawString(it, x, _y, 0xFFFFFFFF.toInt(), shadow)
             _y += fr.FONT_HEIGHT;
         }
     }

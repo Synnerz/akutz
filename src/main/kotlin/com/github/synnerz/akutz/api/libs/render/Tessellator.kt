@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.libs.render
 
+import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.api.wrappers.World
 import net.minecraft.client.Minecraft
@@ -250,5 +251,48 @@ class Tessellator : Base() {
         GlStateManager.enableCull()
 
         return this
+    }
+
+    @JvmOverloads
+    fun renderString() = apply {
+
+        fun drawString(
+            text: String,
+            x: Double,
+            y: Double,
+            z: Double,
+            renderBlackBox: Boolean = true,
+            shadow: Boolean = true
+        ) {
+            val lines = ChatLib.addColor(text).split('\n')
+            val xMultiplier = if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2) 1 else -1
+
+            GlStateManager.pushMatrix()
+            GlStateManager.rotate(renderManager.viewY, 0.0f, 1.0f, 0.0f)
+            GlStateManager.rotate(renderManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
+
+            val widths = lines.map { fontRenderer.getStringWidth(it) / 2.0 }
+            val w = widths.max()
+
+            if (renderBlackBox) {
+                worldRen.begin(7, DefaultVertexFormats.POSITION_COLOR)
+                worldRen.pos(-w - 1, -1.0, 0.0).color(0, 0, 0, 64).endVertex()
+                worldRen.pos(-w - 1, 8.0 * lines.size + 1, 0.0).color(0, 0, 0, 64).endVertex()
+                worldRen.pos(w + 1, 8.0 * lines.size + 1, 0.0).color(0, 0, 0, 64).endVertex()
+                worldRen.pos(w + 1, -1.0, 0.0).color(0, 0, 0, 64).endVertex()
+                tess.draw()
+            }
+
+            lines.forEachIndexed { i, s ->
+                fontRenderer.drawString(
+                    s,
+                    (-widths[i]).toFloat(),
+                    i * 8f,
+                    0xFFFFFFFF.toInt(),
+                    shadow
+                )
+            }
+            GlStateManager.popMatrix()
+        }
     }
 }
