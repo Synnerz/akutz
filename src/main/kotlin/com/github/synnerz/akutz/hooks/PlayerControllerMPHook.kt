@@ -11,7 +11,7 @@ object PlayerControllerMPHook {
         EventType.AttackEntity.triggerAll(Entity(entity))
     }
 
-    fun triggerBlocKBreak(blockPos: BlockPos) {
+    fun triggerBlockBreak(blockPos: BlockPos) {
         EventType.BlockBreak.triggerAll(World.getBlockAt(blockPos))
     }
 }

@@ -21,6 +21,6 @@ public class MixinPlayerControllerMP {
 
     @Inject(method = "onPlayerDestroyBlock", at = @At("HEAD"))
     public void onPlayerDestroy(BlockPos pos, EnumFacing side, CallbackInfoReturnable<Boolean> cir) {
-        PlayerControllerMPHook.INSTANCE.triggerBlocKBreak(pos);
+        PlayerControllerMPHook.INSTANCE.triggerBlockBreak(pos);
     }
 }
