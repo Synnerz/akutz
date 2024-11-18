@@ -10,8 +10,11 @@ import com.caoccao.javet.interop.engine.JavetEnginePool
 import com.caoccao.javet.values.V8Value
 import com.caoccao.javet.values.reference.*
 import com.github.synnerz.akutz.Akutz
+import com.github.synnerz.akutz.api.commands.Command
 import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.api.libs.FileLib
+import com.github.synnerz.akutz.api.objects.render.Image
+import com.github.synnerz.akutz.engine.module.ModuleManager
 import java.io.File
 import java.nio.file.Paths
 
@@ -131,4 +134,12 @@ object Impl {
 
     private val javetObjectConverter = JavetObjectConverter()
     fun forceWrap(obj: Any?) = javetObjectConverter.toV8Value<V8Value>(v8runtime, obj)
+
+    fun shutdown() {
+        clear()
+        ModuleManager.teardown()
+        Loader.clearEvents()
+        Command.activeCommands.forEach { (_, cmd) -> cmd.unregister() }
+        Image.IMAGES.toList().forEach { it.destroy() }
+    }
 }
