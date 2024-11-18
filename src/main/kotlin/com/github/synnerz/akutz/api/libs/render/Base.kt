@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.Tessellator as MCTessellator
 open class Base {
     var partialTicks = 0f
     private var lineWidth: Float = 1f
-    private var pushedMatrix = false
+    private var pushedMatrix = 0
 
     protected val tess: MCTessellator by lazy { MCTessellator.getInstance() }
     protected val worldRen: WorldRenderer by lazy { tess.worldRenderer }
@@ -41,14 +41,16 @@ open class Base {
     }
 
     open fun prepareDraw(color: Color, pushMatrix: Boolean) = apply {
-        if (pushMatrix) GlStateManager.pushMatrix()
-        pushedMatrix = pushMatrix
+        if (pushMatrix) {
+            GlStateManager.pushMatrix()
+            pushedMatrix = (pushedMatrix shl 1) or 1
+        } else pushedMatrix = pushedMatrix shl 1
         this.color(color)
     }
 
     open fun finishDraw() = apply {
-        if (pushedMatrix) GlStateManager.popMatrix()
-        pushedMatrix = false
+        if (pushedMatrix and 1 == 1) GlStateManager.popMatrix()
+        pushedMatrix = pushedMatrix shr 1
         lineWidth(1f)
     }
 
