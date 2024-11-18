@@ -10,13 +10,11 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.lwjgl.opengl.Display
-import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL11.*
 import kotlin.math.PI
 import kotlin.math.cos
 import kotlin.math.sign
 import kotlin.math.sin
-import net.minecraft.client.renderer.Tessellator as MCTessellator
 
 
 /**

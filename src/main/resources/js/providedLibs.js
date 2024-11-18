@@ -211,6 +211,7 @@ loadClass("com.github.synnerz.akutz.api.wrappers.Client")
 loadClass("com.github.synnerz.akutz.api.wrappers.entity.Entity")
 loadClass("com.github.synnerz.akutz.api.wrappers.entity.TileEntity")
 loadClass("com.github.synnerz.akutz.api.wrappers.world.Chunk")
+loadClass("com.github.synnerz.akutz.api.wrappers.world.block.Block")
 
 // Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
