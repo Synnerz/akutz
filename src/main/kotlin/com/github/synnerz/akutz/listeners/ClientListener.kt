@@ -3,6 +3,7 @@ package com.github.synnerz.akutz.listeners
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.wrappers.World
 import net.minecraft.util.BlockPos
+import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.client.event.DrawBlockHighlightEvent
 import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.client.event.GuiScreenEvent
@@ -98,5 +99,25 @@ object ClientListener {
     @SubscribeEvent
     fun onNetworkEvent(event: FMLNetworkEvent.ClientConnectedToServerEvent) {
         EventType.ServerConnect.triggerAll(event)
+    }
+
+    @SubscribeEvent
+    fun onChatEvent(event: ClientChatReceivedEvent) {
+        when (event.type.toInt()) {
+            in 0..1 -> {
+                EventType.Chat.triggerAll(
+                    event.message.formattedText,
+                    event.message.unformattedText,
+                    event
+                )
+            }
+            2 -> {
+                EventType.ActionBar.triggerAll(
+                    event.message.formattedText,
+                    event.message.unformattedText,
+                    event
+                )
+            }
+        }
     }
 }
