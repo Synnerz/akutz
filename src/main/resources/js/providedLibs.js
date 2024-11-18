@@ -241,6 +241,7 @@ globalThis.DefaultVertexFormats = wrap(Java.type("net.minecraft.client.renderer.
 
 globalThis.register = (eventType, cb) => {
   if (typeof cb !== "function") return print(`${cb} is not a valid function, please make sure to pass in an actual function.`)
+  if (jClass.isInstance(eventType)) return EventTrigger.register(eventType, (args) => cb(...args))
   return EventTrigger.register(eventType.includes(".") ? Java.type(eventType) : eventType, (args) => cb(...args))
 }
 
