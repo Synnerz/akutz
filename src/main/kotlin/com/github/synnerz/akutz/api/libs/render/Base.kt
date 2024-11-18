@@ -1,14 +1,9 @@
 package com.github.synnerz.akutz.api.libs.render
 
-import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.mixin.AccessorRenderManager
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
-import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11.*
 import net.minecraft.client.renderer.Tessellator as MCTessellator
 
@@ -24,13 +19,13 @@ open class Base {
     protected val tess = MCTessellator.getInstance()
     protected val worldRen = tess.worldRenderer
     protected val rendManager = Minecraft.getMinecraft().renderManager as AccessorRenderManager
-    protected val fontRenderer = Minecraft.getMinecraft().fontRendererObj
+    protected val fontRend = Minecraft.getMinecraft().fontRendererObj
 
     fun getTessellator() = tess
 
     fun getWorldRenderer() = worldRen
 
-    fun getFontRenderer() = fontRenderer
+    fun getFontRenderer() = fontRend
 
     fun getRenderManager() = rendManager
 
@@ -58,26 +53,5 @@ open class Base {
     fun lineWidth(width: Float) = apply {
         if (width != lineWidth) glLineWidth(width)
         lineWidth = width
-    }
-
-    @JvmField
-    val screen = object {
-        protected var sr: ScaledResolution? = null
-
-        @SubscribeEvent
-        fun onRenderOverlayPre(event: TickEvent.RenderTickEvent) {
-            if (event.phase != TickEvent.Phase.START) return
-            partialTicks = event.renderTickTime
-            if (sr != null && !Display.wasResized()) return
-
-            sr = ScaledResolution(Minecraft.getMinecraft())
-            EventType.ScreenResize.triggerAll(sr)
-        }
-
-        fun getWidth() = sr?.scaledWidth ?: 0
-
-        fun getHeight() = sr?.scaledHeight ?: 0
-
-        fun getScale() = sr?.scaleFactor ?: 1
     }
 }
