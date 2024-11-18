@@ -2,6 +2,7 @@ package com.github.synnerz.akutz.listeners
 
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.wrappers.World
+import com.github.synnerz.akutz.hooks.ChannelDuplexHook
 import net.minecraft.util.BlockPos
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.client.event.DrawBlockHighlightEvent
@@ -99,6 +100,12 @@ object ClientListener {
     @SubscribeEvent
     fun onNetworkEvent(event: FMLNetworkEvent.ClientConnectedToServerEvent) {
         EventType.ServerConnect.triggerAll(event)
+
+        event.manager.channel().pipeline().addAfter(
+            "fml:packet_handler",
+            "akutz_packet_handler",
+            ChannelDuplexHook()
+        )
     }
 
     @SubscribeEvent
