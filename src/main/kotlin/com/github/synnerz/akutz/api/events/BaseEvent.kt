@@ -100,6 +100,8 @@ abstract class BaseEvent protected constructor(
         else ordCmp
     }
 
+    override fun toString(): String = "Event{type=\"${this.type}\", registered=\"${isRegistered()}\", actuallyRegistered=\"${isActuallyRegistered()}\", priority=\"${priority.name}\"}"
+
     enum class Priority {
         //LOWEST IS RAN LAST
         HIGHEST,
