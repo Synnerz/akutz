@@ -2,10 +2,12 @@ package com.github.synnerz.akutz.listeners
 
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
+import com.github.synnerz.akutz.api.wrappers.entity.PlayerMP
 import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.client.event.RenderWorldLastEvent
 import net.minecraftforge.client.event.sound.PlaySoundEvent
 import net.minecraftforge.event.entity.living.LivingDeathEvent
+import net.minecraftforge.event.entity.player.AttackEntityEvent
 import net.minecraftforge.event.world.WorldEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import org.lwjgl.util.vector.Vector3f
@@ -63,5 +65,13 @@ object WorldListener {
     @SubscribeEvent
     fun onLivingEntityDeath(event: LivingDeathEvent) {
         EventType.EntityDeath.triggerAll(Entity(event.entity))
+    }
+
+    @SubscribeEvent
+    fun onAttackEntity(event: AttackEntityEvent) {
+        EventType.EntityDamage.triggerAll(
+            Entity(event.target),
+            PlayerMP(event.entityPlayer)
+        )
     }
 }
