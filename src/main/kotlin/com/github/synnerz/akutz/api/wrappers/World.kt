@@ -1,6 +1,12 @@
 package com.github.synnerz.akutz.api.wrappers
 
+import com.github.synnerz.akutz.api.wrappers.entity.Entity
+import com.github.synnerz.akutz.api.wrappers.entity.TileEntity
+import com.github.synnerz.akutz.api.wrappers.world.Chunk
+import com.github.synnerz.akutz.api.wrappers.world.block.Block
+import net.minecraft.block.state.IBlockState
 import net.minecraft.client.multiplayer.WorldClient
+import net.minecraft.util.BlockPos
 
 /**
  * Taken from ChatTriggers under MIT License
@@ -15,6 +21,46 @@ object World {
 
     @JvmStatic
     fun getTime(): Long = getWorld()?.worldTime ?: -1L
+
+    @JvmStatic
+    fun getBlockAt(x: Number, y: Number, z: Number): Block = getBlockAt(
+        BlockPos(x.toDouble(), y.toDouble(), z.toDouble())
+    )
+
+    @JvmStatic
+    fun getBlockAt(pos: BlockPos): Block {
+        return Block(getBlockStateAt(pos).block, pos)
+    }
+
+    @JvmStatic
+    fun getBlockStateAt(pos: BlockPos): IBlockState {
+        return getWorld()!!.getBlockState(pos)
+    }
+
+    @JvmStatic
+    fun getChunkAt(x: Int, y: Int, z: Int): Chunk = Chunk(
+        getWorld()!!.getChunkFromBlockCoords(BlockPos(x, y, z))
+    )
+
+    @JvmStatic
+    fun getAllEntities(): List<Entity> {
+        return getWorld()?.loadedEntityList?.map(::Entity) ?: listOf()
+    }
+
+    @JvmStatic
+    fun getAllEntitiesOfType(clazz: Class<*>): List<Entity> {
+        return getAllEntities().filter { clazz.isInstance(it.entity) }
+    }
+
+    @JvmStatic
+    fun getAllTileEntities(): List<TileEntity> {
+        return getWorld()?.loadedTileEntityList?.map(::TileEntity) ?: listOf()
+    }
+
+    @JvmStatic
+    fun getAllTileEntitiesOfType(clazz: Class<*>): List<TileEntity> {
+        return getAllTileEntities().filter { clazz.isInstance(it.tileEntity) }
+    }
 
     @JvmField
     val border = object {
