@@ -204,19 +204,25 @@ function $wrapFunc(val, className, n) {
 }
 globalThis.wrap = val => $wrap(val)
 
-
+// Wrappers
 loadClass("com.github.synnerz.akutz.api.wrappers.Player")
 loadClass("com.github.synnerz.akutz.api.wrappers.World")
 loadClass("com.github.synnerz.akutz.api.wrappers.Client")
+loadClass("com.github.synnerz.akutz.api.wrappers.entity.Entity")
+loadClass("com.github.synnerz.akutz.api.wrappers.entity.TileEntity")
+loadClass("com.github.synnerz.akutz.api.wrappers.world.Chunk")
 
+// Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 loadClass("com.github.synnerz.akutz.api.libs.render.Renderer")
 
+// Objects
 loadClass("com.github.synnerz.akutz.api.objects.render.Color")
 loadClass("com.github.synnerz.akutz.api.objects.render.Image")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateVar")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateExp")
 
+// Events
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
 globalThis.GlStateManager = wrap(Java.type("net.minecraft.client.renderer.GlStateManager"))
