@@ -52,6 +52,7 @@ enum class EventType {
     PostRenderEntity,
     RenderTileEntity,
     PostRenderTileEntity,
+    ScreenResize,
 
     // World
     SoundPlay,
@@ -65,7 +66,6 @@ enum class EventType {
     // Misc
     Forge,
     Command,
-    ScreenResize,
     Other;
 
     fun triggerAll(vararg args: Any?) {
