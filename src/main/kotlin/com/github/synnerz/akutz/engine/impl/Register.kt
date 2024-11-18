@@ -33,6 +33,7 @@ object Register {
         registerMethod("serverdisconnect", EventType.ServerDisconnect)
         registerMethod("gameunload", EventType.GameUnload)
         registerMethod("entitydeath", EventType.EntityDeath)
+        registerMethod("entitydamage", EventType.EntityDamage)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
