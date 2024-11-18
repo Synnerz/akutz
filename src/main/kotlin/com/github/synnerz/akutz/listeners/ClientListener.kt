@@ -94,4 +94,9 @@ object ClientListener {
     fun onClientDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
         EventType.ServerDisconnect.triggerAll(event)
     }
+
+    @SubscribeEvent
+    fun onNetworkEvent(event: FMLNetworkEvent.ClientConnectedToServerEvent) {
+        EventType.ServerConnect.triggerAll(event)
+    }
 }
