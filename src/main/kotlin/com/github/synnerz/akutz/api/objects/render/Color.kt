@@ -80,52 +80,52 @@ class Color @JvmOverloads constructor(
             (a * 255).toInt().coerceIn(0, 255)
         )
 
-        @JvmStatic
+        @JvmField
         val BLACK = Color(0, 0, 0, 255)
 
-        @JvmStatic
+        @JvmField
         val DARK_BLUE = Color(0, 0, 190, 255)
 
-        @JvmStatic
+        @JvmField
         val DARK_GREEN = Color(0, 190, 0, 255)
 
-        @JvmStatic
+        @JvmField
         val DARK_AQUA = Color(0, 190, 190, 255)
 
-        @JvmStatic
+        @JvmField
         val DARK_RED = Color(190, 0, 0, 255)
 
-        @JvmStatic
+        @JvmField
         val DARK_PURPLE = Color(190, 0, 190, 255)
 
-        @JvmStatic
+        @JvmField
         val GOLD = Color(217, 163, 52, 255)
 
-        @JvmStatic
+        @JvmField
         val GRAY = Color(190, 190, 190, 255)
 
-        @JvmStatic
+        @JvmField
         val DARK_GRAY = Color(63, 63, 63, 255)
 
-        @JvmStatic
+        @JvmField
         val BLUE = Color(63, 63, 254, 255)
 
-        @JvmStatic
+        @JvmField
         val GREEN = Color(63, 254, 63, 255)
 
-        @JvmStatic
+        @JvmField
         val AQUA = Color(63, 254, 254, 255)
 
-        @JvmStatic
+        @JvmField
         val RED = Color(254, 63, 63, 255)
 
-        @JvmStatic
+        @JvmField
         val LIGHT_PURPLE = Color(254, 63, 254, 255)
 
-        @JvmStatic
+        @JvmField
         val YELLOW = Color(254, 254, 63, 255)
 
-        @JvmStatic
+        @JvmField
         val WHITE = Color(255, 255, 255, 255)
     }
 }
