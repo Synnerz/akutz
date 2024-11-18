@@ -73,4 +73,9 @@ object Player {
             else -> null
         }
     }
+
+    @JvmStatic
+    fun getActivePotionEffects(): List<PotionEffect> {
+        return getPlayer()?.activePotionEffects?.map(::PotionEffect) ?: listOf()
+    }
 }
