@@ -60,7 +60,7 @@ object ClientListener {
     fun onBlockHighlight(event: DrawBlockHighlightEvent) {
         if (event.target == null && event.target.blockPos == null) return
 
-        val pos = event.target.blockPos
+        val pos = event.target.blockPos ?: BlockPos(0, 0, 0)
         val vec = Vector3f(
             pos.x.toFloat(),
             pos.y.toFloat(),
