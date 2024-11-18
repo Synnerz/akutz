@@ -5,5 +5,8 @@ enum class MethodType {
     Command,
     Cancelable,
     SoundPlay,
-    Chat
+    Chat,
+    RenderEntity,
+    RenderTileEntity,
+    Packet
 }

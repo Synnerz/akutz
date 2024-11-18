@@ -28,8 +28,6 @@ object Register {
         registerMethod("screenresize", EventType.ScreenResize)
         registerMethod("attackentity", EventType.AttackEntity)
         registerMethod("blockbreak", EventType.BlockBreak)
-        registerMethod("postrenderentity", EventType.PostRenderEntity)
-        registerMethod("postrendertileentity", EventType.PostRenderTileEntity)
         registerMethod("serverdisconnect", EventType.ServerDisconnect)
         registerMethod("gameunload", EventType.GameUnload)
         registerMethod("entitydeath", EventType.EntityDeath)
@@ -44,14 +42,9 @@ object Register {
         registerMethod("renderscoreboard", EventType.RenderScoreboard, MethodType.Cancelable)
         registerMethod("rendertitle", EventType.RenderTitle, MethodType.Cancelable)
         registerMethod("renderslot", EventType.RenderSlot, MethodType.Cancelable)
-        registerMethod("renderentity", EventType.RenderEntity, MethodType.Cancelable)
-        registerMethod("rendertileentity", EventType.RenderTileEntity, MethodType.Cancelable)
         registerMethod("blockhighlight", EventType.BlockHighlight, MethodType.Cancelable)
         registerMethod("playerinteract", EventType.PlayerInteract, MethodType.Cancelable)
         registerMethod("serverconnect", EventType.ServerConnect, MethodType.Cancelable)
-        // TODO: make class filter events
-        registerMethod("packetreceived", EventType.PacketReceived, MethodType.Cancelable)
-        registerMethod("packetsent", EventType.PacketSent, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
@@ -59,6 +52,14 @@ object Register {
         // Chat
         registerMethod("chat", EventType.Chat, MethodType.Chat)
         registerMethod("actionbar", EventType.ActionBar, MethodType.Chat)
+
+        // Filtered class events
+        registerMethod("packetreceived", EventType.PacketReceived, MethodType.Packet)
+        registerMethod("packetsent", EventType.PacketSent, MethodType.Packet)
+        registerMethod("renderentity", EventType.RenderEntity, MethodType.RenderEntity)
+        registerMethod("postrenderentity", EventType.PostRenderEntity, MethodType.RenderEntity)
+        registerMethod("rendertileentity", EventType.RenderTileEntity, MethodType.RenderTileEntity)
+        registerMethod("postrendertileentity", EventType.PostRenderTileEntity, MethodType.RenderTileEntity)
     }
 
     fun registerMethod(eventName: String, eventType: EventType? = null, type: MethodType = MethodType.Normal) {
@@ -68,6 +69,9 @@ object Register {
             MethodType.Cancelable -> { mm: (args: Array<out Any?>) -> Unit -> CancelableEvent(mm, eventType!!) }
             MethodType.SoundPlay -> { mm: (args: Array<out Any?>) -> Unit -> SoundPlayEvent(mm) }
             MethodType.Chat -> { mm: (args: Array<out Any?>) -> Unit -> ChatEvent(mm, eventType!!) }
+            MethodType.RenderEntity -> { mm: (args: Array<out Any?>) -> Unit -> RenderEntityEvent(mm, eventType!!) }
+            MethodType.RenderTileEntity -> { mm: (args: Array<out Any?>) -> Unit -> RenderTileEntityEvent(mm, eventType!!) }
+            MethodType.Packet -> { mm: (args: Array<out Any?>) -> Unit -> PacketEvent(mm, eventType!!) }
         }
 
         eventMap["register$eventName"] = cb
