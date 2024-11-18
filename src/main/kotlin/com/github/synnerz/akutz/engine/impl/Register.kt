@@ -45,6 +45,7 @@ object Register {
         registerMethod("rendertileentity", EventType.RenderTileEntity, MethodType.Cancelable)
         registerMethod("blockhighlight", EventType.BlockHighlight, MethodType.Cancelable)
         registerMethod("playerinteract", EventType.PlayerInteract, MethodType.Cancelable)
+        registerMethod("serverconnect", EventType.ServerConnect, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
