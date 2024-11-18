@@ -272,22 +272,23 @@ object Tessellator : Base() {
         GlStateManager.rotate(-rendManager.viewY, 0.0f, 1.0f, 0.0f)
         GlStateManager.rotate(rendManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
         GlStateManager.scale(-1f, -1f, -1f)
+        GlStateManager.enableAlpha()
+        GlStateManager.depthMask(false)
         GlStateManager.enableBlend()
+        GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0)
 
         val widths = lines.map { fontRend.getStringWidth(it) / 2.0 }
         val w = widths.max()
 
         if (renderBlackBox) {
-            GlStateManager.enableAlpha()
             color(Color(0, 0, 0, 64))
             worldRen.begin(5, DefaultVertexFormats.POSITION)
             worldRen.pos(-w - 1, -1.0, 0.0).endVertex()
-            worldRen.pos(-w - 1, 8.0 * lines.size - 1, 0.0).endVertex()
+            worldRen.pos(-w - 1, 8.0 * lines.size + 1, 0.0).endVertex()
             worldRen.pos(w + 1, -1.0, 0.0).endVertex()
-            worldRen.pos(w + 1, 8.0 * lines.size - 1, 0.0).endVertex()
+            worldRen.pos(w + 1, 8.0 * lines.size + 1, 0.0).endVertex()
             tess.draw()
             color(prevCol)
-            if (prevCol.a == 255) GlStateManager.disableAlpha()
         }
 
         GlStateManager.enableTexture2D()
@@ -302,6 +303,10 @@ object Tessellator : Base() {
         }
         GlStateManager.popMatrix()
         GlStateManager.disableTexture2D()
-        if (prevCol.a == 255) GlStateManager.disableBlend()
+        if (prevCol.a == 255) {
+            GlStateManager.disableAlpha()
+            GlStateManager.disableBlend()
+            GlStateManager.depthMask(true)
+        }
     }
 }
