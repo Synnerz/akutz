@@ -14,11 +14,11 @@ class Tessellator : Base() {
     private var didEsp = false
     private var prevCol = Color.WHITE
 
-    fun getRenderX() = renderManager.renderX
+    fun getRenderX() = rendManager.renderX
 
-    fun getRenderY() = renderManager.renderY
+    fun getRenderY() = rendManager.renderY
 
-    fun getRenderZ() = renderManager.renderZ
+    fun getRenderZ() = rendManager.renderZ
 
     fun prepareDraw(color: Color) = prepareDraw(color, true)
     override fun prepareDraw(color: Color, pushMatrix: Boolean) = prepareDraw(color, pushMatrix, false)
@@ -268,8 +268,8 @@ class Tessellator : Base() {
 
         GlStateManager.pushMatrix()
         GlStateManager.translate(x, y, z)
-        GlStateManager.rotate(renderManager.viewY, 0.0f, 1.0f, 0.0f)
-        GlStateManager.rotate(renderManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
+        GlStateManager.rotate(rendManager.viewY, 0.0f, 1.0f, 0.0f)
+        GlStateManager.rotate(rendManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
 
         val widths = lines.map { fontRenderer.getStringWidth(it) / 2.0 }
         val w = widths.max()
