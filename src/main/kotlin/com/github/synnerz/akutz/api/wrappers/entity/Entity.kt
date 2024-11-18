@@ -30,7 +30,7 @@ open class Entity(val entity: MCEntity) {
 
     fun getEyeHeight(): Float = entity.eyeHeight
 
-    fun getName(): String = entity.name
+    open fun getName(): String = entity.name
 
     fun getUUID(): String = getUUIDObj().toString()
 
