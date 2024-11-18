@@ -10,7 +10,7 @@ import net.minecraft.util.ResourceLocation
 import org.lwjgl.opengl.GL11.*
 import kotlin.math.*
 
-class Tessellator : Base() {
+object Tessellator : Base() {
     private var didEsp = false
     private var prevCol = Color.WHITE
 
@@ -271,7 +271,7 @@ class Tessellator : Base() {
         GlStateManager.rotate(rendManager.viewY, 0.0f, 1.0f, 0.0f)
         GlStateManager.rotate(rendManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
 
-        val widths = lines.map { fontRenderer.getStringWidth(it) / 2.0 }
+        val widths = lines.map { fontRend.getStringWidth(it) / 2.0 }
         val w = widths.max()
 
         if (renderBlackBox) {
@@ -284,7 +284,7 @@ class Tessellator : Base() {
         }
 
         lines.forEachIndexed { i, s ->
-            fontRenderer.drawString(
+            fontRend.drawString(
                 s,
                 (-widths[i]).toFloat(),
                 i * 8f,
