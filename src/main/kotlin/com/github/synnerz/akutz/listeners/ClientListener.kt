@@ -11,6 +11,7 @@ import net.minecraftforge.client.event.RenderGameOverlayEvent
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
+import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import org.lwjgl.util.vector.Vector3f
 
 /**
@@ -87,5 +88,10 @@ object ClientListener {
             ),
             event
         )
+    }
+
+    @SubscribeEvent
+    fun onClientDisconnect(event: FMLNetworkEvent.ClientDisconnectionFromServerEvent) {
+        EventType.ServerDisconnect.triggerAll(event)
     }
 }
