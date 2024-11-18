@@ -24,7 +24,6 @@ enum class EventType {
     Tooltip,
     PlayerInteract,
     AttackEntity,
-    HitBlock,
     GuiRender,
     GuiKey,
     GuiMouseClick,
