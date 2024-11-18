@@ -31,6 +31,7 @@ object Register {
         registerMethod("postrenderentity", EventType.PostRenderEntity)
         registerMethod("postrendertileentity", EventType.PostRenderTileEntity)
         registerMethod("serverdisconnect", EventType.ServerDisconnect)
+        registerMethod("gameunload", EventType.GameUnload)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
