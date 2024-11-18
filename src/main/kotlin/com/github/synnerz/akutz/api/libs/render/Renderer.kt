@@ -23,7 +23,7 @@ import net.minecraft.client.renderer.Tessellator as MCTessellator
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/libs/renderer/Renderer.kt)
  */
-class Renderer : Base() {
+object Renderer : Base() {
     private var lineWidth: Float = 1f
     private var pushedMatrix = false
 
@@ -230,5 +230,26 @@ class Renderer : Base() {
         worldRen.pos(x + w, y, 0.0).tex(m + mw, n).endVertex()
         worldRen.pos(x, y, 0.0).tex(m, n).endVertex()
         tess.draw()
+    }
+
+    @JvmField
+    val screen = object {
+        var sr: ScaledResolution? = null
+
+        @SubscribeEvent
+        fun onRenderOverlayPre(event: TickEvent.RenderTickEvent) {
+            if (event.phase != TickEvent.Phase.START) return
+            partialTicks = event.renderTickTime
+            if (sr != null && !Display.wasResized()) return
+
+            sr = ScaledResolution(Minecraft.getMinecraft())
+            EventType.ScreenResize.triggerAll(sr)
+        }
+
+        fun getWidth() = sr?.scaledWidth ?: 0
+
+        fun getHeight() = sr?.scaledHeight ?: 0
+
+        fun getScale() = sr?.scaleFactor ?: 1
     }
 }
