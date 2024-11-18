@@ -20,6 +20,7 @@ object Tessellator : Base() {
 
     fun getRenderZ() = rendManager.renderZ
 
+    fun prepareDraw() = Tessellator.prepareDraw(Color.WHITE)
     fun prepareDraw(color: Color) = prepareDraw(color, true)
     override fun prepareDraw(color: Color, pushMatrix: Boolean) = prepareDraw(color, pushMatrix, false)
     fun prepareDraw(color: Color, pushMatrix: Boolean, esp: Boolean) = apply {
@@ -28,9 +29,9 @@ object Tessellator : Base() {
         if (pushMatrix) GlStateManager.translate(-getRenderX(), -getRenderY(), -getRenderZ())
         GlStateManager.disableTexture2D()
         GlStateManager.disableLighting()
-        GlStateManager.disableAlpha()
         prevCol = color
         if (color.a == 255) {
+            GlStateManager.disableAlpha()
             GlStateManager.depthMask(true)
             GlStateManager.disableBlend()
         } else {
@@ -46,8 +47,8 @@ object Tessellator : Base() {
         super.finishDraw()
 
         GlStateManager.enableTexture2D()
-        GlStateManager.enableAlpha()
-        if (prevCol.a != 255) {
+        if (prevCol.a == 255) GlStateManager.enableAlpha()
+        else {
             GlStateManager.depthMask(true)
             GlStateManager.disableBlend()
         }
@@ -264,34 +265,43 @@ object Tessellator : Base() {
         shadow: Boolean = true
     ) {
         val lines = ChatLib.addColor(text).split('\n')
-        val xMultiplier = if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2) 1 else -1
+        val xMultiplier = if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2) -1 else 1
 
         GlStateManager.pushMatrix()
         GlStateManager.translate(x, y, z)
-        GlStateManager.rotate(rendManager.viewY, 0.0f, 1.0f, 0.0f)
+        GlStateManager.rotate(-rendManager.viewY, 0.0f, 1.0f, 0.0f)
         GlStateManager.rotate(rendManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
+        GlStateManager.scale(-1f, -1f, -1f)
+        GlStateManager.enableBlend()
 
         val widths = lines.map { fontRend.getStringWidth(it) / 2.0 }
         val w = widths.max()
 
         if (renderBlackBox) {
-            worldRen.begin(7, DefaultVertexFormats.POSITION_COLOR)
-            worldRen.pos(-w - 1, -1.0, 0.0).color(0, 0, 0, 64).endVertex()
-            worldRen.pos(-w - 1, 8.0 * lines.size + 1, 0.0).color(0, 0, 0, 64).endVertex()
-            worldRen.pos(w + 1, 8.0 * lines.size + 1, 0.0).color(0, 0, 0, 64).endVertex()
-            worldRen.pos(w + 1, -1.0, 0.0).color(0, 0, 0, 64).endVertex()
+            GlStateManager.enableAlpha()
+            color(Color(0, 0, 0, 64))
+            worldRen.begin(5, DefaultVertexFormats.POSITION)
+            worldRen.pos(-w - 1, -1.0, 0.0).endVertex()
+            worldRen.pos(-w - 1, 8.0 * lines.size - 1, 0.0).endVertex()
+            worldRen.pos(w + 1, -1.0, 0.0).endVertex()
+            worldRen.pos(w + 1, 8.0 * lines.size - 1, 0.0).endVertex()
             tess.draw()
+            color(prevCol)
+            if (prevCol.a == 255) GlStateManager.disableAlpha()
         }
 
+        GlStateManager.enableTexture2D()
         lines.forEachIndexed { i, s ->
             fontRend.drawString(
                 s,
-                (-widths[i]).toFloat(),
+                -widths[i].toFloat(),
                 i * 8f,
                 0xFFFFFFFF.toInt(),
                 shadow
             )
         }
         GlStateManager.popMatrix()
+        GlStateManager.disableTexture2D()
+        if (prevCol.a == 255) GlStateManager.disableBlend()
     }
 }
