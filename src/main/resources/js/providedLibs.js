@@ -214,10 +214,13 @@ loadClass("com.github.synnerz.akutz.api.wrappers.World")
 loadClass("com.github.synnerz.akutz.api.wrappers.Client")
 loadClass("com.github.synnerz.akutz.api.wrappers.entity.Entity")
 loadClass("com.github.synnerz.akutz.api.wrappers.entity.TileEntity")
+loadClass("com.github.synnerz.akutz.api.wrappers.entity.EntityLivingBase")
+loadClass("com.github.synnerz.akutz.api.wrappers.entity.PlayerMP")
 loadClass("com.github.synnerz.akutz.api.wrappers.world.Chunk")
 loadClass("com.github.synnerz.akutz.api.wrappers.world.block.Block")
 loadClass("com.github.synnerz.akutz.api.wrappers.world.block.Sign")
 loadClass("com.github.synnerz.akutz.api.wrappers.PotionEffect")
+loadClass("com.github.synnerz.akutz.api.wrappers.Team")
 
 // Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
