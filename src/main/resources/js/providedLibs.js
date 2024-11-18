@@ -214,7 +214,8 @@ loadClass("com.github.synnerz.akutz.api.wrappers.world.Chunk")
 
 // Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
-loadClass("com.github.synnerz.akutz.api.libs.render.Renderer")
+loadInstance("com.github.synnerz.akutz.api.libs.render.Renderer")
+loadInstance("com.github.synnerz.akutz.api.libs.render.Tessellator")
 
 // Objects
 loadClass("com.github.synnerz.akutz.api.objects.render.Color")

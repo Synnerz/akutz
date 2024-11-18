@@ -44,6 +44,8 @@ class Color @JvmOverloads constructor(
         )
     }
 
+    fun getShadow(): Color = fromRGBA(((asRGB() shr 2) and 0x3F3F3F) or (a.toLong() shl 24))
+
     companion object {
         @JvmStatic
         fun fromRGB(color: Long) = Color(
