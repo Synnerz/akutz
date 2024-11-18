@@ -2,7 +2,7 @@ package com.github.synnerz.akutz.api.objects.render
 
 import java.awt.Color as AWTColor
 
-class Color(
+class Color @JvmOverloads constructor(
     @JvmField
     val r: Int,
     @JvmField
