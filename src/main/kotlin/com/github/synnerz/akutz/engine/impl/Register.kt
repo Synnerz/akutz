@@ -29,6 +29,7 @@ object Register {
         registerMethod("attackentity", EventType.AttackEntity)
         registerMethod("blockbreak", EventType.BlockBreak)
         registerMethod("postrenderentity", EventType.PostRenderEntity)
+        registerMethod("postrendertileentity", EventType.PostRenderTileEntity)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
@@ -40,6 +41,7 @@ object Register {
         registerMethod("rendertitle", EventType.RenderTitle, MethodType.Cancelable)
         registerMethod("renderslot", EventType.RenderSlot, MethodType.Cancelable)
         registerMethod("renderentity", EventType.RenderEntity, MethodType.Cancelable)
+        registerMethod("rendertileentity", EventType.RenderTileEntity, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
