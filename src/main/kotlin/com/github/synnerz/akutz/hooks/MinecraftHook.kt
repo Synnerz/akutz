@@ -11,4 +11,8 @@ object MinecraftHook {
     fun triggerGameLoad() {
         EventType.GameLoad.triggerAll()
     }
+
+    fun triggerGameUnload() {
+        EventType.GameUnload.triggerAll()
+    }
 }

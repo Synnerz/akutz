@@ -19,4 +19,9 @@ public class MixinMinecraft {
     public void onPostGameStart(CallbackInfo ci) {
         MinecraftHook.INSTANCE.triggerGameLoad();
     }
+
+    @Inject(method = "shutdownMinecraftApplet", at = @At("HEAD"))
+    public void onPreShutdown(CallbackInfo ci) {
+        MinecraftHook.INSTANCE.triggerGameUnload();
+    }
 }
