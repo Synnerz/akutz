@@ -9,8 +9,9 @@ import net.minecraftforge.client.event.ClientChatReceivedEvent
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/triggers/ChatTrigger.kt)
  */
 class ChatEvent(
-    method: (args: Array<out Any?>) -> Unit
-) : BaseEvent(method, EventType.Chat) {
+    method: (args: Array<out Any?>) -> Unit,
+    eventType: EventType
+) : BaseEvent(method, eventType) {
     private var caseInsensitive: Boolean = false
     private var formatted: Boolean = false
     private var mode: Int = 0
@@ -39,7 +40,7 @@ class ChatEvent(
             else {
                 mode = 2
                 val regexStr = rawCritS!!
-                    .replace(ESCAPE_REGEX, "\\$0")
+                    .replace(ESCAPE_REGEX, "\$0")
                     .replace(REPLACE_ANON_MATCH, "(?:.+)")
                     .replace(REPLACE_NAMED_MATCH, "(.+)")
 
