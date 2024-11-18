@@ -49,6 +49,9 @@ object Register {
         registerMethod("blockhighlight", EventType.BlockHighlight, MethodType.Cancelable)
         registerMethod("playerinteract", EventType.PlayerInteract, MethodType.Cancelable)
         registerMethod("serverconnect", EventType.ServerConnect, MethodType.Cancelable)
+        // TODO: make class filter events
+        registerMethod("packetreceived", EventType.PacketReceived, MethodType.Cancelable)
+        registerMethod("packetsent", EventType.PacketSent, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
