@@ -49,6 +49,10 @@ object Register {
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
+
+        // Chat
+        registerMethod("chat", EventType.Chat, MethodType.Chat)
+        registerMethod("actionbar", EventType.ActionBar, MethodType.Chat)
     }
 
     fun registerMethod(eventName: String, eventType: EventType? = null, type: MethodType = MethodType.Normal) {
@@ -57,6 +61,7 @@ object Register {
             MethodType.Command -> { mm: (args: Array<out Any?>) -> Unit -> CommandEvent(mm) }
             MethodType.Cancelable -> { mm: (args: Array<out Any?>) -> Unit -> CancelableEvent(mm, eventType!!) }
             MethodType.SoundPlay -> { mm: (args: Array<out Any?>) -> Unit -> SoundPlayEvent(mm) }
+            MethodType.Chat -> { mm: (args: Array<out Any?>) -> Unit -> ChatEvent(mm, eventType!!) }
         }
 
         eventMap["register$eventName"] = cb

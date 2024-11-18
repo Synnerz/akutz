@@ -4,5 +4,6 @@ enum class MethodType {
     Normal,
     Command,
     Cancelable,
-    SoundPlay
+    SoundPlay,
+    Chat
 }
