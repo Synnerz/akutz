@@ -42,6 +42,7 @@ object Register {
         registerMethod("renderslot", EventType.RenderSlot, MethodType.Cancelable)
         registerMethod("renderentity", EventType.RenderEntity, MethodType.Cancelable)
         registerMethod("rendertileentity", EventType.RenderTileEntity, MethodType.Cancelable)
+        registerMethod("blockhighlight", EventType.BlockHighlight, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
