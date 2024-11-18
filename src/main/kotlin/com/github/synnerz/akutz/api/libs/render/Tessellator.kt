@@ -142,6 +142,7 @@ class Tessellator : Base() {
 
     @JvmOverloads
     fun renderBoxFilled(x: Double, y: Double, z: Double, w: Double, h: Double, centered: Boolean = false): Tessellator {
+        if (centered) return renderBoxFilled(x - w / 2, y, z - w / 2, w, h, false)
         worldRen.begin(5, DefaultVertexFormats.POSITION)
         worldRen.pos(x, y, z).endVertex()
         worldRen.pos(x + w, y, z).endVertex()
@@ -254,45 +255,43 @@ class Tessellator : Base() {
     }
 
     @JvmOverloads
-    fun renderString() = apply {
+    fun renderString(
+        text: String,
+        x: Double,
+        y: Double,
+        z: Double,
+        renderBlackBox: Boolean = true,
+        shadow: Boolean = true
+    ) {
+        val lines = ChatLib.addColor(text).split('\n')
+        val xMultiplier = if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2) 1 else -1
 
-        fun drawString(
-            text: String,
-            x: Double,
-            y: Double,
-            z: Double,
-            renderBlackBox: Boolean = true,
-            shadow: Boolean = true
-        ) {
-            val lines = ChatLib.addColor(text).split('\n')
-            val xMultiplier = if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2) 1 else -1
+        GlStateManager.pushMatrix()
+        GlStateManager.translate(x, y, z)
+        GlStateManager.rotate(renderManager.viewY, 0.0f, 1.0f, 0.0f)
+        GlStateManager.rotate(renderManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
 
-            GlStateManager.pushMatrix()
-            GlStateManager.rotate(renderManager.viewY, 0.0f, 1.0f, 0.0f)
-            GlStateManager.rotate(renderManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
+        val widths = lines.map { fontRenderer.getStringWidth(it) / 2.0 }
+        val w = widths.max()
 
-            val widths = lines.map { fontRenderer.getStringWidth(it) / 2.0 }
-            val w = widths.max()
-
-            if (renderBlackBox) {
-                worldRen.begin(7, DefaultVertexFormats.POSITION_COLOR)
-                worldRen.pos(-w - 1, -1.0, 0.0).color(0, 0, 0, 64).endVertex()
-                worldRen.pos(-w - 1, 8.0 * lines.size + 1, 0.0).color(0, 0, 0, 64).endVertex()
-                worldRen.pos(w + 1, 8.0 * lines.size + 1, 0.0).color(0, 0, 0, 64).endVertex()
-                worldRen.pos(w + 1, -1.0, 0.0).color(0, 0, 0, 64).endVertex()
-                tess.draw()
-            }
-
-            lines.forEachIndexed { i, s ->
-                fontRenderer.drawString(
-                    s,
-                    (-widths[i]).toFloat(),
-                    i * 8f,
-                    0xFFFFFFFF.toInt(),
-                    shadow
-                )
-            }
-            GlStateManager.popMatrix()
+        if (renderBlackBox) {
+            worldRen.begin(7, DefaultVertexFormats.POSITION_COLOR)
+            worldRen.pos(-w - 1, -1.0, 0.0).color(0, 0, 0, 64).endVertex()
+            worldRen.pos(-w - 1, 8.0 * lines.size + 1, 0.0).color(0, 0, 0, 64).endVertex()
+            worldRen.pos(w + 1, 8.0 * lines.size + 1, 0.0).color(0, 0, 0, 64).endVertex()
+            worldRen.pos(w + 1, -1.0, 0.0).color(0, 0, 0, 64).endVertex()
+            tess.draw()
         }
+
+        lines.forEachIndexed { i, s ->
+            fontRenderer.drawString(
+                s,
+                (-widths[i]).toFloat(),
+                i * 8f,
+                0xFFFFFFFF.toInt(),
+                shadow
+            )
+        }
+        GlStateManager.popMatrix()
     }
 }
