@@ -213,6 +213,7 @@ loadClass("com.github.synnerz.akutz.api.wrappers.entity.TileEntity")
 loadClass("com.github.synnerz.akutz.api.wrappers.world.Chunk")
 loadClass("com.github.synnerz.akutz.api.wrappers.world.block.Block")
 loadClass("com.github.synnerz.akutz.api.wrappers.world.block.Sign")
+loadClass("com.github.synnerz.akutz.api.wrappers.PotionEffect")
 
 // Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
