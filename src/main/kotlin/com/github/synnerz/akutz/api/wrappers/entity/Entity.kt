@@ -5,6 +5,10 @@ import net.minecraft.world.World
 import java.util.UUID
 import net.minecraft.entity.Entity as MCEntity
 
+/**
+ * Taken from ChatTriggers under MIT License
+ * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/wrappers/entity/Entity.kt)
+ */
 open class Entity(val entity: MCEntity) {
     fun getX(): Double = entity.posX
 

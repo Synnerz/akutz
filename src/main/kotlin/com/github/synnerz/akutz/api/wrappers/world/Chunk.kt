@@ -4,6 +4,10 @@ import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.api.wrappers.entity.TileEntity
 import net.minecraft.world.chunk.Chunk as MCChunk
 
+/**
+ * Taken from ChatTriggers under MIT License
+ * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/wrappers/world/Chunk.kt)
+ */
 class Chunk(val chunk: MCChunk) {
     fun getX(): Int = chunk.xPosition
 
