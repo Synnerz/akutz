@@ -230,20 +230,21 @@ object Renderer : Base() {
         tess.draw()
     }
 
+    private var sr: ScaledResolution? = null
+
+    @SubscribeEvent
+    fun onRenderOverlayPre(event: TickEvent.RenderTickEvent) {
+        if (event.phase != TickEvent.Phase.START) return
+        partialTicks = event.renderTickTime
+        Tessellator.partialTicks = event.renderTickTime
+        if (sr != null && !Display.wasResized()) return
+
+        sr = ScaledResolution(Minecraft.getMinecraft())
+        EventType.ScreenResize.triggerAll(sr)
+    }
+
     @JvmField
     val screen = object {
-        var sr: ScaledResolution? = null
-
-        @SubscribeEvent
-        fun onRenderOverlayPre(event: TickEvent.RenderTickEvent) {
-            if (event.phase != TickEvent.Phase.START) return
-            partialTicks = event.renderTickTime
-            if (sr != null && !Display.wasResized()) return
-
-            sr = ScaledResolution(Minecraft.getMinecraft())
-            EventType.ScreenResize.triggerAll(sr)
-        }
-
         fun getWidth() = sr?.scaledWidth ?: 0
 
         fun getHeight() = sr?.scaledHeight ?: 0

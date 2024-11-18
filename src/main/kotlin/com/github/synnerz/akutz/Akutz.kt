@@ -39,7 +39,7 @@ class Akutz {
             ForgeEvent,
             ClientListener,
             WorldListener,
-            Renderer.screen
+            Renderer
         ).forEach(MinecraftForge.EVENT_BUS::register)
     }
 

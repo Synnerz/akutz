@@ -3,7 +3,9 @@ package com.github.synnerz.akutz.api.libs.render
 import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.mixin.AccessorRenderManager
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.FontRenderer
 import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.WorldRenderer
 import org.lwjgl.opengl.GL11.*
 import net.minecraft.client.renderer.Tessellator as MCTessellator
 
@@ -16,10 +18,10 @@ open class Base {
     private var lineWidth: Float = 1f
     private var pushedMatrix = false
 
-    protected val tess = MCTessellator.getInstance()
-    protected val worldRen = tess.worldRenderer
-    protected val rendManager = Minecraft.getMinecraft().renderManager as AccessorRenderManager
-    protected val fontRend = Minecraft.getMinecraft().fontRendererObj
+    protected val tess: MCTessellator by lazy { MCTessellator.getInstance() }
+    protected val worldRen: WorldRenderer by lazy { tess.worldRenderer }
+    protected val rendManager: AccessorRenderManager by lazy { Minecraft.getMinecraft().renderManager as AccessorRenderManager }
+    protected val fontRend: FontRenderer by lazy { Minecraft.getMinecraft().fontRendererObj }
 
     fun getTessellator() = tess
 
