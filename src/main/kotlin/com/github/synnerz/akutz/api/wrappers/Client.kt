@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.wrappers
 
-import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.api.libs.render.Tessellator
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.GuiChat
 import net.minecraft.client.gui.GuiNewChat
@@ -76,10 +76,10 @@ object Client {
 
     @JvmField
     val camera = object {
-        fun getX(): Double = Renderer.getRenderManager().viewerPosX
+        fun getX(): Double = Tessellator.getRenderX()
 
-        fun getY(): Double = Renderer.getRenderManager().viewerPosY
+        fun getY(): Double = Tessellator.getRenderY()
 
-        fun getZ(): Double = Renderer.getRenderManager().viewerPosZ
+        fun getZ(): Double = Tessellator.getRenderZ()
     }
 }
