@@ -50,4 +50,17 @@ object GuiScreenHook {
 
         if (event.isCanceled()) ci.cancel()
     }
+
+    fun triggerGuiMouseRelease(
+        x: Int,
+        y: Int,
+        mouseBtn: Int,
+        gui: GuiScreen,
+        ci: CallbackInfo
+    ) {
+        val event = Cancelable()
+        EventType.GuiMouseRelease.triggerAll(x, y, mouseBtn, gui, event)
+
+        if (event.isCanceled()) ci.cancel()
+    }
 }
