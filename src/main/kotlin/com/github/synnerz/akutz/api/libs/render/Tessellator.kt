@@ -309,6 +309,7 @@ object Tessellator : Base() {
         val w = widths.max()
 
         if (renderBlackBox) {
+            GlStateManager.depthMask(false)
             _color(Color(0, 0, 0, 64))
             worldRen.begin(5, DefaultVertexFormats.POSITION)
             worldRen.pos(-w - 1, -1.0, 0.0).endVertex()
@@ -317,6 +318,7 @@ object Tessellator : Base() {
             worldRen.pos(w + 1, 8.0 * lines.size + 1, 0.0).endVertex()
             tess.draw()
             _color(prevCol)
+            if (prevCol.a == 255) GlStateManager.depthMask(true)
         }
 
         GlStateManager.enableTexture2D()
@@ -334,7 +336,6 @@ object Tessellator : Base() {
         if (prevCol.a == 255) {
             GlStateManager.disableAlpha()
             GlStateManager.disableBlend()
-            GlStateManager.depthMask(true)
         }
     }
 }
