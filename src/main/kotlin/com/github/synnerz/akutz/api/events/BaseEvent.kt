@@ -68,8 +68,8 @@ abstract class BaseEvent protected constructor(
     fun unregister() = apply {
         if (!registered) return this
         if (actuallyRegistered) onUnregister()
-        registered = false;
-        actuallyRegistered = false;
+        registered = false
+        actuallyRegistered = false
     }
 
     open fun isRegistered() : Boolean = registered

@@ -62,7 +62,7 @@ object Renderer : Base() {
 
     @JvmOverloads
     fun drawRectangle(x: Double, y: Double, w: Double, h: Double, solid: Boolean = true) = apply {
-        worldRen.begin(if (solid) 6 else 2, DefaultVertexFormats.POSITION);
+        worldRen.begin(if (solid) 6 else 2, DefaultVertexFormats.POSITION)
         worldRen.pos(x, y + h, 0.0).endVertex()
         worldRen.pos(x + w, y + h, 0.0).endVertex()
         worldRen.pos(x + w, y, 0.0).endVertex()
@@ -131,7 +131,7 @@ object Renderer : Base() {
         GlStateManager.enableTexture2D()
         ChatLib.addColor(text).split('\n').forEach {
             fr.drawString(it, x, _y, 0xFFFFFFFF.toInt(), shadow)
-            _y += fr.FONT_HEIGHT;
+            _y += fr.FONT_HEIGHT
         }
         GlStateManager.disableTexture2D()
     }
@@ -171,8 +171,8 @@ object Renderer : Base() {
         uw: Double = w,
         vh: Double = h
     ) = apply {
-        val f = 1 / tw;
-        val g = 1 / th;
+        val f = 1 / tw
+        val g = 1 / th
         val m = u * f
         val n = v * g
         val mw = uw * f
