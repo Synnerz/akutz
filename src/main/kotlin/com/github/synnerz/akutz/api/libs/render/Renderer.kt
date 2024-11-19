@@ -122,10 +122,12 @@ object Renderer : Base() {
     fun drawString(text: String, x: Float, y: Float, shadow: Boolean = false) = apply {
         val fr = getFontRenderer()
         var _y = y
+        GlStateManager.enableTexture2D()
         ChatLib.addColor(text).split('\n').forEach {
             fr.drawString(it, x, _y, 0xFFFFFFFF.toInt(), shadow)
             _y += fr.FONT_HEIGHT;
         }
+        GlStateManager.disableTexture2D()
     }
 
     private val outlinedStringRegex = "^".toRegex(RegexOption.MULTILINE)
@@ -218,12 +220,14 @@ object Renderer : Base() {
         val mw = uw * f
         val nh = vh * g
 
+        GlStateManager.enableTexture2D()
         worldRen.begin(6, DefaultVertexFormats.POSITION_TEX)
         worldRen.pos(x, y + h, 0.0).tex(m, n + nh).endVertex()
         worldRen.pos(x + w, y + h, 0.0).tex(m + mw, n + nh).endVertex()
         worldRen.pos(x + w, y, 0.0).tex(m + mw, n).endVertex()
         worldRen.pos(x, y, 0.0).tex(m, n).endVertex()
         tess.draw()
+        GlStateManager.disableTexture2D()
     }
 
     private var sr: ScaledResolution? = null
