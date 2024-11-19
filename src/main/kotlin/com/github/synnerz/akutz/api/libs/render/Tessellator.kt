@@ -177,14 +177,14 @@ object Tessellator : Base() {
         worldRen.begin(5, DefaultVertexFormats.POSITION)
         worldRen.pos(x, y, z).endVertex()
         worldRen.pos(x, y, z + w).endVertex()
-        worldRen.pos(x, y + h, z + w).endVertex()
         worldRen.pos(x, y + h, z).endVertex()
+        worldRen.pos(x, y + h, z + w).endVertex()
         tess.draw()
         worldRen.begin(5, DefaultVertexFormats.POSITION)
         worldRen.pos(x + w, y, z).endVertex()
         worldRen.pos(x + w, y + h, z).endVertex()
-        worldRen.pos(x + w, y + h, z + w).endVertex()
         worldRen.pos(x + w, y, z + w).endVertex()
+        worldRen.pos(x + w, y + h, z + w).endVertex()
         tess.draw()
     }
 
