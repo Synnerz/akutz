@@ -53,6 +53,7 @@ object Register {
         registerMethod("tooltip", EventType.Tooltip, MethodType.Cancelable)
         registerMethod("guikey", EventType.GuiKey, MethodType.Cancelable)
         registerMethod("guimouseclick", EventType.GuiMouseClick, MethodType.Cancelable)
+        registerMethod("guimouserelease", EventType.GuiMouseRelease, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
