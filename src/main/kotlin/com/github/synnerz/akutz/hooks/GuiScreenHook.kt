@@ -37,4 +37,17 @@ object GuiScreenHook {
 
         if (event.isCanceled()) ci.cancel()
     }
+
+    fun triggerGuiMouseClick(
+        x: Int,
+        y: Int,
+        mouseBtn: Int,
+        gui: GuiScreen,
+        ci: CallbackInfo
+    ) {
+        val event = Cancelable()
+        EventType.GuiMouseClick.triggerAll(x, y, mouseBtn, gui, event)
+
+        if (event.isCanceled()) ci.cancel()
+    }
 }

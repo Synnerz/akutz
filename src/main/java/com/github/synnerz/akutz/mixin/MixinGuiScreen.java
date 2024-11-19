@@ -8,6 +8,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 @Mixin(GuiScreen.class)
 public class MixinGuiScreen {
@@ -20,5 +21,11 @@ public class MixinGuiScreen {
     public void onKeyTyped(CallbackInfo ci) {
         GuiScreen gui = Minecraft.getMinecraft().currentScreen;
         GuiScreenHook.INSTANCE.triggerGuiKey(gui, ci);
+    }
+
+    @Inject(method = "handleMouseInput", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;mouseClicked(III)V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
+    public void onMouseClicked(CallbackInfo ci, int i, int j, int k) {
+        GuiScreen gui = Minecraft.getMinecraft().currentScreen;
+        GuiScreenHook.INSTANCE.triggerGuiMouseClick(i, j, k, gui, ci);
     }
 }
