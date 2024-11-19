@@ -234,6 +234,7 @@ loadClass("com.github.synnerz.akutz.api.objects.render.Color")
 loadClass("com.github.synnerz.akutz.api.objects.render.Image")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateVar")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateExp")
+loadClass("com.github.synnerz.akutz.api.objects.gui.GuiHandler")
 
 // Events
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
@@ -264,3 +265,88 @@ globalThis.cancel = (event) => {
 }
 
 globalThis.toV8Value = val => impl.forceWrap(val)
+
+const implGui = Java.type("com.github.synnerz.akutz.api.objects.gui.Gui")
+
+// We need to make a wrapper for our own implementation
+// due to the engine being a tad bit too funny and making
+// the listeners' args into a single array
+globalThis.Gui = class Gui {
+  constructor() {
+    this.gui = new implGui()
+  }
+
+  isOpen() {
+    return this.gui.isOpen()
+  }
+
+  open() {
+    this.gui.open()
+    return this
+  }
+
+  close() {
+    this.gui.close()
+    return this
+  }
+
+  drawString(str, x, y) {
+    this.gui.drawString(str, x, y)
+  }
+
+  drawCreativeTabHoveringString(str, x, y) {
+    this.gui.drawCreativeTabHoveringString(str, x, y)
+  }
+
+  drawHoveringString(array, x, y) {
+    this.gui.drawHoveringString(array, x, y)
+  }
+
+  isControlDown() {
+    return this.gui.isControlDown()
+  }
+
+  isShiftDown() {
+    return this.gui.isShiftDown()
+  }
+
+  isAltDown() {
+    return this.gui.isAltDown()
+  }
+
+  onDraw(cb) {
+    return this.gui.onDraw((args) => cb(...args))
+  }
+
+  onKeyTyped(cb) {
+    return this.gui.onKeyTyped((args) => cb(...args))
+  }
+
+  onOpened(cb) {
+    return this.gui.onOpened((args) => cb(...args))
+  }
+
+  onClosed(cb) {
+    return this.gui.onClosed((args) => cb(...args))
+  }
+
+  onResize(cb) {
+    return this.gui.onResize((args) => cb(...args))
+  }
+
+  onClick(cb) {
+    return this.gui.onClick((args) => cb(...args))
+  }
+
+  onScroll(cb) {
+    return this.gui.onScroll((args) => cb(...args))
+  }
+
+  onReleased(cb) {
+    return this.gui.onReleased((args) => cb(...args))
+  }
+
+  onDragged(cb) {
+    return this.gui.onDragged((args) => cb(...args))
+  }
+}
