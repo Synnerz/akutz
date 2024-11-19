@@ -27,12 +27,14 @@ object Renderer : Base() {
         GlStateManager.enableBlend()
         GlStateManager.disableTexture2D()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
+        GlStateManager.disableCull()
     }
 
     override fun finishDraw() = apply {
         super.finishDraw()
         GlStateManager.enableTexture2D()
         GlStateManager.disableBlend()
+        GlStateManager.enableCull()
     }
 
     @JvmOverloads
@@ -143,63 +145,15 @@ object Renderer : Base() {
         drawString(text, x, y)
     }
 
-    private fun getPoint(vertices: Array<out List<Double>>, index: Int) =
+    private fun getPoint(vertices: List<List<Double>>, index: Int) =
         if (index >= vertices.size) vertices[index - vertices.size] else vertices[index]
 
-    @JvmOverloads
-    fun drawPolygon(vararg vertices: List<Double>, solid: Boolean = true, isConvex: Boolean?) = apply {
-        var area = 0.0
-        for (i in vertices.indices) {
-            area += getPoint(vertices, i + 0)[0] * getPoint(vertices, i + 1)[1]
-            area -= getPoint(vertices, i + 0)[1] * getPoint(vertices, i + 1)[0]
-        }
-        if (area < 0) vertices.reverse()
-
-        var doStencil: Boolean
-        if (!solid) doStencil = false
-        else if (isConvex == null) {
-            var sign = 0.0
-            doStencil = false
-            for (i in vertices.indices) {
-                val a = getPoint(vertices, i + 0)
-                val b = getPoint(vertices, i + 1)
-                val c = getPoint(vertices, i + 2)
-                val s = ((b[0] - a[0]) * (c[1] - b[1]) - (b[1] - a[1]) * (c[0] - b[0])).sign
-                if (i == 0) sign = s
-                else if (sign != s) {
-                    doStencil = true
-                    break
-                }
-            }
-        } else doStencil = !isConvex
-
-        if (doStencil) {
-            GlStateManager.pushAttrib()
-            GlStateManager.disableDepth()
-            glClearStencil(0)
-
-            glClear(GL_STENCIL_BUFFER_BIT)
-            glEnable(GL_STENCIL_TEST)
-            GlStateManager.colorMask(false, false, false, false)
-            glStencilOp(GL_KEEP, GL_KEEP, GL_INVERT)
-            glStencilFunc(GL_ALWAYS, 0x1, 0x1)
-        }
-
+    // @JvmOverloads doesn't work with varargs because javet is shit or something fuck this
+    fun drawPolygon(vertices: ArrayList<ArrayList<Double>>) = drawPolygon(vertices, true)
+    fun drawPolygon(vertices: ArrayList<ArrayList<Double>>, solid: Boolean) = apply {
         worldRen.begin(if (solid) 6 else 2, DefaultVertexFormats.POSITION)
         for (p in vertices) worldRen.pos(p[0], p[1], 0.0).endVertex()
         tess.draw()
-
-        if (doStencil) {
-            GlStateManager.colorMask(true, true, true, true)
-            glStencilFunc(GL_EQUAL, 0x1, 0x1)
-
-            worldRen.begin(if (solid) 6 else 2, DefaultVertexFormats.POSITION)
-            for (p in vertices) worldRen.pos(p[0], p[1], 0.0).endVertex()
-            tess.draw()
-
-            glDisable(GL_STENCIL_TEST)
-            GlStateManager.popAttrib()
-        }
     }
 
     @JvmOverloads
