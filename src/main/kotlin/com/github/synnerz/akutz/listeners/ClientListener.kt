@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz.listeners
 
 import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.wrappers.World
 import com.github.synnerz.akutz.hooks.ChannelDuplexHook
 import net.minecraft.util.BlockPos
@@ -113,14 +114,14 @@ object ClientListener {
         when (event.type.toInt()) {
             in 0..1 -> {
                 EventType.Chat.triggerAll(
-                    event.message.formattedText,
+                    ChatLib.replaceFormatting(event.message.formattedText),
                     event.message.unformattedText,
                     event
                 )
             }
             2 -> {
                 EventType.ActionBar.triggerAll(
-                    event.message.formattedText,
+                    ChatLib.replaceFormatting(event.message.formattedText),
                     event.message.unformattedText,
                     event
                 )
