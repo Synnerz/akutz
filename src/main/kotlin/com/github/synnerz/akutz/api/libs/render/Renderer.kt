@@ -11,10 +11,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11.*
-import kotlin.math.PI
-import kotlin.math.cos
-import kotlin.math.sign
-import kotlin.math.sin
+import kotlin.math.*
 
 
 /**
@@ -98,10 +95,11 @@ object Renderer : Base() {
         y: Double,
         w: Double,
         h: Double,
-        r: Double,
+        radius: Double,
         solid: Boolean = true,
         segments: Int = 5
     ) = apply {
+        val r = min(w / 2, min(h / 2, max(radius, 0.0)))
         drawArc(x + r, y + r, r, r, PI / 2, PI, solid, segments)
         drawArc(x + w - r, y + r, r, r, 0.0, PI / 2, solid, segments)
         drawArc(x + r, y + h - r, r, r, PI, PI * 3 / 2, solid, segments)
