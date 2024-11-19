@@ -243,12 +243,13 @@ object Renderer : Base() {
         EventType.ScreenResize.triggerAll(sr)
     }
 
-    @JvmField
-    val screen = object {
-        fun getWidth() = sr?.scaledWidth ?: 0
+    init {
+        screen = object {
+            fun getWidth() = sr?.scaledWidth ?: 0
 
-        fun getHeight() = sr?.scaledHeight ?: 0
+            fun getHeight() = sr?.scaledHeight ?: 0
 
-        fun getScale() = sr?.scaleFactor ?: 1
+            fun getScale() = sr?.scaleFactor ?: 1
+        }
     }
 }

@@ -58,4 +58,7 @@ open class Base {
         if (width != lineWidth) glLineWidth(width)
         lineWidth = width
     }
+
+    @JvmField
+    var screen: Any? = null
 }
