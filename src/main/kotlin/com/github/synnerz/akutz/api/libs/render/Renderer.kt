@@ -83,6 +83,7 @@ object Renderer : Base() {
         val l = segments.coerceAtLeast(1)
         val da = (a2 - a1) / l
         worldRen.begin(if (solid) 6 else 3, DefaultVertexFormats.POSITION)
+        if (solid) worldRen.pos(x, y, 0.0).endVertex()
         worldRen.pos(x + cos(a1) * xr, y - sin(a1) * yr, 0.0).endVertex()
         for (i in 1..l) {
             val a = a1 + da * i
