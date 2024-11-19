@@ -9,6 +9,8 @@ import net.minecraft.client.gui.GuiScreen
 import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.network.NetHandlerPlayClient
 import net.minecraft.inventory.Slot
+import net.minecraft.network.INetHandler
+import net.minecraft.network.Packet
 import org.lwjgl.opengl.Display
 
 /**
@@ -54,6 +56,10 @@ object Client {
 
     @JvmStatic
     fun isInGui(): Boolean = getMinecraft().currentScreen != null
+
+    fun <T : INetHandler> sendPacket(packet: Packet<*>) {
+        getConnection()?.networkManager?.sendPacket(packet)
+    }
 
     @JvmField
     val currentGui = object {
