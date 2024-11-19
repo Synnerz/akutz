@@ -29,13 +29,13 @@ object ModuleManager {
                 lmaoNotScuffed = true
             }
             if (lmaoNotScuffed) return@forEach
-            val serverMeta = ModuleUpdater.getMetadata(it.moduleName!!)
-            if (serverMeta != null) {
-                if (ModuleUpdater.compareVersion(serverMeta.version!!, it.version!!) > 0) {
-                    println("Updating module ${it.moduleName!!} from version ${it.version} to ${serverMeta.version}")
-                    ModuleUpdater.downloadModule(it.moduleName!!)
-                }
-            } else println("Failed to get metadata for module ${it.moduleName!!}")
+//            val serverMeta = ModuleUpdater.getMetadata(it.moduleName!!)
+//            if (serverMeta != null) {
+//                if (ModuleUpdater.compareVersion(serverMeta.version!!, it.version!!) > 0) {
+//                    println("Updating module ${it.moduleName!!} from version ${it.version} to ${serverMeta.version}")
+//                    ModuleUpdater.downloadModule(it.moduleName!!)
+//                }
+//            } else println("Failed to get metadata for module ${it.moduleName!!}")
             classLoader!!.addAllURLs(it.jars!!.map { File(it).toURI().toURL() })
         }
     }
