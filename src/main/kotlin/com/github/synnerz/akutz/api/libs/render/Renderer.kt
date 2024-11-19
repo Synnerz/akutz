@@ -3,12 +3,14 @@ package com.github.synnerz.akutz.api.libs.render
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.objects.render.Color
+import com.github.synnerz.akutz.api.wrappers.Client.getMinecraft
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ScaledResolution
 import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
+import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
 import org.lwjgl.opengl.GL11.*
 import kotlin.math.*
@@ -197,6 +199,22 @@ object Renderer : Base() {
 
         sr = ScaledResolution(Minecraft.getMinecraft())
         EventType.ScreenResize.triggerAll(sr)
+    }
+
+    @JvmStatic
+    fun getMouseX(): Float {
+        val mx = Mouse.getX().toFloat()
+        val rw = sr!!.scaledWidth.toFloat()
+        val dw = getMinecraft().displayWidth.toFloat()
+        return mx * rw / dw
+    }
+
+    @JvmStatic
+    fun getMouseY(): Float {
+        val my = Mouse.getY().toFloat()
+        val rh = sr!!.scaledHeight.toFloat()
+        val dh = getMinecraft().displayHeight.toFloat()
+        return rh - my * rh / dh - 1f
     }
 
     init {
