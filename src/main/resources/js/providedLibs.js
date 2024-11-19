@@ -225,6 +225,7 @@ loadClass("com.github.synnerz.akutz.api.wrappers.inventory.Item")
 
 // Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
+loadClass("com.github.synnerz.akutz.api.libs.MathLib")
 loadInstance("com.github.synnerz.akutz.api.libs.render.Renderer")
 loadInstance("com.github.synnerz.akutz.api.libs.render.Tessellator")
 
