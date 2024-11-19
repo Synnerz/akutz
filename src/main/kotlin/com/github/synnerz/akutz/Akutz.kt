@@ -2,6 +2,7 @@ package com.github.synnerz.akutz
 
 import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.api.objects.gui.GuiHandler
 import com.github.synnerz.akutz.command.AkutzCommand
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
@@ -41,7 +42,8 @@ class Akutz {
             ClientListener,
             WorldListener,
             MouseListener,
-            Renderer
+            Renderer,
+            GuiHandler
         ).forEach(MinecraftForge.EVENT_BUS::register)
     }
 
