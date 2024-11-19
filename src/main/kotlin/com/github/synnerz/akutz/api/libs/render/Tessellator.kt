@@ -284,6 +284,7 @@ object Tessellator : Base() {
         xPos: Double,
         yPos: Double,
         zPos: Double,
+        scale: Double,
         renderBlackBox: Boolean = true,
         shadow: Boolean = true
     ) = apply {
@@ -299,9 +300,8 @@ object Tessellator : Base() {
         GlStateManager.translate(x, y, z)
         GlStateManager.rotate(-rendManager.viewY, 0.0f, 1.0f, 0.0f)
         GlStateManager.rotate(rendManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
-        GlStateManager.scale(-p[3], -p[3], -p[3])
+        GlStateManager.scale(-p[3] * scale, -p[3] * scale, -p[3] * scale)
         GlStateManager.enableAlpha()
-        GlStateManager.depthMask(false)
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
 
