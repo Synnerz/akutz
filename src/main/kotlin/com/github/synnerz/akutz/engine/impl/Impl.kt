@@ -6,6 +6,7 @@ import com.caoccao.javet.interop.V8Runtime
 import com.caoccao.javet.interop.converters.JavetObjectConverter
 import com.caoccao.javet.interop.converters.JavetProxyConverter
 import com.caoccao.javet.interop.engine.IJavetEnginePool
+import com.caoccao.javet.interop.engine.JavetEngineConfig
 import com.caoccao.javet.interop.engine.JavetEnginePool
 import com.caoccao.javet.values.V8Value
 import com.caoccao.javet.values.reference.*
@@ -19,7 +20,7 @@ import java.io.File
 import java.nio.file.Paths
 
 object Impl {
-    private var enginePool: IJavetEnginePool<V8Runtime> = JavetEnginePool()
+    private var enginePool: IJavetEnginePool<V8Runtime> = JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
     private var v8runtime: V8Runtime? = null
     private var javetJVMInterceptor: JavetJVMInterceptor? = null
     private var javetProxyConverter: JavetProxyConverter? = null
@@ -62,7 +63,7 @@ object Impl {
     }
 
     fun setup() {
-        if (enginePool.releasedEngineCount <= 0) enginePool = JavetEnginePool()
+        if (enginePool.releasedEngineCount <= 0) enginePool = JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
 
         v8runtime = enginePool.engine.v8Runtime
         v8runtime!!.setPromiseRejectCallback { jevent, valpromise, value ->
@@ -117,6 +118,7 @@ object Impl {
         ForgeEvent.unregisterEvents()
         Loader.clearEvents()
         v8runtime!!.lowMemoryNotification()
+        enginePool.releaseEngine(enginePool.engine)
         v8runtime = null
     }
 
