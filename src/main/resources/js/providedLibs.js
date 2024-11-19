@@ -221,6 +221,7 @@ loadClass("com.github.synnerz.akutz.api.wrappers.world.block.Block")
 loadClass("com.github.synnerz.akutz.api.wrappers.world.block.Sign")
 loadClass("com.github.synnerz.akutz.api.wrappers.PotionEffect")
 loadClass("com.github.synnerz.akutz.api.wrappers.Team")
+loadClass("com.github.synnerz.akutz.api.wrappers.inventory.Item")
 
 // Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
