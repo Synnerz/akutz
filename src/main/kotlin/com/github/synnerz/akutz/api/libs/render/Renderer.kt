@@ -35,10 +35,12 @@ object Renderer : Base() {
         GlStateManager.disableBlend()
     }
 
+    @JvmOverloads
     fun translate(x: Float, y: Float, z: Float = 0f) = apply {
         GlStateManager.translate(x, y, z)
     }
 
+    @JvmOverloads
     fun scale(scaleX: Float, scaleY: Float = scaleX) = apply {
         GlStateManager.scale(scaleX, scaleY, 1f)
     }
