@@ -63,4 +63,17 @@ object GuiScreenHook {
 
         if (event.isCanceled()) ci.cancel()
     }
+
+    fun triggerGuiMouseDrag(
+        x: Int,
+        y: Int,
+        mouseBtn: Int,
+        gui: GuiScreen,
+        ci: CallbackInfo
+    ) {
+        val event = Cancelable()
+        EventType.GuiMouseDrag.triggerAll(x, y, mouseBtn, gui, event)
+
+        if (event.isCanceled()) ci.cancel()
+    }
 }

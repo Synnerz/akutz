@@ -34,4 +34,10 @@ public class MixinGuiScreen {
         GuiScreen gui = Minecraft.getMinecraft().currentScreen;
         GuiScreenHook.INSTANCE.triggerGuiMouseRelease(i, j, k, gui, ci);
     }
+
+    @Inject(method = "handleMouseInput", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/GuiScreen;mouseClickMove(IIIJ)V"), cancellable = true, locals = LocalCapture.CAPTURE_FAILSOFT)
+    public void onMouseDrag(CallbackInfo ci, int i, int j, int k) {
+        GuiScreen gui = Minecraft.getMinecraft().currentScreen;
+        GuiScreenHook.INSTANCE.triggerGuiMouseDrag(i, j, k, gui, ci);
+    }
 }
