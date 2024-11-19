@@ -22,9 +22,6 @@ import kotlin.math.sin
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/libs/renderer/Renderer.kt)
  */
 object Renderer : Base() {
-    private var lineWidth: Float = 1f
-    private var pushedMatrix = false
-
     fun getStringWidth(text: String) = getFontRenderer().getStringWidth(text)
 
     fun prepareDraw(color: Color) = prepareDraw(color, true)
