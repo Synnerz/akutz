@@ -52,6 +52,7 @@ object Register {
         registerMethod("renderitemoverlayintogui", EventType.RenderItemOverlayIntoGui, MethodType.Cancelable)
         registerMethod("tooltip", EventType.Tooltip, MethodType.Cancelable)
         registerMethod("guikey", EventType.GuiKey, MethodType.Cancelable)
+        registerMethod("guimouseclick", EventType.GuiMouseClick, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
