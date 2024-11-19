@@ -110,7 +110,6 @@ object Impl {
             javetProxyConverter!!.config.setReflectionObjectFactory(null)
             javetProxyConverter = null
         }
-        if (v8runtime == null) return
         for (v8Module in modulesLoaded) {
             v8runtime!!.removeV8Module(v8Module.resourceName)
         }
@@ -119,6 +118,7 @@ object Impl {
         Loader.clearEvents()
         v8runtime!!.lowMemoryNotification()
         enginePool.releaseEngine(enginePool.engine)
+        v8runtime!!.close()
         v8runtime = null
     }
 
