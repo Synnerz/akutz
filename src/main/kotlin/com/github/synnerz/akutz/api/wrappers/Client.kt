@@ -12,6 +12,9 @@ import net.minecraft.inventory.Slot
 import net.minecraft.network.INetHandler
 import net.minecraft.network.Packet
 import org.lwjgl.opengl.Display
+import java.awt.Toolkit
+import java.awt.datatransfer.DataFlavor
+import java.awt.datatransfer.StringSelection
 
 /**
  * Taken from ChatTriggers under MIT License
@@ -87,5 +90,32 @@ object Client {
         fun getY(): Double = Tessellator.getRenderY()
 
         fun getZ(): Double = Tessellator.getRenderZ()
+    }
+
+    @JvmField
+    val clipboard = object {
+        private val board = Toolkit.getDefaultToolkit().systemClipboard
+        fun get(): String {
+            try {
+                val t = board.getContents(null)
+                val s = StringBuilder()
+                DataFlavor.selectBestTextFlavor(t.transferDataFlavors).getReaderForText(t).use {
+                    val b = CharArray(65536)
+                    var l = 0
+                    do {
+                        l = it.read(b, 0, 65536)
+                        if (l <= 0) break
+                        s.appendRange(b, 0, l)
+                    } while (true)
+                }
+                return s.toString()
+            } catch (_: Exception) {
+                return ""
+            }
+        }
+
+        fun set(value: String) {
+            board.setContents(StringSelection(value), null)
+        }
     }
 }
