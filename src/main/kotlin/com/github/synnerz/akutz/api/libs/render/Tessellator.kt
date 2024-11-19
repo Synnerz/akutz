@@ -35,7 +35,7 @@ object Tessellator : Base() {
         } else {
             GlStateManager.depthMask(false)
             GlStateManager.enableBlend()
-            GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0)
+            GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
         }
         if (esp) GlStateManager.disableDepth()
         didEsp = esp
@@ -297,7 +297,7 @@ object Tessellator : Base() {
         GlStateManager.enableAlpha()
         GlStateManager.depthMask(false)
         GlStateManager.enableBlend()
-        GlStateManager.tryBlendFuncSeparate(770, 1, 1, 0)
+        GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
 
         val widths = lines.map { fontRend.getStringWidth(it) / 2.0 }
         val w = widths.max()
