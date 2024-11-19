@@ -19,7 +19,7 @@ import java.io.File
 import java.nio.file.Paths
 
 object Impl {
-    private val enginePool: IJavetEnginePool<V8Runtime> = JavetEnginePool()
+    private var enginePool: IJavetEnginePool<V8Runtime> = JavetEnginePool()
     private var v8runtime: V8Runtime? = null
     private var javetJVMInterceptor: JavetJVMInterceptor? = null
     private var javetProxyConverter: JavetProxyConverter? = null
@@ -62,6 +62,8 @@ object Impl {
     }
 
     fun setup() {
+        if (enginePool.releasedEngineCount <= 0) enginePool = JavetEnginePool()
+
         v8runtime = enginePool.engine.v8Runtime
         v8runtime!!.setPromiseRejectCallback { jevent, valpromise, value ->
             println("event: $jevent")
