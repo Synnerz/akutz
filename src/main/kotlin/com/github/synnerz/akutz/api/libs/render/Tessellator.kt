@@ -12,7 +12,6 @@ import kotlin.math.*
 
 object Tessellator : Base() {
     private var didEsp = false
-    private var prevCol = Color.WHITE
 
     fun getRenderX() = rendManager.renderX
 
@@ -29,7 +28,6 @@ object Tessellator : Base() {
         if (pushMatrix) GlStateManager.translate(-getRenderX(), -getRenderY(), -getRenderZ())
         GlStateManager.disableTexture2D()
         GlStateManager.disableLighting()
-        prevCol = color
         if (color.a == 255) {
             GlStateManager.disableAlpha()
             GlStateManager.depthMask(true)
@@ -305,14 +303,14 @@ object Tessellator : Base() {
         val w = widths.max()
 
         if (renderBlackBox) {
-            color(Color(0, 0, 0, 64))
+            _color(Color(0, 0, 0, 64))
             worldRen.begin(5, DefaultVertexFormats.POSITION)
             worldRen.pos(-w - 1, -1.0, 0.0).endVertex()
             worldRen.pos(-w - 1, 8.0 * lines.size + 1, 0.0).endVertex()
             worldRen.pos(w + 1, -1.0, 0.0).endVertex()
             worldRen.pos(w + 1, 8.0 * lines.size + 1, 0.0).endVertex()
             tess.draw()
-            color(prevCol)
+            _color(prevCol)
         }
 
         GlStateManager.enableTexture2D()

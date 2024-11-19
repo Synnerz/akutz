@@ -15,8 +15,9 @@ import net.minecraft.client.renderer.Tessellator as MCTessellator
  */
 open class Base {
     var partialTicks = 0f
-    private var lineWidth: Float = 1f
-    private var pushedMatrix = 0
+    protected var lineWidth: Float = 1f
+    protected var pushedMatrix = 0
+    protected var prevCol: Color = Color.WHITE
 
     protected val tess: MCTessellator by lazy { MCTessellator.getInstance() }
     protected val worldRen: WorldRenderer by lazy { tess.worldRenderer }
@@ -31,13 +32,17 @@ open class Base {
 
     fun getRenderManager() = rendManager
 
-    fun color(color: Color) = apply {
+    protected fun _color(color: Color) = apply {
         GlStateManager.color(
             color.getRf().toFloat(),
             color.getGf().toFloat(),
             color.getBf().toFloat(),
             color.getAf().toFloat()
         )
+    }
+    fun color(color: Color) = apply {
+        prevCol = color
+        _color(color)
     }
 
     open fun prepareDraw(color: Color, pushMatrix: Boolean) = apply {
