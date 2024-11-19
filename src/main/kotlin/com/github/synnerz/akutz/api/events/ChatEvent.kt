@@ -19,7 +19,7 @@ class ChatEvent(
     private val parameters = mutableSetOf<Parameter>()
     private var triggerIfCanceled: Boolean = true
     private var rawCritS: String? = null
-    private var rawCritR: V8ValueRegExp? = null
+    private var rawCritR: V8RegexWrapped? = null
     private var dirty = true
 
     private val HAS_GROUP_MATCH = "\\$\\{(?:\\*|\\w+)}".toRegex()
@@ -52,13 +52,13 @@ class ChatEvent(
         } else if (this.rawCritR != null) {
             this.mode = 2
 
-            val src = ChatLib.replaceFormatting(rawCritR!!.getPropertyString("source"))
+            val src = ChatLib.replaceFormatting(rawCritR!!.source)
             formatted = HAS_FORMATTING_CODE in src
 
             val flags = mutableSetOf(RegexOption.UNIX_LINES)
-            if (caseInsensitive || rawCritR!!.getPropertyBoolean("ignoreCase")) flags.add(RegexOption.IGNORE_CASE)
-            if (rawCritR!!.getPropertyBoolean("m")) flags.add(RegexOption.MULTILINE)
-            if (rawCritR!!.getPropertyBoolean("s")) flags.add(RegexOption.DOT_MATCHES_ALL)
+            if (caseInsensitive || rawCritR!!.ignoreCase) flags.add(RegexOption.IGNORE_CASE)
+            if (rawCritR!!.multiline) flags.add(RegexOption.MULTILINE)
+            if (rawCritR!!.dotAll) flags.add(RegexOption.DOT_MATCHES_ALL)
 
             regex = Regex(src, flags)
         }
@@ -101,7 +101,7 @@ class ChatEvent(
 
     fun setCriteria(criteria: V8ValueRegExp) = apply {
         rawCritS = null
-        rawCritR = criteria
+        rawCritR = V8RegexWrapped(criteria)
         mark()
     }
 
@@ -183,5 +183,19 @@ class ChatEvent(
                     param.names.any { it.lowercase() == name }
                 } ?: throw IllegalArgumentException("Unknown parameter: $name")
         }
+    }
+
+    data class V8RegexWrapped(
+        val source: String,
+        val ignoreCase: Boolean,
+        val multiline: Boolean,
+        val dotAll: Boolean
+    ) {
+        constructor(regex: V8ValueRegExp) : this(
+            regex.getPropertyString("source"),
+            regex.getPropertyBoolean("ignoreCase"),
+            regex.getPropertyBoolean("multiline"),
+            regex.getPropertyBoolean("dotAll")
+        )
     }
 }
