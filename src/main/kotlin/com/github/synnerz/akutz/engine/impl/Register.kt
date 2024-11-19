@@ -32,6 +32,9 @@ object Register {
         registerMethod("gameunload", EventType.GameUnload)
         registerMethod("entitydeath", EventType.EntityDeath)
         registerMethod("entitydamage", EventType.EntityDamage)
+        registerMethod("clicked", EventType.Clicked)
+        registerMethod("scrolled", EventType.Scrolled)
+        registerMethod("dragged", EventType.Dragged)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)
