@@ -85,9 +85,11 @@ object Tessellator : Base() {
         y2: Double,
         z2: Double
     ) = apply {
+        val p1 = rescaleHomogenous(x1, y1, z1)
+        val p2 = rescaleHomogenous(x2, y2, z2)
         worldRen.begin(1, DefaultVertexFormats.POSITION)
-        worldRen.pos(x1, y1, z1).endVertex()
-        worldRen.pos(x2, y2, z2).endVertex()
+        worldRen.pos(p1[0], p1[1], p1[2]).endVertex()
+        worldRen.pos(p2[0], p2[1], p2[2]).endVertex()
         tess.draw()
     }
 
@@ -106,14 +108,19 @@ object Tessellator : Base() {
 
     @JvmOverloads
     fun renderBoxOutline(
-        x: Double,
-        y: Double,
-        z: Double,
-        w: Double,
-        h: Double,
+        xPos: Double,
+        yPos: Double,
+        zPos: Double,
+        width: Double,
+        height: Double,
         centered: Boolean = false
-    ): Tessellator {
-        if (centered) return renderBoxOutline(x - w / 2, y, z - w / 2, w, h, false)
+    ) = apply {
+        val p = rescaleHomogenous(xPos, yPos, zPos)
+        val w = width * p[3]
+        val h = height * p[3]
+        val x = if (centered) p[0] - w / 2 else p[0]
+        val y = p[1]
+        val z = if (centered) p[2] - w / 2 else p[2]
 
         worldRen.begin(2, DefaultVertexFormats.POSITION)
         worldRen.pos(x, y, z).endVertex()
@@ -137,52 +144,65 @@ object Tessellator : Base() {
         worldRen.pos(x + w, y, z).endVertex()
         worldRen.pos(x + w, y + h, z).endVertex()
         tess.draw()
-
-        return this
     }
 
     @JvmOverloads
-    fun renderBoxFilled(x: Double, y: Double, z: Double, w: Double, h: Double, centered: Boolean = false): Tessellator {
-        if (centered) return renderBoxFilled(x - w / 2, y, z - w / 2, w, h, false)
-        worldRen.begin(5, DefaultVertexFormats.POSITION)
-        worldRen.pos(x, y, z).endVertex()
-        worldRen.pos(x + w, y, z).endVertex()
-        worldRen.pos(x, y, z + w).endVertex()
-        worldRen.pos(x + w, y, z + w).endVertex()
-        worldRen.pos(x, y + h, z + w).endVertex()
-        worldRen.pos(x + w, y + h, z + w).endVertex()
-        worldRen.pos(x, y + h, z).endVertex()
-        worldRen.pos(x + w, y + h, z).endVertex()
-        worldRen.pos(x, y, z).endVertex()
-        worldRen.pos(x + w, y, z).endVertex()
-        tess.draw()
-        worldRen.begin(5, DefaultVertexFormats.POSITION)
-        worldRen.pos(x, y, z).endVertex()
-        worldRen.pos(x, y, z + w).endVertex()
-        worldRen.pos(x, y + h, z + w).endVertex()
-        worldRen.pos(x, y + h, z).endVertex()
-        tess.draw()
-        worldRen.begin(5, DefaultVertexFormats.POSITION)
-        worldRen.pos(x + w, y, z).endVertex()
-        worldRen.pos(x + w, y + h, z).endVertex()
-        worldRen.pos(x + w, y + h, z + w).endVertex()
-        worldRen.pos(x + w, y, z + w).endVertex()
-        tess.draw()
+    fun renderBoxFilled(
+        xPos: Double,
+        yPos: Double,
+        zPos: Double,
+        width: Double,
+        height: Double,
+        centered: Boolean = false
+    ) = apply {
+        val p = rescaleHomogenous(xPos, yPos, zPos)
+        val w = width * p[3]
+        val h = height * p[3]
+        val x = if (centered) p[0] - w / 2 else p[0]
+        val y = p[1]
+        val z = if (centered) p[2] - w / 2 else p[2]
 
-        return this
+        worldRen.begin(5, DefaultVertexFormats.POSITION)
+        worldRen.pos(x, y, z).endVertex()
+        worldRen.pos(x + w, y, z).endVertex()
+        worldRen.pos(x, y, z + w).endVertex()
+        worldRen.pos(x + w, y, z + w).endVertex()
+        worldRen.pos(x, y + h, z + w).endVertex()
+        worldRen.pos(x + w, y + h, z + w).endVertex()
+        worldRen.pos(x, y + h, z).endVertex()
+        worldRen.pos(x + w, y + h, z).endVertex()
+        worldRen.pos(x, y, z).endVertex()
+        worldRen.pos(x + w, y, z).endVertex()
+        tess.draw()
+        worldRen.begin(5, DefaultVertexFormats.POSITION)
+        worldRen.pos(x, y, z).endVertex()
+        worldRen.pos(x, y, z + w).endVertex()
+        worldRen.pos(x, y + h, z + w).endVertex()
+        worldRen.pos(x, y + h, z).endVertex()
+        tess.draw()
+        worldRen.begin(5, DefaultVertexFormats.POSITION)
+        worldRen.pos(x + w, y, z).endVertex()
+        worldRen.pos(x + w, y + h, z).endVertex()
+        worldRen.pos(x + w, y + h, z + w).endVertex()
+        worldRen.pos(x + w, y, z + w).endVertex()
+        tess.draw()
     }
 
     private val beaconBeamTexture = ResourceLocation("textures/entity/beacon_beam.png")
 
     @JvmOverloads
     fun renderBeaconBeam(
-        x: Double,
-        y: Double,
-        z: Double,
+        xPos: Double,
+        yPos: Double,
+        zPos: Double,
         centered: Boolean = false,
         height: Double = 300.0
-    ): Tessellator {
-        if (!centered) return renderBeaconBeam(x + 0.5, y, z + 0.5, false, height)
+    ) = apply {
+        val p = rescaleHomogenous(xPos, yPos, zPos)
+        val x = if (centered) p[0] else p[0] + 0.5 * p[3]
+        val y = p[1]
+        val z = if (centered) p[2] else p[2] + 0.5 * p[3]
+
         GlStateManager.enableTexture2D()
         Minecraft.getMinecraft().textureManager.bindTexture(beaconBeamTexture)
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.toFloat())
@@ -191,14 +211,14 @@ object Tessellator : Base() {
         val time = 0.2 * (World.getTime() + partialTicks)
         val t0 = ceil(time) - time
         val t1 = time * -0.1875
-        val d0 = 0.5 + cos(t1 + Math.PI * 1 / 4) * 0.2
-        val d1 = 0.5 + sin(t1 + Math.PI * 1 / 4) * 0.2
-        val d2 = 0.5 + cos(t1 + Math.PI * 3 / 4) * 0.2
-        val d3 = 0.5 + sin(t1 + Math.PI * 3 / 4) * 0.2
-        val d4 = 0.5 + cos(t1 + Math.PI * 5 / 4) * 0.2
-        val d5 = 0.5 + sin(t1 + Math.PI * 5 / 4) * 0.2
-        val d6 = 0.5 + cos(t1 + Math.PI * 9 / 4) * 0.2
-        val d7 = 0.5 + sin(t1 + Math.PI * 9 / 4) * 0.2
+        val d0 = 0.5 + cos(t1 + Math.PI * 1 / 4) * 0.2 * p[3]
+        val d1 = 0.5 + sin(t1 + Math.PI * 1 / 4) * 0.2 * p[3]
+        val d2 = 0.5 + cos(t1 + Math.PI * 3 / 4) * 0.2 * p[3]
+        val d3 = 0.5 + sin(t1 + Math.PI * 3 / 4) * 0.2 * p[3]
+        val d4 = 0.5 + cos(t1 + Math.PI * 5 / 4) * 0.2 * p[3]
+        val d5 = 0.5 + sin(t1 + Math.PI * 5 / 4) * 0.2 * p[3]
+        val d6 = 0.5 + cos(t1 + Math.PI * 9 / 4) * 0.2 * p[3]
+        val d7 = 0.5 + sin(t1 + Math.PI * 9 / 4) * 0.2 * p[3]
         val t2 = -1 + t0
         val d8 = height * 2.5 + t2
 
@@ -251,19 +271,22 @@ object Tessellator : Base() {
 
         GlStateManager.disableTexture2D()
         GlStateManager.enableCull()
-
-        return this
     }
 
     @JvmOverloads
     fun renderString(
         text: String,
-        x: Double,
-        y: Double,
-        z: Double,
+        xPos: Double,
+        yPos: Double,
+        zPos: Double,
         renderBlackBox: Boolean = true,
         shadow: Boolean = true
-    ) {
+    ) = apply {
+        val p = rescaleHomogenous(xPos, yPos, zPos)
+        val x = p[0]
+        val y = p[1]
+        val z = p[2]
+
         val lines = ChatLib.addColor(text).split('\n')
         val xMultiplier = if (Minecraft.getMinecraft().gameSettings.thirdPersonView == 2) -1 else 1
 
@@ -271,7 +294,7 @@ object Tessellator : Base() {
         GlStateManager.translate(x, y, z)
         GlStateManager.rotate(-rendManager.viewY, 0.0f, 1.0f, 0.0f)
         GlStateManager.rotate(rendManager.viewX * xMultiplier, 1.0f, 0.0f, 0.0f)
-        GlStateManager.scale(-1f, -1f, -1f)
+        GlStateManager.scale(-p[3], -p[3], -p[3])
         GlStateManager.enableAlpha()
         GlStateManager.depthMask(false)
         GlStateManager.enableBlend()
