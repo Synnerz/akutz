@@ -188,7 +188,7 @@ object Renderer : Base() {
         GlStateManager.disableTexture2D()
     }
 
-    private var sr: ScaledResolution? = null
+    var sr: ScaledResolution? = null
 
     @SubscribeEvent
     fun onRenderOverlayPre(event: TickEvent.RenderTickEvent) {

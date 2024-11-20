@@ -4,10 +4,12 @@ import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.libs.render.Tessellator
+import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.api.wrappers.World
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.hooks.ChannelDuplexHook
+import net.minecraft.client.renderer.GlStateManager
 import net.minecraft.util.BlockPos
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 import net.minecraftforge.client.event.DrawBlockHighlightEvent
@@ -30,10 +32,54 @@ import java.util.concurrent.CopyOnWriteArrayList
  */
 object ClientListener {
     private val tasks = CopyOnWriteArrayList<Task>()
+    private var currentTitle: Title? = null
+
+    class Title(val title: String, val subTitle: String?, var ticks: Int, val shadow: Boolean)
 
     class Task(var delay: Int, val callback: () -> Unit)
 
     fun addTask(delay: Int, callback: () -> Unit) = tasks.add(Task(delay, callback))
+
+    fun setTitle(title: String, subTitle: String?, ticks: Int, shadow: Boolean) {
+        currentTitle = Title(title, subTitle, ticks, shadow)
+    }
+
+    private fun renderTitle() {
+        if (!World.isLoaded() || currentTitle == null || Renderer.sr == null) return
+
+        if (currentTitle!!.ticks <= 0) {
+            currentTitle = null
+            return
+        }
+
+        val x = (Renderer.sr!!.scaledWidth / 2).toFloat()
+        val y = (Renderer.sr!!.scaledHeight / 2).toFloat()
+
+        Renderer.prepareDraw(Color(255, 255, 255, 255))
+        Renderer.translate(x, y)
+        Renderer.scale(4f, 4f)
+        Renderer.drawString(
+            currentTitle!!.title,
+            (-(Renderer.getStringWidth(currentTitle!!.title) / 2)).toFloat(),
+            -10f,
+            currentTitle!!.shadow
+        )
+
+        if (currentTitle!!.subTitle !== null) {
+            GlStateManager.popMatrix()
+            GlStateManager.pushMatrix()
+            Renderer.translate(x, y)
+            Renderer.scale(2f, 2f)
+            Renderer.drawString(
+                currentTitle!!.subTitle!!,
+                (-(Renderer.getStringWidth(currentTitle!!.subTitle!!) / 2)).toFloat(),
+                5f,
+                currentTitle!!.shadow
+            )
+        }
+
+        Renderer.finishDraw()
+    }
 
     @SubscribeEvent
     fun onTick(event: TickEvent.ClientTickEvent) {
@@ -47,6 +93,8 @@ object ClientListener {
         }
 
         if (!World.isLoaded()) return
+
+        if (currentTitle !== null) currentTitle!!.ticks--
 
         EventType.Tick.triggerAll()
     }
@@ -64,7 +112,10 @@ object ClientListener {
     @SubscribeEvent
     fun onRenderGameOverlay(event: RenderGameOverlayEvent.Pre) {
         when (event.type) {
-            RenderGameOverlayEvent.ElementType.TEXT -> EventType.RenderOverlay.triggerAll(event)
+            RenderGameOverlayEvent.ElementType.TEXT -> {
+                EventType.RenderOverlay.triggerAll(event)
+                renderTitle()
+            }
             RenderGameOverlayEvent.ElementType.CHAT -> EventType.RenderChat.triggerAll(event)
             else -> null
         }
