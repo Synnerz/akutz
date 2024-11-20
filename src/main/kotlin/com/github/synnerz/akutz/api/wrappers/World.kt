@@ -96,6 +96,21 @@ object World {
     fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, min: BlockPos, max: BlockPos) : List<T>? =
         getAllEntitiesInAABB(clazz, min, max)
 
+    @JvmStatic
+    fun playSound(name: String, vol: Float, pitch: Float) {
+        Client.scheduleTask { Player.getPlayer()?.playSound(name, vol, pitch) }
+    }
+
+    @JvmStatic
+    fun playRecord(name: String, x: Double, y: Double, z: Double) {
+        Client.scheduleTask { getWorld()?.playRecord(BlockPos(x, y, z), name) }
+    }
+
+    @JvmStatic
+    fun stopAllSounds() {
+        Client.getMinecraft().soundHandler.stopSounds()
+    }
+
     @JvmField
     val border = object {
         fun getCenterX(): Double = getWorld()!!.worldBorder.centerX
