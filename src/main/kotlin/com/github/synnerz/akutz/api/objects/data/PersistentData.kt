@@ -4,7 +4,7 @@ import com.github.synnerz.akutz.Akutz
 import java.io.File
 import java.nio.charset.Charset
 
-class PersistantData(val fileName: File, initialValue: Map<String, AProperty<Any>>) : PropertyObject(initialValue) {
+class PersistentData(val fileName: File, initialValue: Map<String, AProperty<Any>>) : PropertyObject(initialValue) {
     constructor(moduleName: String, fileName: String, initialValue: Map<String, AProperty<Any>>) :
             this(Akutz.configLocation.resolve(moduleName).resolve(fileName), initialValue)
 
@@ -28,6 +28,6 @@ class PersistantData(val fileName: File, initialValue: Map<String, AProperty<Any
 
     companion object {
         @JvmField
-        val INSTANCES: MutableSet<PersistantData> = mutableSetOf()
+        val INSTANCES: MutableSet<PersistentData> = mutableSetOf()
     }
 }

@@ -2,7 +2,7 @@ package com.github.synnerz.akutz.command
 
 import com.github.synnerz.akutz.api.commands.BaseCommand
 import com.github.synnerz.akutz.api.libs.ChatLib
-import com.github.synnerz.akutz.api.objects.data.PersistantData
+import com.github.synnerz.akutz.api.objects.data.PersistentData
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import net.minecraft.client.entity.EntityPlayerSP
@@ -13,8 +13,8 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
 
         when (args[0]) {
             "load", "reload" -> {
-                PersistantData.INSTANCES.forEach{ it.save() }
-                PersistantData.INSTANCES.clear()
+                PersistentData.INSTANCES.forEach{ it.save() }
+                PersistentData.INSTANCES.clear()
                 Impl.shutdown()
                 ModuleManager.setup()
                 Impl.setup()
@@ -24,8 +24,8 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
             "unload" -> {
                 if (!Impl.isLoaded()) return ChatLib.chat("Akutz has already been unloaded")
 
-                PersistantData.INSTANCES.forEach{ it.save() }
-                PersistantData.INSTANCES.clear()
+                PersistentData.INSTANCES.forEach{ it.save() }
+                PersistentData.INSTANCES.clear()
                 Impl.shutdown()
                 ChatLib.chat("Akutz was unloaded")
             }
