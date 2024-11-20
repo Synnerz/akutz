@@ -131,7 +131,7 @@ class Gui : GuiScreen() {
 
     override fun mouseClickMove(mouseX: Int, mouseY: Int, clickedMouseButton: Int, timeSinceLastClick: Long) {
         super.mouseClickMove(mouseX, mouseY, clickedMouseButton, timeSinceLastClick)
-        listeners.onDraw?.trigger(arrayOf(mouseX, mouseY, clickedMouseButton, timeSinceLastClick))
+        listeners.onDragged?.trigger(arrayOf(mouseX, mouseY, clickedMouseButton, timeSinceLastClick))
     }
 
     override fun drawScreen(mouseX: Int, mouseY: Int, partialTicks: Float) {
