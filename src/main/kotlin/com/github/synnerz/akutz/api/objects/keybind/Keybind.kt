@@ -47,12 +47,13 @@ class Keybind : StateVar<Boolean> {
     }
 
     internal fun onTick() {
-        set(keyBinding.isKeyDown)
+        super.set(keyBinding.isKeyDown)
     }
 
     fun getDescription(): String = keyBinding.keyDescription
     fun getKeyCode(): Int = keyBinding.keyCode
     fun getCategory(): String = keyBinding.keyCategory
+    override fun set(v: Boolean) = throw UnsupportedOperationException()
 
     companion object {
         private val customKeyBindings = mutableListOf<KeyBinding>()
