@@ -11,7 +11,7 @@ import org.lwjgl.opengl.GL11.*
 import kotlin.math.*
 
 object Tessellator : Base() {
-    private var didEsp = false
+    private var hasDepth = false
 
     fun getRenderX() = rendManager.renderX
 
@@ -20,14 +20,18 @@ object Tessellator : Base() {
     fun getRenderZ() = rendManager.renderZ
 
     fun beginDraw() = Tessellator.beginDraw(Color.WHITE)
+
     fun beginDraw(color: Color) = beginDraw(color, true)
+
     override fun beginDraw(color: Color, pushMatrix: Boolean) = beginDraw(color, pushMatrix, false)
-    fun beginDraw(color: Color, pushMatrix: Boolean, esp: Boolean) = apply {
+
+    fun beginDraw(color: Color, pushMatrix: Boolean, depth: Boolean) = apply {
         super.beginDraw(color, pushMatrix)
 
         if (pushMatrix) GlStateManager.translate(-getRenderX(), -getRenderY(), -getRenderZ())
         GlStateManager.disableTexture2D()
         GlStateManager.disableLighting()
+
         if (color.a == 255) {
             GlStateManager.disableAlpha()
             GlStateManager.depthMask(true)
@@ -37,21 +41,24 @@ object Tessellator : Base() {
             GlStateManager.enableBlend()
             GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
         }
-        if (esp) GlStateManager.disableDepth()
-        didEsp = esp
+
+        if (depth) GlStateManager.disableDepth()
+        hasDepth = depth
     }
 
     override fun finishDraw() = apply {
         super.finishDraw()
 
         GlStateManager.enableTexture2D()
+
         if (prevCol.a == 255) GlStateManager.enableAlpha()
         else {
             GlStateManager.depthMask(true)
             GlStateManager.disableBlend()
         }
-        if (didEsp) GlStateManager.enableDepth()
-        didEsp = false
+
+        if (hasDepth) GlStateManager.enableDepth()
+        hasDepth = false
     }
 
     fun rescaleHomogenous(x: Double, y: Double, z: Double): List<Double> {
@@ -126,12 +133,14 @@ object Tessellator : Base() {
         worldRen.pos(x + w, y, z + w).endVertex()
         worldRen.pos(x + w, y, z).endVertex()
         tess.draw()
+
         worldRen.begin(2, DefaultVertexFormats.POSITION)
         worldRen.pos(x, y + h, z).endVertex()
         worldRen.pos(x, y + h, z + w).endVertex()
         worldRen.pos(x + w, y + h, z + w).endVertex()
         worldRen.pos(x + w, y + h, z).endVertex()
         tess.draw()
+
         worldRen.begin(1, DefaultVertexFormats.POSITION)
         worldRen.pos(x, y, z).endVertex()
         worldRen.pos(x, y + h, z).endVertex()
@@ -172,12 +181,14 @@ object Tessellator : Base() {
         worldRen.pos(x, y, z).endVertex()
         worldRen.pos(x + w, y, z).endVertex()
         tess.draw()
+
         worldRen.begin(5, DefaultVertexFormats.POSITION)
         worldRen.pos(x, y, z).endVertex()
         worldRen.pos(x, y, z + w).endVertex()
         worldRen.pos(x, y + h, z).endVertex()
         worldRen.pos(x, y + h, z + w).endVertex()
         tess.draw()
+
         worldRen.begin(5, DefaultVertexFormats.POSITION)
         worldRen.pos(x + w, y, z).endVertex()
         worldRen.pos(x + w, y + h, z).endVertex()

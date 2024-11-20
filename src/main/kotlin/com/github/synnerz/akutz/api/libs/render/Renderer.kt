@@ -23,6 +23,7 @@ object Renderer : Base() {
     fun getStringWidth(text: String) = getFontRenderer().getStringWidth(text)
 
     fun beginDraw(color: Color) = beginDraw(color, true)
+
     override fun beginDraw(color: Color, pushMatrix: Boolean) = apply {
         super.beginDraw(color, pushMatrix)
         GlStateManager.enableBlend()
@@ -86,6 +87,7 @@ object Renderer : Base() {
         val da = (a2 - a1) / l
         worldRen.begin(if (solid) 6 else 3, DefaultVertexFormats.POSITION)
         if (solid) worldRen.pos(x, y, 0.0).endVertex()
+
         worldRen.pos(x + cos(a1) * xr, y - sin(a1) * yr, 0.0).endVertex()
         for (i in 1..l) {
             val a = a1 + da * i
@@ -112,7 +114,6 @@ object Renderer : Base() {
 
         if (solid) {
             drawRectangle(x + r, y, w - 2 * r, h, true)
-            // drawRectangleVertex(x, y + r, w, h - 2 * r, true)
             drawRectangle(x, y + r, r, h - 2 * r, true)
             drawRectangle(x + w - r, y + r, r, h - 2 * r, true)
         } else {

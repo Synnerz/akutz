@@ -40,9 +40,14 @@ open class Base {
             color.getAf().toFloat()
         )
     }
+
     fun color(color: Color) = apply {
         prevCol = color
         _color(color)
+    }
+
+    fun setColor(color: Color) = apply {
+        this.color(color)
     }
 
     open fun beginDraw(color: Color, pushMatrix: Boolean) = apply {
