@@ -34,7 +34,6 @@ object KeybindHandler {
     @JvmStatic
     fun getKeybinds() = keyBinds
 
-    @JvmStatic
     @SubscribeEvent
     fun onTick(event: TickEvent.ClientTickEvent) {
         if (!World.isLoaded() || event.phase == TickEvent.Phase.END) return
