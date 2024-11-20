@@ -127,5 +127,8 @@ class Color @JvmOverloads constructor(
 
         @JvmField
         val WHITE = Color(255, 255, 255, 255)
+
+        @JvmField
+        val EMPTY = Color(0, 0, 0, 0)
     }
 }
