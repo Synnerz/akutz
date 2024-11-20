@@ -55,6 +55,7 @@ object Register {
         registerMethod("guimouseclick", EventType.GuiMouseClick, MethodType.Cancelable)
         registerMethod("guimouserelease", EventType.GuiMouseRelease, MethodType.Cancelable)
         registerMethod("guimousedrag", EventType.GuiMouseDrag, MethodType.Cancelable)
+        registerMethod("spawnentity", EventType.SpawnEntity, MethodType.Cancelable)
 
         // SoundPlay
         registerMethod("soundplay", EventType.SoundPlay, MethodType.SoundPlay)
