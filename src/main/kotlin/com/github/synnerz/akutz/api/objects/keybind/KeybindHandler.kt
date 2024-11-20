@@ -10,27 +10,34 @@ import java.util.concurrent.CopyOnWriteArrayList
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/objects/keybind/KeyBindHandler.kt)
  */
-internal class KeybindHandler {
+object KeybindHandler {
     init {
         MinecraftForge.EVENT_BUS.register(this)
     }
 
+    @JvmStatic
     private val keyBinds = CopyOnWriteArrayList<Keybind>()
 
+    @JvmStatic
     fun registerKeybind(keybind: Keybind) {
         keyBinds.add(keybind)
     }
 
+    @JvmStatic
     fun unregisterKeybind(keybind: Keybind) {
         keyBinds.remove(keybind)
     }
 
+    @JvmStatic
     fun clearKeybinds() = keyBinds.clear()
 
+    @JvmStatic
     fun getKeybinds() = keyBinds
 
+    @JvmStatic
     @SubscribeEvent
     fun onTick(event: TickEvent.ClientTickEvent) {
         if (!World.isLoaded() || event.phase == TickEvent.Phase.END) return
+        keyBinds.forEach { it.onTick() }
     }
 }
