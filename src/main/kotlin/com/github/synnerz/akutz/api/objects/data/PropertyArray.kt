@@ -34,14 +34,15 @@ open class PropertyArray<T : AProperty<*>>(
         }
     }
 
-    open fun getArray(key: Int) = get()[key] as PropertyArray<*>
-    open fun getBoolean(key: Int) = get()[key] as PropertyBoolean
-    open fun getColor(key: Int) = get()[key] as PropertyColor
-    open fun getDouble(key: Int) = get()[key] as PropertyDouble
-    open fun getFlags(key: Int) = get()[key] as PropertyFlags
-    open fun getInteger(key: Int) = get()[key] as PropertyInteger
-    open fun getObject(key: Int) = get()[key] as PropertyObject
-    open fun getOption(key: Int) = get()[key] as PropertyOption
-    open fun getPercent(key: Int) = get()[key] as PropertyPercent
-    open fun getString(key: Int) = get()[key] as PropertyString
+    open fun get(key: Int) = (get().getOrNull(key) as AProperty<*>?)?.get()
+    open fun getArray(key: Int) = (get()[key] as PropertyArray<*>?)?.get()
+    open fun getBoolean(key: Int) = (get()[key] as PropertyBoolean?)?.get()
+    open fun getColor(key: Int) = (get()[key] as PropertyColor?)?.get()
+    open fun getDouble(key: Int) = (get()[key] as PropertyDouble?)?.get()
+    open fun getFlags(key: Int) = (get()[key] as PropertyFlags?)?.get()
+    open fun getInteger(key: Int) = (get()[key] as PropertyInteger?)?.get()
+    open fun getObject(key: Int) = (get()[key] as PropertyObject?)?.get()
+    open fun getOption(key: Int) = (get()[key] as PropertyOption?)?.get()
+    open fun getPercent(key: Int) = (get()[key] as PropertyPercent?)?.get()
+    open fun getString(key: Int) = (get()[key] as PropertyString?)?.get()
 }

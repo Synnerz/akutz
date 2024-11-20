@@ -19,14 +19,15 @@ open class PropertyObject(initialValue: Map<String, AProperty<*>> = mutableMapOf
     override fun set(v: MutableMap<String, AProperty<*>>) =
         v.forEach { (k, v) -> (get()[k] as AProperty<Any>?)?.set(v) }
 
-    open fun getArray(key: String) = get()[key] as PropertyArray<*>
-    open fun getBoolean(key: String) = get()[key] as PropertyBoolean
-    open fun getColor(key: String) = get()[key] as PropertyColor
-    open fun getDouble(key: String) = get()[key] as PropertyDouble
-    open fun getFlags(key: String) = get()[key] as PropertyFlags
-    open fun getInteger(key: String) = get()[key] as PropertyInteger
-    open fun getObject(key: String) = get()[key] as PropertyObject
-    open fun getOption(key: String) = get()[key] as PropertyOption
-    open fun getPercent(key: String) = get()[key] as PropertyPercent
-    open fun getString(key: String) = get()[key] as PropertyString
+    open fun get(key: String) = get()[key]?.get()
+    open fun getArray(key: String) = (get()[key] as PropertyArray<*>?)?.get()
+    open fun getBoolean(key: String) = (get()[key] as PropertyBoolean?)?.get()
+    open fun getColor(key: String) = (get()[key] as PropertyColor?)?.get()
+    open fun getDouble(key: String) = (get()[key] as PropertyDouble?)?.get()
+    open fun getFlags(key: String) = (get()[key] as PropertyFlags?)?.get()
+    open fun getInteger(key: String) = (get()[key] as PropertyInteger?)?.get()
+    open fun getObject(key: String) = (get()[key] as PropertyObject?)?.get()
+    open fun getOption(key: String) = (get()[key] as PropertyOption?)?.get()
+    open fun getPercent(key: String) = (get()[key] as PropertyPercent?)?.get()
+    open fun getString(key: String) = (get()[key] as PropertyString?)?.get()
 }
