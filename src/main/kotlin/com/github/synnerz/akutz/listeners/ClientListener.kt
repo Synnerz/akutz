@@ -4,6 +4,7 @@ import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.libs.render.Tessellator
+import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.api.wrappers.World
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.hooks.ChannelDuplexHook
@@ -21,15 +22,31 @@ import net.minecraftforge.fml.common.gameevent.TickEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent
 import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import org.lwjgl.util.vector.Vector3f
+import java.util.concurrent.CopyOnWriteArrayList
 
 /**
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/listeners/ClientListener.kt)
  */
 object ClientListener {
+    private val tasks = CopyOnWriteArrayList<Task>()
+
+    class Task(var delay: Int, val callback: () -> Unit)
+
+    fun addTask(delay: Int, callback: () -> Unit) = tasks.add(Task(delay, callback))
+
     @SubscribeEvent
     fun onTick(event: TickEvent.ClientTickEvent) {
-        if (event.phase !== TickEvent.Phase.END || !World.isLoaded()) return
+        if (event.phase == TickEvent.Phase.END) return
+
+        tasks.removeAll {
+            if (it.delay-- <= 0) {
+                Client.getMinecraft().addScheduledTask { it.callback() }
+                true
+            } else false
+        }
+
+        if (!World.isLoaded()) return
 
         EventType.Tick.triggerAll()
     }
