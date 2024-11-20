@@ -60,7 +60,7 @@ object Client {
     @JvmStatic
     fun isInGui(): Boolean = getMinecraft().currentScreen != null
 
-    fun <T : INetHandler> sendPacket(packet: Packet<*>) {
+    fun <T : INetHandler> sendPacket(packet: Packet<T>) {
         getConnection()?.networkManager?.sendPacket(packet)
     }
 
