@@ -1,24 +1,22 @@
 package com.github.synnerz.akutz.api.objects.data
 
-open class PropertyObject(initialValue: Map<String, AProperty<*>> = mutableMapOf()) :
-    AProperty<MutableMap<String, AProperty<*>>>(initialValue.toMutableMap()) {
+open class PropertyObject(initialValue: Map<String, AProperty<Any>> = mutableMapOf()) :
+    AProperty<MutableMap<String, AProperty<Any>>>(initialValue.toMutableMap()) {
     protected val MAGIC1 = "TREEMANSAIDTHISCODEISSMELLY"
     protected val MAGIC2 = "IWOULDHAVETOAGREEWITHHIMTHISSHITSUCKS"
-    override fun parse(value: String): MutableMap<String, AProperty<*>> = (get() + value.split(MAGIC1).associate {
-        val split = it.split(MAGIC2)
-        split[0] to get()[split[0]]!!.clone().update(split[1])
-    }).toMutableMap()
+    override fun parse(value: String): MutableMap<String, AProperty<Any>> =
+        (get() + value.split(MAGIC1).map { it.split(MAGIC2) }.filter { get().containsKey(it[0]) }
+            .associate { it[0] to get()[it[0]]!!.clone().update(it[1]) }).toMutableMap()
 
-    override fun serialize(): String = get().toList().joinToString { it.first + MAGIC2 + it.second.serialize() }
+    override fun serialize(): String =
+        get().toList().joinToString(separator = MAGIC1) { it.first + MAGIC2 + it.second.serialize() }
 
-    override fun validate(value: MutableMap<String, AProperty<*>>) {
-        value.forEach { (k, v) -> (get()[k]!! as AProperty<Any>).validate(v) }
-    }
+    override fun validate(value: MutableMap<String, AProperty<Any>>) =
+        get().forEach { (k, v) -> value[k]!!.validate(v) }
 
-    override fun clone(): AProperty<MutableMap<String, AProperty<*>>> = PropertyObject(get().toMutableMap())
+    override fun clone(): AProperty<MutableMap<String, AProperty<Any>>> = PropertyObject(get().toMutableMap())
 
-    override fun set(v: MutableMap<String, AProperty<*>>) =
-        throw UnsupportedOperationException("cant set on an object sorry :(")
+    override fun set(v: MutableMap<String, AProperty<Any>>) = v.forEach { (k, v) -> get()[k]?.set(v) }
 
     open fun getArray(key: String) = get()[key] as PropertyArray<*>
     open fun getBoolean(key: String) = get()[key] as PropertyBoolean
