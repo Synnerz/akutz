@@ -11,18 +11,19 @@ import org.apache.commons.lang3.ArrayUtils
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/objects/keybind/KeyBind.kt)
  */
-class Keybind : StateVar<Boolean> {
+class Keybind @JvmOverloads constructor(
+    var description: String,
+    var keyCode: Int = 0,
+    var category: String = "Akutz"
+) : StateVar<Boolean>(false) {
+    constructor(keyBinding: KeyBinding) : this(keyBinding.keyDescription, keyBinding.keyCode, keyBinding.keyCategory)
+
     private val keyBinding: KeyBinding
 
     init {
         KeybindHandler.registerKeybind(this)
-    }
-
-    @JvmOverloads
-    constructor(description: String, keyCode: Int, category: String = "Akutz") : super(false) {
         val possibleDuplicate = Minecraft.getMinecraft().gameSettings.keyBindings.find {
-            I18n.format(it.keyDescription) == I18n.format(description) &&
-                    I18n.format(it.keyCategory) == I18n.format(category)
+            I18n.format(it.keyDescription) == I18n.format(description) && I18n.format(it.keyCategory) == I18n.format(category)
         }
 
         if (possibleDuplicate != null) {
@@ -35,6 +36,7 @@ class Keybind : StateVar<Boolean> {
             if (category !in KeyBinding.getKeybinds()) {
                 uniqueCategories[category] = 0
             }
+
             uniqueCategories[category] = uniqueCategories[category]!! + 1
             keyBinding = KeyBinding(description, keyCode, category)
             ClientRegistry.registerKeyBinding(keyBinding)
@@ -42,17 +44,10 @@ class Keybind : StateVar<Boolean> {
         }
     }
 
-    constructor(keyBinding: KeyBinding) : super(false) {
-        this.keyBinding = keyBinding
-    }
-
     internal fun onTick() {
         super.set(keyBinding.isKeyDown)
     }
 
-    fun getDescription(): String = keyBinding.keyDescription
-    fun getKeyCode(): Int = keyBinding.keyCode
-    fun getCategory(): String = keyBinding.keyCategory
     override fun set(v: Boolean) = throw UnsupportedOperationException()
 
     companion object {
