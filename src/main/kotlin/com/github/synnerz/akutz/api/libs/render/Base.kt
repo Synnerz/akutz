@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.Tessellator as MCTessellator
 open class Base {
     var partialTicks = 0f
     protected var lineWidth: Float = 1f
-    protected var pushedMatrix = 0
+    var pushedMatrix = 0
     protected var prevCol: Color = Color.WHITE
 
     protected val tess: MCTessellator by lazy { MCTessellator.getInstance() }
