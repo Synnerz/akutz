@@ -12,7 +12,7 @@ class PropertyObject(initialValue: Map<String, AProperty<*>> = mutableMapOf()) :
     override fun serialize(): String = get().toList().joinToString { it.first + MAGIC2 + it.second.serialize() }
 
     override fun validate(value: Map<String, AProperty<*>>) {
-        value.forEach { k, v -> (get()[k]!! as AProperty<Any>).validate(v) }
+        value.forEach { (k, v) -> (get()[k]!! as AProperty<Any>).validate(v) }
     }
 
     override fun clone(): AProperty<Map<String, AProperty<*>>> = PropertyObject(get().toMutableMap())
