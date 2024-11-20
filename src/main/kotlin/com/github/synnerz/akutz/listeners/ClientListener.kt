@@ -3,6 +3,7 @@ package com.github.synnerz.akutz.listeners
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.wrappers.World
+import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.hooks.ChannelDuplexHook
 import net.minecraft.util.BlockPos
 import net.minecraftforge.client.event.ClientChatReceivedEvent
@@ -11,6 +12,7 @@ import net.minecraftforge.client.event.GuiOpenEvent
 import net.minecraftforge.client.event.GuiScreenEvent
 import net.minecraftforge.client.event.GuiScreenEvent.DrawScreenEvent
 import net.minecraftforge.client.event.RenderGameOverlayEvent
+import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
@@ -127,5 +129,10 @@ object ClientListener {
                 )
             }
         }
+    }
+
+    @SubscribeEvent
+    fun onEntityJoinWorld(event: EntityJoinWorldEvent) {
+        EventType.SpawnEntity.triggerAll(Entity(event.entity), event)
     }
 }

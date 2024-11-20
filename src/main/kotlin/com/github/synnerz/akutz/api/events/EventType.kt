@@ -62,6 +62,7 @@ enum class EventType {
     SpawnParticle,
     EntityDeath,
     EntityDamage,
+    SpawnEntity,
 
     // Misc
     Forge,
