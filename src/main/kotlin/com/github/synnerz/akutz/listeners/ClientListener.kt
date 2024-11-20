@@ -55,7 +55,7 @@ object ClientListener {
         val x = (Renderer.sr!!.scaledWidth / 2).toFloat()
         val y = (Renderer.sr!!.scaledHeight / 2).toFloat()
 
-        Renderer.prepareDraw(Color(255, 255, 255, 255))
+        Renderer.beginDraw(Color(255, 255, 255, 255))
         Renderer.translate(x, y)
         Renderer.scale(4f, 4f)
         Renderer.drawString(
