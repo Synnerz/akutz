@@ -1,16 +1,18 @@
 package com.github.synnerz.akutz.api.wrappers
 
 import com.github.synnerz.akutz.api.libs.render.Tessellator
+import com.github.synnerz.akutz.listeners.ClientListener
 import net.minecraft.client.Minecraft
-import net.minecraft.client.gui.GuiChat
-import net.minecraft.client.gui.GuiNewChat
-import net.minecraft.client.gui.GuiPlayerTabOverlay
-import net.minecraft.client.gui.GuiScreen
+import net.minecraft.client.gui.*
 import net.minecraft.client.gui.inventory.GuiContainer
+import net.minecraft.client.multiplayer.ServerData
+import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.client.network.NetHandlerPlayClient
 import net.minecraft.inventory.Slot
 import net.minecraft.network.INetHandler
 import net.minecraft.network.Packet
+import net.minecraft.realms.RealmsBridge
+import net.minecraftforge.fml.client.FMLClientHandler
 import org.lwjgl.opengl.Display
 import java.awt.Toolkit
 import java.awt.datatransfer.DataFlavor
@@ -60,8 +62,51 @@ object Client {
     @JvmStatic
     fun isInGui(): Boolean = getMinecraft().currentScreen != null
 
+    @JvmStatic
     fun <T : INetHandler> sendPacket(packet: Packet<T>) {
         getConnection()?.networkManager?.sendPacket(packet)
+    }
+
+    @JvmOverloads
+    @JvmStatic
+    fun scheduleTask(delay: Int = 0, callback: () -> Unit) {
+        ClientListener.addTask(delay, callback)
+    }
+
+    @JvmStatic
+    fun disconnect() {
+        scheduleTask {
+            World.getWorld()?.sendQuittingDisconnectingPacket()
+            getMinecraft().loadWorld(null as WorldClient?)
+
+            when {
+                getMinecraft().isIntegratedServerRunning -> getMinecraft().displayGuiScreen(GuiMainMenu())
+                getMinecraft().isConnectedToRealms -> RealmsBridge().switchToRealms(GuiMainMenu())
+                else -> getMinecraft().displayGuiScreen(GuiMultiplayer(GuiMainMenu()))
+            }
+        }
+    }
+
+    @JvmStatic
+    fun connect(ip: String) {
+        scheduleTask {
+            FMLClientHandler.instance().connectToServer(
+                GuiMultiplayer(GuiMainMenu()),
+                ServerData("Server", ip, false)
+            )
+        }
+    }
+
+    @JvmOverloads
+    @JvmStatic
+    fun reconnect(ip: String? = null) {
+        if (getMinecraft().isSingleplayer) return
+
+        val serv = ip ?: getMinecraft().currentServerData.serverIP
+        if (serv == null) return
+
+        disconnect()
+        scheduleTask { connect(serv) }
     }
 
     @JvmField
