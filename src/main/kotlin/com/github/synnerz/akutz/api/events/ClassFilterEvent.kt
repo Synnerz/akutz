@@ -1,9 +1,10 @@
 package com.github.synnerz.akutz.api.events
 
-import net.minecraft.entity.Entity
+import com.github.synnerz.akutz.api.wrappers.entity.Entity
+import com.github.synnerz.akutz.api.wrappers.entity.TileEntity
+import net.minecraft.entity.Entity as MCEntity
 import net.minecraft.network.Packet
-import net.minecraft.tileentity.TileEntity
-import net.minecraft.tileentity.TileEntitySign
+import net.minecraft.tileentity.TileEntity as MCTileEntity
 
 abstract class ClassFilterEvent(
     method: (args: Array<out Any?>) -> Unit,
@@ -34,14 +35,14 @@ class RenderEntityEvent(
     method: (args: Array<out Any?>) -> Unit,
     eventType: EventType
 ) : ClassFilterEvent(method, eventType) {
-    override fun getClassType(clazz: Any?): Entity? = clazz as? Entity
+    override fun getClassType(clazz: Any?): MCEntity? = (clazz as? Entity)?.entity
 }
 
 class RenderTileEntityEvent(
     method: (args: Array<out Any?>) -> Unit,
     eventType: EventType
 ) : ClassFilterEvent(method, eventType) {
-    override fun getClassType(clazz: Any?): TileEntity? = clazz as? TileEntitySign
+    override fun getClassType(clazz: Any?): MCTileEntity? = (clazz as? TileEntity)?.tileEntity
 }
 
 class PacketEvent(
