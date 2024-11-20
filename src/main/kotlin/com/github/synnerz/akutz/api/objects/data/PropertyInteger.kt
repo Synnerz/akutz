@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.objects.data
 
-class PropertyInteger(initialValue: Int = 0, val min: Int = Int.MIN_VALUE, val max: Int = Int.MAX_VALUE) :
+open class PropertyInteger(initialValue: Int = 0, val min: Int = Int.MIN_VALUE, val max: Int = Int.MAX_VALUE) :
     AProperty<Int>(initialValue) {
     override fun parse(value: String): Int = value.toInt()
 

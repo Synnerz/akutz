@@ -1,8 +1,8 @@
 package com.github.synnerz.akutz.api.objects.data
 
-class PropertyArray<T : AProperty<*>>(val clazz: Class<T>, val validator: T?, initialValue: List<T> = mutableListOf()) :
+open class PropertyArray<T : AProperty<*>>(val clazz: Class<T>, val validator: T?, initialValue: List<T> = mutableListOf()) :
     AProperty<List<T>>(initialValue) {
-    private val MAGIC = "OOGABOOGACAVEMANBRAIN"
+    protected val MAGIC = "OOGABOOGACAVEMANBRAIN"
     override fun parse(value: String): List<T> {
         val o = validator ?: clazz.getConstructor().newInstance()
         return value.split(MAGIC).map { o.clone().update(it) } as List<T>

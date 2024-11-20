@@ -2,7 +2,7 @@ package com.github.synnerz.akutz.api.objects.data
 
 import com.github.synnerz.akutz.api.objects.render.Color
 
-class PropertyColor(initialValue: Color = Color.EMPTY, val allowAlpha: Boolean = true) :
+open class PropertyColor(initialValue: Color = Color.EMPTY, val allowAlpha: Boolean = true) :
     AProperty<Color>(initialValue) {
     override fun parse(value: String): Color = Color.fromRGBA(value.toLong())
 

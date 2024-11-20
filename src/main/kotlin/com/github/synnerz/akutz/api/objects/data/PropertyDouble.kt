@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.objects.data
 
-class PropertyDouble(
+open class PropertyDouble(
     initialValue: Double = 0.0,
     val min: Double = Double.NEGATIVE_INFINITY,
     val max: Double = Double.POSITIVE_INFINITY

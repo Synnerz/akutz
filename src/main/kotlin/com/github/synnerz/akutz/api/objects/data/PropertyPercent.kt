@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.objects.data
 
-class PropertyPercent(initialValue: Double = 0.0, val min: Double = 0.0, val max: Double = 1.0) :
+open class PropertyPercent(initialValue: Double = 0.0, val min: Double = 0.0, val max: Double = 1.0) :
     AProperty<Double>(initialValue) {
     override fun parse(value: String): Double = value.toInt() / 100.0
 

@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.objects.data
 
-class PropertyString(initialValue: String = "", val minLength: Int = 0, val maxLength: Int = Int.MAX_VALUE) :
+open class PropertyString(initialValue: String = "", val minLength: Int = 0, val maxLength: Int = Int.MAX_VALUE) :
     AProperty<String>(initialValue) {
     override fun parse(value: String): String = value
 

@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.objects.data
 
-class PropertyOption(initialValue: String = "", val options: Set<String> = setOf("")) :
+open class PropertyOption(initialValue: String = "", val options: Set<String> = setOf("")) :
     AProperty<String>(initialValue) {
     constructor(initialValue: String, options: List<String>) : this(initialValue, options.toSet())
 

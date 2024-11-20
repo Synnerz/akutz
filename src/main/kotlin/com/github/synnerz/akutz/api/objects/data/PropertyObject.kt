@@ -1,9 +1,9 @@
 package com.github.synnerz.akutz.api.objects.data
 
-class PropertyObject(initialValue: Map<String, AProperty<*>> = mutableMapOf()) :
+open class PropertyObject(initialValue: Map<String, AProperty<*>> = mutableMapOf()) :
     AProperty<Map<String, AProperty<*>>>(initialValue) {
-    private val MAGIC1 = "TREEMANSAIDTHISCODEISSMELLY"
-    private val MAGIC2 = "IWOULDHAVETOAGREEWITHHIMTHISSHITSUCKS"
+    protected val MAGIC1 = "TREEMANSAIDTHISCODEISSMELLY"
+    protected val MAGIC2 = "IWOULDHAVETOAGREEWITHHIMTHISSHITSUCKS"
     override fun parse(value: String): Map<String, AProperty<*>> = get() + value.split(MAGIC1).associate {
         val split = it.split(MAGIC2)
         split[0] to get()[split[0]]!!.clone().update(split[1])
