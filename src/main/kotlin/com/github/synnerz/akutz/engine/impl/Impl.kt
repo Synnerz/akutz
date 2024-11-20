@@ -14,6 +14,8 @@ import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.commands.Command
 import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.api.libs.FileLib
+import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.objects.keybind.Keybind
 import com.github.synnerz.akutz.api.objects.render.Image
 import com.github.synnerz.akutz.engine.module.ModuleManager
@@ -142,6 +144,8 @@ object Impl {
     fun forceWrap(obj: Any?) = javetObjectConverter.toV8Value<V8Value>(v8runtime, obj)
 
     fun shutdown() {
+        Tessellator.pushedMatrix = 0
+        Renderer.pushedMatrix = 0
         clear()
         ModuleManager.teardown()
         Loader.clearEvents()
