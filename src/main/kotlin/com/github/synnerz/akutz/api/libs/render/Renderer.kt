@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
-import org.lwjgl.opengl.GL11.*
 import kotlin.math.*
 
 
@@ -23,9 +22,9 @@ import kotlin.math.*
 object Renderer : Base() {
     fun getStringWidth(text: String) = getFontRenderer().getStringWidth(text)
 
-    fun prepareDraw(color: Color) = prepareDraw(color, true)
-    override fun prepareDraw(color: Color, pushMatrix: Boolean) = apply {
-        super.prepareDraw(color, pushMatrix)
+    fun prepareDraw(color: Color) = beginDraw(color, true)
+    override fun beginDraw(color: Color, pushMatrix: Boolean) = apply {
+        super.beginDraw(color, pushMatrix)
         GlStateManager.enableBlend()
         GlStateManager.disableTexture2D()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)

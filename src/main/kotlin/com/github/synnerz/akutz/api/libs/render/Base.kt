@@ -45,7 +45,7 @@ open class Base {
         _color(color)
     }
 
-    open fun prepareDraw(color: Color, pushMatrix: Boolean) = apply {
+    open fun beginDraw(color: Color, pushMatrix: Boolean) = apply {
         if (pushMatrix) {
             GlStateManager.pushMatrix()
             pushedMatrix = (pushedMatrix shl 1) or 1
