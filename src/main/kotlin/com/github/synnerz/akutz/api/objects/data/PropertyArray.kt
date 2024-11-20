@@ -1,6 +1,6 @@
 package com.github.synnerz.akutz.api.objects.data
 
-class PropertyArray<T : AProperty<*>>(val clazz: Class<T>, initialValue: List<T> = mutableListOf(), val validator: T?) :
+class PropertyArray<T : AProperty<*>>(val clazz: Class<T>, val validator: T?, initialValue: List<T> = mutableListOf()) :
     AProperty<List<T>>(initialValue) {
     private val MAGIC = "OOGABOOGACAVEMANBRAIN"
     override fun parse(value: String): List<T> {
@@ -12,5 +12,5 @@ class PropertyArray<T : AProperty<*>>(val clazz: Class<T>, initialValue: List<T>
 
     override fun validate(value: List<T>) {}
 
-    override fun clone(): AProperty<List<T>> = PropertyArray(clazz, get().toMutableList(), validator)
+    override fun clone(): AProperty<List<T>> = PropertyArray(clazz, validator, get().toMutableList())
 }

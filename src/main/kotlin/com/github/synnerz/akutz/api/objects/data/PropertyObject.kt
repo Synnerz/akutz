@@ -4,7 +4,7 @@ class PropertyObject(initialValue: Map<String, AProperty<*>> = mutableMapOf()) :
     AProperty<Map<String, AProperty<*>>>(initialValue) {
     private val MAGIC1 = "TREEMANSAIDTHISCODEISSMELLY"
     private val MAGIC2 = "IWOULDHAVETOAGREEWITHHIMTHISSHITSUCKS"
-    override fun parse(value: String): Map<String, AProperty<*>> = value.split(MAGIC1).associate {
+    override fun parse(value: String): Map<String, AProperty<*>> = get() + value.split(MAGIC1).associate {
         val split = it.split(MAGIC2)
         split[0] to get()[split[0]]!!.clone().update(split[1])
     }
@@ -16,4 +16,6 @@ class PropertyObject(initialValue: Map<String, AProperty<*>> = mutableMapOf()) :
     }
 
     override fun clone(): AProperty<Map<String, AProperty<*>>> = PropertyObject(get().toMutableMap())
+
+    override fun set(v: Map<String, AProperty<*>>) = throw UnsupportedOperationException("cant set on an object sorry :(")
 }
