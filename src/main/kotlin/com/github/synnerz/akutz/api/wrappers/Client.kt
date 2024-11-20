@@ -109,6 +109,12 @@ object Client {
         scheduleTask { connect(serv) }
     }
 
+    @JvmOverloads
+    @JvmStatic
+    fun showTitle(title: String, subTitle: String? = null, ticks: Int = 5, shadow: Boolean = true) {
+        ClientListener.setTitle(title, subTitle, ticks, shadow)
+    }
+
     @JvmField
     val currentGui = object {
         fun get(): GuiScreen? = getMinecraft().currentScreen
