@@ -10,6 +10,7 @@ class PersistentData(val fileName: File, initialValue: Map<String, AProperty<*>>
 
     init {
         load()
+        INSTANCES.add(this)
     }
 
     fun load() {
@@ -20,10 +21,6 @@ class PersistentData(val fileName: File, initialValue: Map<String, AProperty<*>>
     fun save() {
         val text = serialize()
         fileName.writeText(text, Charset.forName("utf-8"))
-    }
-
-    init {
-        INSTANCES.add(this)
     }
 
     companion object {
