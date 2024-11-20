@@ -2,6 +2,8 @@ package com.github.synnerz.akutz.listeners
 
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.libs.ChatLib
+import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.wrappers.World
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.hooks.ChannelDuplexHook
@@ -16,6 +18,7 @@ import net.minecraftforge.event.entity.EntityJoinWorldEvent
 import net.minecraftforge.event.entity.player.PlayerInteractEvent
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
+import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent
 import net.minecraftforge.fml.common.network.FMLNetworkEvent
 import org.lwjgl.util.vector.Vector3f
 
@@ -134,5 +137,15 @@ object ClientListener {
     @SubscribeEvent
     fun onEntityJoinWorld(event: EntityJoinWorldEvent) {
         EventType.SpawnEntity.triggerAll(Entity(event.entity), event)
+    }
+
+    @SubscribeEvent
+    fun onRenderTick(event: RenderTickEvent) {
+        if (event.phase !== TickEvent.Phase.END) return
+        if (Tessellator.pushedMatrix != 0) {
+            ChatLib.chat("[Akutz] Looks like you forgot to #finishDraw while drawing with Tessellator, please make sure to finish your draws")
+        } else if (Renderer.pushedMatrix != 0) {
+            ChatLib.chat("[Akutz] Looks like you forgot to #finishDraw while drawing with Renderer, please make sure to finish your draws")
+        }
     }
 }
