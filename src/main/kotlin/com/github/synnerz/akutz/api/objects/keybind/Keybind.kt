@@ -12,9 +12,9 @@ import org.apache.commons.lang3.ArrayUtils
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/objects/keybind/KeyBind.kt)
  */
 class Keybind @JvmOverloads constructor(
-    var description: String,
-    var keyCode: Int = 0,
-    var category: String = "Akutz"
+    val description: String,
+    val keyCode: Int = 0,
+    val category: String = "Akutz"
 ) : StateVar<Boolean>(false) {
     constructor(keyBinding: KeyBinding) : this(keyBinding.keyDescription, keyBinding.keyCode, keyBinding.keyCategory)
 
