@@ -3,9 +3,9 @@ package com.github.synnerz.akutz.api.objects.data
 /**
  * validator cannot be used when the T is of type PropertyArray or PropertyObject
  */
-open class PropertyArray<T : AProperty<Any>>(
+open class PropertyArray<T : AProperty<*>>(
     val clazz: Class<T>,
-    val validator: T?,
+    val validator: AProperty<Any>?,
     initialValue: List<T> = mutableListOf()
 ) :
     AProperty<MutableList<T>>(initialValue.toMutableList()) {
@@ -27,7 +27,7 @@ open class PropertyArray<T : AProperty<Any>>(
     override fun set(v: MutableList<T>) {
         if (v.size < get().size) get().dropLast(get().size - v.size)
         for (i in 0 until get().size) {
-            get()[i].set(v[i])
+            (get()[i] as AProperty<Any>).set(v[i])
         }
         for (i in get().size until v.size) {
             get().add(v[i])
