@@ -9,17 +9,17 @@ open class PropertyArray<T : AProperty<*>>(
     initialValue: List<T> = mutableListOf()
 ) :
     AProperty<MutableList<T>>(initialValue.toMutableList()) {
-    protected val MAGIC = "OOGABOOGACAVEMANBRAIN"
+    protected val MAGIC = ","
     override fun parse(value: String): MutableList<T> {
         val o = validator ?: clazz.getConstructor().newInstance()
-        return (value.split(MAGIC).map { o.parse(it) as T }).toMutableList()
+        return (value.split(MAGIC).map { o.parse(decb64(it)) as T }).toMutableList()
     }
 
-    override fun serialize(): String = get().joinToString(MAGIC, transform = { it.serialize() })
+    override fun serialize(): String = get().joinToString(MAGIC, transform = { encb64(it.serialize()) })
 
     override fun validate(value: MutableList<T>) {
         validator ?: return
-        value.forEach{ validator.validate(it) }
+        value.forEach { validator.validate(it) }
     }
 
     override fun clone(): AProperty<MutableList<T>> = PropertyArray(clazz, validator, get().toMutableList())
