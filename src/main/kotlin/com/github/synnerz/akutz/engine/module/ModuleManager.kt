@@ -13,6 +13,7 @@ import java.net.URLClassLoader
 object ModuleManager {
     private var installedModules: List<ModuleMetadata>? = null
     private var classLoader: ModifiedURLClassLoader? = null
+
     fun setup() {
         Akutz.configLocation.mkdirs()
 

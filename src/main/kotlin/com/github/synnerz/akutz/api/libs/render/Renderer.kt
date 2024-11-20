@@ -22,7 +22,7 @@ import kotlin.math.*
 object Renderer : Base() {
     fun getStringWidth(text: String) = getFontRenderer().getStringWidth(text)
 
-    fun prepareDraw(color: Color) = beginDraw(color, true)
+    fun beginDraw(color: Color) = beginDraw(color, true)
     override fun beginDraw(color: Color, pushMatrix: Boolean) = apply {
         super.beginDraw(color, pushMatrix)
         GlStateManager.enableBlend()

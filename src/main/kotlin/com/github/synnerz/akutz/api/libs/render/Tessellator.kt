@@ -19,10 +19,10 @@ object Tessellator : Base() {
 
     fun getRenderZ() = rendManager.renderZ
 
-    fun prepareDraw() = Tessellator.prepareDraw(Color.WHITE)
-    fun prepareDraw(color: Color) = beginDraw(color, true)
-    override fun beginDraw(color: Color, pushMatrix: Boolean) = prepareDraw(color, pushMatrix, false)
-    fun prepareDraw(color: Color, pushMatrix: Boolean, esp: Boolean) = apply {
+    fun beginDraw() = Tessellator.beginDraw(Color.WHITE)
+    fun beginDraw(color: Color) = beginDraw(color, true)
+    override fun beginDraw(color: Color, pushMatrix: Boolean) = beginDraw(color, pushMatrix, false)
+    fun beginDraw(color: Color, pushMatrix: Boolean, esp: Boolean) = apply {
         super.beginDraw(color, pushMatrix)
 
         if (pushMatrix) GlStateManager.translate(-getRenderX(), -getRenderY(), -getRenderZ())
