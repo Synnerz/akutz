@@ -4,8 +4,8 @@ import com.github.synnerz.akutz.Akutz
 import java.io.File
 import java.nio.charset.Charset
 
-class PersistantData(val fileName: File, initialValue: Map<String, AProperty<*>>) : PropertyObject(initialValue) {
-    constructor(moduleName: String, fileName: String, initialValue: Map<String, AProperty<*>>) :
+class PersistantData(val fileName: File, initialValue: Map<String, AProperty<Any>>) : PropertyObject(initialValue) {
+    constructor(moduleName: String, fileName: String, initialValue: Map<String, AProperty<Any>>) :
             this(Akutz.configLocation.resolve(moduleName).resolve(fileName), initialValue)
 
     init {
@@ -14,9 +14,7 @@ class PersistantData(val fileName: File, initialValue: Map<String, AProperty<*>>
 
     fun load() {
         val text = fileName.readText(Charset.forName("utf-8"))
-        val v = parse(text)
-        validate(v)
-        setIKnowWhatImDoing(v)
+        update(text)
     }
 
     fun save() {
