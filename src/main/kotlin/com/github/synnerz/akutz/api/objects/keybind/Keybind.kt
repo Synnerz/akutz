@@ -88,8 +88,7 @@ class Keybind : StateVar<Boolean> {
 
         @JvmStatic
         fun clearKeyBinds() {
-            val copy = KeybindHandler.getKeybinds().toList()
-            copy.forEach(::removeKeyBind)
+            KeybindHandler.getKeybinds().forEach(::removeKeyBind)
             customKeyBindings.clear()
             KeybindHandler.clearKeybinds()
         }

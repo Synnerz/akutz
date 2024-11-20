@@ -14,8 +14,10 @@ import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.commands.Command
 import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.api.libs.FileLib
+import com.github.synnerz.akutz.api.objects.keybind.Keybind
 import com.github.synnerz.akutz.api.objects.render.Image
 import com.github.synnerz.akutz.engine.module.ModuleManager
+import com.github.synnerz.akutz.listeners.MouseListener
 import java.io.File
 import java.nio.file.Paths
 
@@ -143,8 +145,10 @@ object Impl {
         clear()
         ModuleManager.teardown()
         Loader.clearEvents()
-        Command.activeCommands.forEach { (_, cmd) -> cmd.unregister() }
+        Command.activeCommands.values.forEach(Command::unregister)
         Command.activeCommands.clear()
-        Image.IMAGES.toList().forEach { it.destroy() }
+        Image.IMAGES.forEach(Image::destroy)
+        Keybind.clearKeyBinds()
+        MouseListener.clearListeners()
     }
 }
