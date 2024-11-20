@@ -144,6 +144,7 @@ object Impl {
         ModuleManager.teardown()
         Loader.clearEvents()
         Command.activeCommands.forEach { (_, cmd) -> cmd.unregister() }
+        Command.activeCommands.clear()
         Image.IMAGES.toList().forEach { it.destroy() }
     }
 }

@@ -6,7 +6,9 @@ import com.github.synnerz.akutz.api.wrappers.world.Chunk
 import com.github.synnerz.akutz.api.wrappers.world.block.Block
 import net.minecraft.block.state.IBlockState
 import net.minecraft.client.multiplayer.WorldClient
+import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
+import net.minecraft.entity.Entity as MCEntity
 
 /**
  * Taken from ChatTriggers under MIT License
@@ -61,6 +63,38 @@ object World {
     fun getAllTileEntitiesOfType(clazz: Class<*>): List<TileEntity> {
         return getAllTileEntities().filter { clazz.isInstance(it.tileEntity) }
     }
+
+    @JvmStatic
+    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, bb: AxisAlignedBB) : List<T>? {
+        return getWorld()?.getEntitiesWithinAABB(clazz, bb)
+    }
+
+    @JvmStatic
+    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, vararg bb: Double) : List<T>? {
+        val aa = AxisAlignedBB(
+            bb[0], bb[1], bb[2],
+            bb[3], bb[4], bb[5]
+        )
+        return getAllEntitiesInAABB(clazz, aa)
+    }
+
+    @JvmStatic
+    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, min: BlockPos, max: BlockPos) : List<T>? {
+        val aa = AxisAlignedBB(min, max)
+        return getAllEntitiesInAABB(clazz, aa)
+    }
+
+    @JvmStatic
+    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, bb: AxisAlignedBB) : List<T>? =
+        getAllEntitiesInAABB(clazz, bb)
+
+    @JvmStatic
+    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, vararg bb: Double) : List<T>? =
+        getAllEntitiesInAABB(clazz, *bb)
+
+    @JvmStatic
+    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, min: BlockPos, max: BlockPos) : List<T>? =
+        getAllEntitiesInAABB(clazz, min, max)
 
     @JvmField
     val border = object {
