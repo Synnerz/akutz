@@ -66,5 +66,7 @@ open class Entity(val entity: MCEntity) {
         getWorld().getChunkFromChunkCoords(entity.chunkCoordX, entity.chunkCoordZ)
     )
 
+    fun getID(): Int = entity.entityId
+
     fun toMC(): MCEntity = entity
 }
