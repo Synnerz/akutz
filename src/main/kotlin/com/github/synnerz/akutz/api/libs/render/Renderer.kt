@@ -71,6 +71,9 @@ object Renderer : Base() {
     }
 
     @JvmOverloads
+    fun drawRect(x: Double, y: Double, w: Double, h: Double, solid: Boolean = true) = drawRectangle(x, y, w, h, solid)
+
+    @JvmOverloads
     fun drawArc(
         x: Double,
         y: Double,
@@ -123,6 +126,17 @@ object Renderer : Base() {
             drawLine(x + w, y + r, x + w, y + h - r)
         }
     }
+
+    @JvmOverloads
+    fun drawRoundRect(
+        x: Double,
+        y: Double,
+        w: Double,
+        h: Double,
+        radius: Double,
+        solid: Boolean = true,
+        segments: Int = 5
+    ) = drawRoundRectangle(x, y, w, h, radius, solid, segments)
 
     @JvmOverloads
     fun drawString(text: String, x: Float, y: Float, shadow: Boolean = false) = apply {
