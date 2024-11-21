@@ -61,6 +61,23 @@ object ModuleManager {
         }
     }
 
+    fun deleteModule(moduleName: String) : Boolean {
+        val module = installedModules?.find { it.name?.lowercase() == moduleName.lowercase() } ?: return false
+        val file = module.directory ?: return false
+        check(file.exists()) { "Module directory does not exist." }
+
+        try {
+            classLoader?.close()
+            if (file.deleteRecursively()) {
+                Impl.shutdown()
+                setup()
+                return true
+            }
+        } catch (_: Exception) {}
+
+        return false
+    }
+
     private fun parseModule(dir: File): ModuleMetadata {
         val mfile = File(dir, "metadata.json")
         var metadata = ModuleMetadata()
