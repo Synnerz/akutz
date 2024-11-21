@@ -233,6 +233,7 @@ loadInstance("com.github.synnerz.akutz.api.libs.render.Tessellator")
 // Objects
 loadClass("com.github.synnerz.akutz.api.objects.render.Color")
 loadClass("com.github.synnerz.akutz.api.objects.render.Image")
+loadClass("com.github.synnerz.akutz.api.objects.render.Display")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateVar")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateExp")
 loadClass("com.github.synnerz.akutz.api.objects.gui.GuiHandler")
