@@ -44,6 +44,11 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
                 // ModuleManager.import(args[1])
                 ChatLib.chat("§b§lAkutz§r: §cCommand currently disabled.")
             }
+            "delete" -> {
+                if (args.getOrNull(1).isNullOrEmpty()) return ChatLib.chat("§b§lAkutz§r: §cPlease specify a module name to delete")
+                if (ModuleManager.deleteModule(args[1])) ChatLib.chat("§b§lAkutz§r: §bSuccessfully deleted module with name §6${args[1]}")
+                else ChatLib.chat("§b§lAkutz§r: §cThere was a problem deleting module with name §6${args[1]}")
+            }
             else -> ChatLib.chat(getHelp())
         }
     }
@@ -53,9 +58,10 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
         §b§lAliases§r: §eakutz, az, akz
         §a/akutz load §e- §bLoads the modules in the folder.
         §a/akutz unload §e- §bUnloads the modules that were loaded.
-        §a/akutz reload §e- §b(Alias for /akutz load does the same thing).
+        §a/akutz reload §e- §b(Alias for §a/akutz load§b does the same thing).
         §a/akutz file§8(s) §e- §bOpens the modules folder.
         §a/akutz import §e- §7Currently disabled.
+        §a/akutz delete §e- §bDeletes an installed module.
         §a/akutz help §e- §bDisplays this message in chat.
     """.trimIndent()
 }
