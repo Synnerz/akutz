@@ -101,7 +101,7 @@ object ModuleManager {
         if (!dir.isDirectory) return emptyList()
 
         return dir.listFiles()?.filter {
-            it.isDirectory
+            it.isDirectory && File(it, "metadata.json").exists()
         } ?: listOf()
     }
 
