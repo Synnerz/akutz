@@ -195,9 +195,9 @@ object Renderer : Base() {
         if (event.phase != TickEvent.Phase.START) return
         partialTicks = event.renderTickTime
         Tessellator.partialTicks = event.renderTickTime
-        if (sr != null && !Display.wasResized()) return
-
-        sr = ScaledResolution(Minecraft.getMinecraft())
+        val newSr = ScaledResolution(Minecraft.getMinecraft())
+        if (sr != null && sr!!.scaledWidth == newSr.scaledWidth && sr!!.scaledHeight == newSr.scaledHeight && sr!!.scaleFactor == newSr.scaleFactor) return
+        sr = newSr
         EventType.ScreenResize.triggerAll(sr)
     }
 
