@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.objects.render
 
+import com.github.synnerz.akutz.api.libs.render.Renderer
 import java.awt.image.BufferedImage
 
 class Display(private val isBuffered: Boolean) {
@@ -63,7 +64,7 @@ class Display(private val isBuffered: Boolean) {
     fun getShadow() = shadow
     fun setShadow(s: Boolean) = apply {
         shadow = s
-        lines.forEach{ it.setShadow(s) }
+        lines.forEach { it.setShadow(s) }
         dirty = true
     }
 
@@ -71,7 +72,7 @@ class Display(private val isBuffered: Boolean) {
     fun setResolution(r: Float) = apply {
         if (!isBuffered) throw UnsupportedOperationException("only to be used when `isBuffered` is set to true")
         resolution = r
-        lines.forEach{ it.setResolution(r) }
+        lines.forEach { it.setResolution(r) }
         dirty = true
     }
 
@@ -110,7 +111,7 @@ class Display(private val isBuffered: Boolean) {
     fun getWidth() = cw ?: lines.maxOf { it.getWidth() }.also { cw = it }
     fun getVisibleWidth() = cvw ?: lines.maxOf { it.getVisibleWidth() }.also { cvw = it }
     fun getLineHeight() = 10 * scale + gap
-    fun getHeight() = getLineHeight() * lines.size
+    fun getHeight() = if (lines.size == 0) 0f else getLineHeight() * lines.size - gap
     fun getVisibleHeight() = cvh ?: {
         val s = lines.indexOfFirst { it.getVisibleWidth() > 0f }
         val e = lines.indexOfLast { it.getVisibleWidth() > 0f }
@@ -133,20 +134,34 @@ class Display(private val isBuffered: Boolean) {
         if (lines.size == 0) return
         // hi if you're trying to refactor this, do not call .getTopLeft[X/Y]() here and pass into the img.draw() later on, because the `BufferedText` have not been necessarily updated yet by `forceRenderBuffered()`, viz. `lines.forEach { it.update() }`
         if (dirty) forceRenderBuffered()
-        if (isBuffered) img!!.draw(getTopLeftX(), getTopLeftY())
+        if (isBuffered) img!!.draw(getTopLeftX(), getTopLeftY(), getWidth().toDouble(), getHeight().toDouble())
         else {
             val tx = getTopLeftX()
-            val ty = getTopLeftY()
-            var y = ty
+            var y = getTopLeftY()
+            Renderer.beginDraw(backgroundColor, false)
+            if (background == Background.FULL) Renderer.drawRectangle(
+                tx,
+                y,
+                getWidth().toDouble(),
+                getHeight().toDouble()
+            )
             for (l in lines) {
                 val x = when (horzAlign) {
                     HorzAlign.START -> 0f
                     HorzAlign.CENTER -> (getWidth() - l.getVisibleWidth()) / 2
                     HorzAlign.END -> (getWidth() - l.getVisibleWidth())
                 }
-                l.render((tx + x).toInt(), y.toInt(), x, (y - ty).toFloat())
+                if (background == Background.LINE) {
+                    Renderer.color(backgroundColor)
+                    Renderer.drawRectangle(
+                        tx + x, y, l.getVisibleWidth().toDouble(),
+                        l.getVisibleHeight().toDouble()
+                    )
+                }
+                l.render((tx + x).toFloat(), y.toFloat())
                 y += getLineHeight()
             }
+            Renderer.finishDraw()
         }
     }
 
@@ -163,6 +178,10 @@ class Display(private val isBuffered: Boolean) {
             BufferedImage.TYPE_INT_ARGB
         )
         val g = bImg.createGraphics()
+        if (background == Background.FULL) {
+            g.color = backgroundColor.asAWTColor()
+            g.drawRect(0, 0, bImg.width, bImg.height)
+        }
         var y = 0f
         for (l in lines) {
             val x = when (horzAlign) {
@@ -170,11 +189,27 @@ class Display(private val isBuffered: Boolean) {
                 HorzAlign.CENTER -> (getWidth() - l.getVisibleWidth()) / 2
                 HorzAlign.END -> (getWidth() - l.getVisibleWidth())
             }
+            if (background == Background.LINE) {
+                g.color = backgroundColor.asAWTColor()
+                g.drawRect(x.toInt(), y.toInt(), l.getVisibleWidth().toInt(), l.getVisibleHeight().toInt())
+            }
             l.render(x.toInt(), y.toInt(), g)
             y += resolution + gap * resolution / 10
         }
         if (img == null) img = Image(bImg)
         else img!!.update(bImg)
+    }
+
+    fun getLineUnder(x: Double, y: Double): DisplayLine? {
+        val dx = x - getTopLeftX()
+        val dy = y - getTopLeftY()
+        if (dx < 0 || dy < 0) return null
+        if (dx > getWidth()) return null
+        val i = (dy / getLineHeight()).toInt()
+        if (i >= lines.size) return null
+        // mouse is in gap
+        if (dy % getLineHeight() > 10 * scale) return null
+        return lines[i]
     }
 
     enum class HorzAlign {

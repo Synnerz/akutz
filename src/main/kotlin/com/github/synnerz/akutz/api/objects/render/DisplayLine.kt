@@ -36,10 +36,10 @@ class DisplayLine(private val isBuffered: Boolean) {
         if (isBuffered) (text as BufferedText).update()
     }
 
-    fun render(x: Int, y: Int, dx: Float, dy: Float) {
-        this.x = x
-        this.y = y
-        Renderer.drawString(getString(), dx, dy, shadow)
+    fun render(x: Float, y: Float) {
+        this.x = x.toInt()
+        this.y = y.toInt()
+        Renderer.drawString(getString(), x, y, shadow)
     }
 
     fun render(x: Int, y: Int, graphics: Graphics2D) {
