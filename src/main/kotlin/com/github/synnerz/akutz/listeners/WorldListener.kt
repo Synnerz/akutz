@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz.listeners
 
 import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.api.objects.sound.Sound
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.api.wrappers.entity.PlayerMP
 import net.minecraftforge.client.event.RenderGameOverlayEvent
@@ -30,6 +31,9 @@ object WorldListener {
 
         EventType.WorldLoad.triggerAll()
         triggerWorldLoad = false
+
+        Sound.sounds.filter { it.shouldListen }.forEach { it.onWorldLoad() }
+        Sound.sounds.clear()
     }
 
     @SubscribeEvent
