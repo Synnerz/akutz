@@ -91,11 +91,10 @@ class BufferedText(
     fun getFont() = font
 
     fun render(graphics: Graphics2D, x: Int, y: Int) {
-        update()
         graphics.drawImage(bImg!!, x, y, null)
     }
 
-    private fun update() {
+    fun update() {
         if (!dirty && !hasObfs) return
         dirty = false
 
