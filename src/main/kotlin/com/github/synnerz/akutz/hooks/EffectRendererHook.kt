@@ -2,14 +2,17 @@ package com.github.synnerz.akutz.hooks
 
 import com.github.synnerz.akutz.api.events.Cancelable
 import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.api.wrappers.entity.Particle
+import net.minecraft.client.particle.EntityFX
 import net.minecraft.util.EnumParticleTypes
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable
 
 object EffectRendererHook {
-    fun trigger(particleId: Int, ci: CallbackInfo) {
+    fun trigger(entityFX: EntityFX, particleId: Int, ci: CallbackInfoReturnable<EntityFX?>) {
         val event = Cancelable()
-        // TODO: make Particle wrapper and wrap this
-        EventType.SpawnParticle.triggerAll(EnumParticleTypes.getParticleFromId(particleId), event)
-        if (event.isCanceled()) ci.cancel()
+        val particleEnum = EnumParticleTypes.getParticleFromId(particleId)
+
+        EventType.SpawnParticle.triggerAll(Particle(entityFX), particleEnum.name, particleEnum, event)
+        if (event.isCanceled()) ci.returnValue = null
     }
 }
