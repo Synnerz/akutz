@@ -127,6 +127,7 @@ tasks.shadowJar {
     destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
     archiveClassifier.set("non-obfuscated-with-deps")
     configurations = listOf(shadowImpl)
+    exclude("META-INF/LICENSE**", "META-INF/NOTICE", "META-INF/NOTICE.txt", "LICENSE.txt", "META-INF/LICENSE.txt", "**/module-info.class")
     doLast {
         configurations.forEach {
             println("Copying dependencies into mod: ${it.files}")
