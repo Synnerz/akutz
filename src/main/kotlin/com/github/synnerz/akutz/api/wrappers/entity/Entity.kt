@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz.api.wrappers.entity
 
 import com.github.synnerz.akutz.api.wrappers.world.Chunk
+import net.minecraft.util.BlockPos
 import net.minecraft.world.World
 import java.util.UUID
 import net.minecraft.entity.Entity as MCEntity
@@ -40,7 +41,11 @@ open class Entity(val entity: MCEntity) {
 
     fun distanceTo(other: MCEntity): Float = entity.getDistanceToEntity(other)
 
-    // TODO: blockpos distanceTo
+    fun distanceTo(other: BlockPos): Float = entity.getDistance(
+        other.x.toDouble(),
+        other.y.toDouble(),
+        other.z.toDouble()
+    ).toFloat()
 
     fun distanceTo(x: Float, y: Float, z: Float): Float = entity.getDistance(
         x.toDouble(), y.toDouble(), z.toDouble()
