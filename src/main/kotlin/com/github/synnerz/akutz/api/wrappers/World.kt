@@ -65,12 +65,12 @@ object World {
     }
 
     @JvmStatic
-    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, bb: AxisAlignedBB) : List<T>? {
+    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, bb: AxisAlignedBB): List<T>? {
         return getWorld()?.getEntitiesWithinAABB(clazz, bb)
     }
 
     @JvmStatic
-    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, vararg bb: Double) : List<T>? {
+    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, vararg bb: Double): List<T>? {
         val aa = AxisAlignedBB(
             bb[0], bb[1], bb[2],
             bb[3], bb[4], bb[5]
@@ -79,21 +79,21 @@ object World {
     }
 
     @JvmStatic
-    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, min: BlockPos, max: BlockPos) : List<T>? {
+    fun <T : MCEntity> getAllEntitiesInAABB(clazz: Class<T>, min: BlockPos, max: BlockPos): List<T>? {
         val aa = AxisAlignedBB(min, max)
         return getAllEntitiesInAABB(clazz, aa)
     }
 
     @JvmStatic
-    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, bb: AxisAlignedBB) : List<T>? =
+    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, bb: AxisAlignedBB): List<T>? =
         getAllEntitiesInAABB(clazz, bb)
 
     @JvmStatic
-    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, vararg bb: Double) : List<T>? =
+    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, vararg bb: Double): List<T>? =
         getAllEntitiesInAABB(clazz, *bb)
 
     @JvmStatic
-    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, min: BlockPos, max: BlockPos) : List<T>? =
+    fun <T : MCEntity> getEntitiesWithinAABB(clazz: Class<T>, min: BlockPos, max: BlockPos): List<T>? =
         getAllEntitiesInAABB(clazz, min, max)
 
     @JvmStatic

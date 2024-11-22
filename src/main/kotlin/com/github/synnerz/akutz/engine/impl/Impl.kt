@@ -138,7 +138,7 @@ object Impl {
         }
     }
 
-    fun isLoaded() : Boolean = v8runtime != null
+    fun isLoaded(): Boolean = v8runtime != null
 
     private val javetObjectConverter = JavetObjectConverter()
     fun forceWrap(obj: Any?) = javetObjectConverter.toV8Value<V8Value>(v8runtime, obj)

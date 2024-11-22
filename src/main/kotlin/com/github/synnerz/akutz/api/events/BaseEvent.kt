@@ -72,7 +72,7 @@ abstract class BaseEvent protected constructor(
         actuallyRegistered = false
     }
 
-    open fun isRegistered() : Boolean = registered
+    open fun isRegistered(): Boolean = registered
 
     open fun isActuallyRegistered(): Boolean = actuallyRegistered
 

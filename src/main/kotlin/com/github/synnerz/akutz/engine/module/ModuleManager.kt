@@ -61,7 +61,7 @@ object ModuleManager {
         }
     }
 
-    fun deleteModule(moduleName: String) : Boolean {
+    fun deleteModule(moduleName: String): Boolean {
         val module = installedModules?.find { it.name?.lowercase() == moduleName.lowercase() } ?: return false
         val file = module.directory ?: return false
         check(file.exists()) { "Module directory does not exist." }
