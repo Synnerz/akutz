@@ -2,6 +2,7 @@ package com.github.synnerz.akutz.api.wrappers.message
 
 import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.api.wrappers.Player
+import com.github.synnerz.akutz.api.wrappers.inventory.Item
 import net.minecraft.network.play.server.S02PacketChat
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatComponentTranslation
@@ -50,8 +51,7 @@ class Message {
             when (it) {
                 is String -> TextComponent(it)
                 is TextComponent -> it
-                // TODO: add method to item
-                // is Item -> it.getChatComponent()
+                is Item -> it.getTextComponent()
                 else -> return
             }
         })

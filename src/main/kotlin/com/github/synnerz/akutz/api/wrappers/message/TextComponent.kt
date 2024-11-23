@@ -97,10 +97,9 @@ class TextComponent {
         reInstanceHover()
     }
 
-    // TODO: once Message is done finish this
-     fun chat() = Message(this).chat()
+    fun chat() = Message(this).chat()
 
-     fun actionBar() = Message(this).actionBar()
+    fun actionBar() = Message(this).actionBar()
 
     fun reInstance() {
         val str = if (formatted) ChatLib.addColor(text) else text
