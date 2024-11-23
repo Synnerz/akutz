@@ -6,6 +6,7 @@ import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.api.wrappers.Client
+import com.github.synnerz.akutz.api.wrappers.Scoreboard
 import com.github.synnerz.akutz.api.wrappers.World
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.hooks.ChannelDuplexHook
@@ -97,6 +98,7 @@ object ClientListener {
         if (currentTitle !== null) currentTitle!!.ticks--
 
         EventType.Tick.triggerAll()
+        Scoreboard.markDirty()
     }
 
     @SubscribeEvent
