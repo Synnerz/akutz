@@ -4,6 +4,7 @@ import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.api.wrappers.Player
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
+import com.github.synnerz.akutz.api.wrappers.message.TextComponent
 import com.github.synnerz.akutz.api.wrappers.world.block.Block
 import net.minecraft.entity.item.EntityItem
 import net.minecraft.block.Block as MCBlock
@@ -89,6 +90,8 @@ class Item {
 
     // TODO
     // fun draw()
+
+    fun getTextComponent() = TextComponent(itemStack.chatComponent)
 
     override fun equals(other: Any?): Boolean {
         return other is Item &&
