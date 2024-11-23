@@ -8,6 +8,8 @@ import net.minecraft.block.state.IBlockState
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.util.AxisAlignedBB
 import net.minecraft.util.BlockPos
+import kotlin.math.max
+import kotlin.math.min
 import net.minecraft.entity.Entity as MCEntity
 
 /**
@@ -110,6 +112,62 @@ object World {
     fun stopAllSounds() {
         Client.getMinecraft().soundHandler.stopSounds()
     }
+
+    // Modified version of Mojang's BlockPos method
+    // this is to better fit the need of having to wrap
+    // the position into a wrapped block
+    @JvmStatic
+    fun getAllBlocksInBox(start: BlockPos, end: BlockPos): ArrayList<Block> {
+        val list = ArrayList<Block>()
+        val blockpos = BlockPos(
+            min(start.x.toDouble(), end.x.toDouble()),
+            min(start.y.toDouble(), end.y.toDouble()),
+            min(start.z.toDouble(), end.z.toDouble())
+        )
+        val blockpos1 = BlockPos(
+            max(start.x.toDouble(), end.x.toDouble()),
+            max(start.y.toDouble(), end.y.toDouble()),
+            max(start.z.toDouble(), end.z.toDouble())
+        )
+        var lastReturned: BlockPos = blockpos
+
+        while (lastReturned != blockpos1) {
+            var x = lastReturned.x
+            var y = lastReturned.y
+            var z = lastReturned.z
+
+            if (x < blockpos1.x) x++
+            else if (y < blockpos1.y) {
+                x = blockpos.x
+                y++
+            }
+            else if (z < blockpos1.z) {
+                x = blockpos.x
+                y = blockpos.y
+                z++
+            }
+
+            lastReturned = BlockPos(x, y, z)
+            list.add(getBlockAt(lastReturned))
+        }
+
+        return list
+    }
+
+    @JvmStatic
+    fun getBlocksIn(start: BlockPos, end: BlockPos): ArrayList<Block> = getAllBlocksInBox(start, end)
+
+    @JvmStatic
+    fun getBlocksIn(start: ArrayList<Double>, end: ArrayList<Double>): ArrayList<Block> = getBlocksIn(
+        BlockPos(start[0], start[1], start[2]),
+        BlockPos(end[0], end[1], end[2])
+    )
+
+    @JvmStatic
+    fun getBlocksIn(vararg corners: Double): ArrayList<Block> = getBlocksIn(
+        BlockPos(corners[0], corners[1], corners[2]),
+        BlockPos(corners[3], corners[4], corners[5])
+    )
 
     @JvmField
     val border = object {
