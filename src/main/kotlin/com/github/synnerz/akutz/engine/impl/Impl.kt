@@ -18,6 +18,7 @@ import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.objects.keybind.Keybind
 import com.github.synnerz.akutz.api.objects.render.Image
+import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import com.github.synnerz.akutz.listeners.MouseListener
 import java.io.File
@@ -149,9 +150,12 @@ object Impl {
         clear()
         ModuleManager.teardown()
         Loader.clearEvents()
-        Command.activeCommands.values.forEach(Command::unregister)
+        Command.activeCommands.values.toList().forEach(Command::unregister)
         Command.activeCommands.clear()
-        Image.IMAGES.forEach(Image::destroy)
+        Client.scheduleTask {
+            Image.IMAGES.forEach(Image::destroy)
+            Image.IMAGES.clear()
+        }
         Keybind.clearKeyBinds()
         MouseListener.clearListeners()
     }
