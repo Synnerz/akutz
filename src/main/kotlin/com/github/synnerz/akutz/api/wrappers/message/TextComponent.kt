@@ -136,7 +136,6 @@ class TextComponent {
     }
 
     private fun stringToComponent(string: String): ChatComponentText {
-        println("#stringToComponent string: $string")
         val buffer = StringBuilder()
         val comp = ChatComponentText("")
         var style = ChatStyle()
@@ -145,7 +144,6 @@ class TextComponent {
             if (i < string.length - 1 && formatRegex.matches(string.substring(i, i + 1))) {
                 // add the previous component as a sibling of the base component
                 val prevText = ChatComponentText(buffer.toString()).apply { chatStyle = style.createDeepCopy() }
-                println("first buffer: ${prevText.formattedText}")
                 buffer.clear()
                 comp.appendSibling(prevText)
 
