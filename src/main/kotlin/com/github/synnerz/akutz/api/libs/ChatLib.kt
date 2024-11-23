@@ -6,7 +6,6 @@ import com.github.synnerz.akutz.api.wrappers.Player
 import com.github.synnerz.akutz.api.wrappers.message.Message
 import com.github.synnerz.akutz.api.wrappers.message.TextComponent
 import net.minecraft.client.Minecraft
-import net.minecraft.util.ChatComponentText
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 
