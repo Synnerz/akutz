@@ -2,29 +2,28 @@ package com.github.synnerz.akutz.hooks
 
 import com.github.synnerz.akutz.api.events.Cancelable
 import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.api.wrappers.inventory.Slot
 import net.minecraft.client.gui.inventory.GuiContainer
-import net.minecraft.inventory.Slot
+import net.minecraft.inventory.Slot as MCSlot
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 
 object GuiContainerHook {
-    fun triggerDrawSlot(slot: Slot, container: GuiContainer, ci: CallbackInfo) {
+    fun triggerDrawSlot(slot: MCSlot, container: GuiContainer, ci: CallbackInfo) {
         val event = Cancelable()
-        // TODO: make wrapper for MCSlot
-        EventType.RenderSlot.triggerAll(slot, container, event)
+        EventType.RenderSlot.triggerAll(Slot(slot), container, event)
         if (event.isCanceled()) ci.cancel()
     }
 
-    fun triggerPreItemRender(slot: Slot?, mouseX: Int, mouseY: Int, container: GuiContainer) {
+    fun triggerPreItemRender(slot: MCSlot?, mouseX: Int, mouseY: Int, container: GuiContainer) {
         if (slot != null) {
-            // TODO: despite ct itself not wrapping this Slot we _should_ wrap it (?)
-            EventType.PreItemRender.triggerAll(mouseX, mouseY, slot, container)
+            EventType.PreItemRender.triggerAll(mouseX, mouseY, Slot(slot), container)
         }
     }
 
-    fun triggerDrawSlotHighlight(slot: Slot?, mouseX: Int, mouseY: Int, container: GuiContainer) {
+    fun triggerDrawSlotHighlight(slot: MCSlot?, mouseX: Int, mouseY: Int, container: GuiContainer) {
         // TODO: maybe make this cancelable
         if (slot != null) {
-            EventType.RenderSlotHighlight.triggerAll(slot, mouseX, mouseY, container)
+            EventType.RenderSlotHighlight.triggerAll(Slot(slot), mouseX, mouseY, container)
         }
     }
 }
