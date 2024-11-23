@@ -253,6 +253,8 @@ loadClass("com.github.synnerz.akutz.api.objects.data.PropertyString")
 loadClass("com.github.synnerz.akutz.api.objects.data.SettingsProperty")
 loadClass("com.github.synnerz.akutz.api.objects.keybind.Keybind")
 loadClass("com.github.synnerz.akutz.api.objects.sound.Sound")
+loadClass("com.github.synnerz.akutz.api.wrappers.message.Message")
+loadClass("com.github.synnerz.akutz.api.wrappers.message.TextComponent")
 
 // Events
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
