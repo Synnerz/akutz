@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz.api.wrappers.world.block
 
 import com.github.synnerz.akutz.api.wrappers.World
+import com.github.synnerz.akutz.api.wrappers.message.Message
 import net.minecraft.tileentity.TileEntitySign
 
 /**
@@ -12,8 +13,7 @@ class Sign(
 ) : Block(block.mcBlock, block.mcPos) {
     val sign: TileEntitySign = World.getWorld()!!.getTileEntity(block.mcPos) as TileEntitySign
 
-    // TODO: whenever Message wrapper is done
-    // fun getLines()
+    fun getLines(): List<Message> = sign.signText.map { it?.let(::Message) ?: Message("") }
 
     fun getFormattedLines(): List<String> = sign.signText.map { it?.formattedText ?: "" }
 
