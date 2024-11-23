@@ -39,8 +39,7 @@ loom {
     forge {
         pack200Provider.set(dev.architectury.pack200.java.Pack200Adapter())
         mixinConfig("mixins.$modid.json")
-	    if (transformerFile.exists())
-            accessTransformer(transformerFile)
+        accessTransformer(transformerFile)
     }
     mixin {
         defaultRefmapName.set("mixins.$modid.refmap.json")
@@ -93,8 +92,7 @@ tasks.withType(org.gradle.jvm.tasks.Jar::class) {
         this["ForceLoadAsMod"] = "true"
         this["TweakClass"] = "org.spongepowered.asm.launch.MixinTweaker"
         this["MixinConfigs"] = "mixins.$modid.json"
-	    if (transformerFile.exists())
-			this["FMLAT"] = "${modid}_at.cfg"
+        this["FMLAT"] = "akutz_at.cfg"
     }
 }
 
@@ -108,7 +106,7 @@ tasks.processResources {
         expand(inputs.properties)
     }
 
-     rename("akutz_at.cfg", "META-INF/${modid}_at.cfg")
+     rename("(.+_at.cfg)", "META-INF/$1")
 }
 
 
