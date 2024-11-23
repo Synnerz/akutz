@@ -118,38 +118,18 @@ object World {
     // the position into a wrapped block
     @JvmStatic
     fun getAllBlocksInBox(start: BlockPos, end: BlockPos): ArrayList<Block> {
+        val xMin = min(start.x, end.x)
+        val yMin = min(start.y, end.y)
+        val zMin = min(start.z, end.z)
+        val xMax = max(start.x, end.x)
+        val yMax = max(start.y, end.y)
+        val zMax = max(start.z, end.z)
         val list = ArrayList<Block>()
-        val blockpos = BlockPos(
-            min(start.x.toDouble(), end.x.toDouble()),
-            min(start.y.toDouble(), end.y.toDouble()),
-            min(start.z.toDouble(), end.z.toDouble())
-        )
-        val blockpos1 = BlockPos(
-            max(start.x.toDouble(), end.x.toDouble()),
-            max(start.y.toDouble(), end.y.toDouble()),
-            max(start.z.toDouble(), end.z.toDouble())
-        )
-        var lastReturned: BlockPos = blockpos
 
-        while (lastReturned != blockpos1) {
-            var x = lastReturned.x
-            var y = lastReturned.y
-            var z = lastReturned.z
-
-            if (x < blockpos1.x) x++
-            else if (y < blockpos1.y) {
-                x = blockpos.x
-                y++
-            }
-            else if (z < blockpos1.z) {
-                x = blockpos.x
-                y = blockpos.y
-                z++
-            }
-
-            lastReturned = BlockPos(x, y, z)
-            list.add(getBlockAt(lastReturned))
-        }
+        for (x in xMin..xMax)
+            for (y in yMin..yMax)
+                for (z in zMin..zMax)
+                    list.add(getBlockAt(BlockPos(x, y, z)))
 
         return list
     }
