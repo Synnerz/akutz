@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz.api.wrappers
 
 import com.github.synnerz.akutz.api.libs.render.Tessellator
+import com.github.synnerz.akutz.api.wrappers.inventory.Slot
 import com.github.synnerz.akutz.listeners.ClientListener
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.*
@@ -8,7 +9,6 @@ import net.minecraft.client.gui.inventory.GuiContainer
 import net.minecraft.client.multiplayer.ServerData
 import net.minecraft.client.multiplayer.WorldClient
 import net.minecraft.client.network.NetHandlerPlayClient
-import net.minecraft.inventory.Slot
 import net.minecraft.network.INetHandler
 import net.minecraft.network.Packet
 import net.minecraft.realms.RealmsBridge
@@ -121,11 +121,10 @@ object Client {
 
         fun getClassName(): String = get()?.javaClass?.simpleName ?: "null"
 
-        // TODO: wrap the slot (?)
         fun getSlotUnderMouse(): Slot? {
             val gui = get()
             return if ((gui is GuiContainer) && (gui.slotUnderMouse != null))
-                gui.slotUnderMouse
+                Slot(gui.slotUnderMouse)
             else null
         }
 
