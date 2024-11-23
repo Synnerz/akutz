@@ -225,6 +225,8 @@ loadClass("com.github.synnerz.akutz.api.wrappers.inventory.Item")
 loadClass("com.github.synnerz.akutz.api.wrappers.entity.Particle")
 loadClass("com.github.synnerz.akutz.api.wrappers.inventory.Inventory")
 loadClass("com.github.synnerz.akutz.api.wrappers.inventory.Slot")
+loadClass("com.github.synnerz.akutz.api.wrappers.Scoreboard")
+loadClass("com.github.synnerz.akutz.api.wrappers.TabList")
 
 // Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
