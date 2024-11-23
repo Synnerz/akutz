@@ -1,7 +1,9 @@
 package com.github.synnerz.akutz.api.wrappers
 
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
+import com.github.synnerz.akutz.api.wrappers.entity.PlayerMP
 import com.github.synnerz.akutz.api.wrappers.inventory.Inventory
+import com.github.synnerz.akutz.api.wrappers.inventory.Item
 import com.github.synnerz.akutz.api.wrappers.world.block.Block
 import com.github.synnerz.akutz.api.wrappers.world.block.Sign
 import net.minecraft.block.BlockSign
@@ -79,6 +81,24 @@ object Player {
     fun getActivePotionEffects(): List<PotionEffect> {
         return getPlayer()?.activePotionEffects?.map(::PotionEffect) ?: listOf()
     }
+
     @JvmStatic
     fun getContainer(): Inventory? = getPlayer()?.openContainer?.let(::Inventory)
+
+    @JvmStatic
+    fun getInventory(): Inventory? = getPlayer()?.inventory?.let(::Inventory)
+
+    @JvmStatic
+    fun asPlayerMP() = getPlayer()?.let(::PlayerMP)
+
+    @JvmField
+    val armor = object {
+        fun getHelmet(): Item? = getInventory()?.getStackInSlot(39)
+
+        fun getChestplate(): Item? = getInventory()?.getStackInSlot(38)
+
+        fun getLeggings(): Item? = getInventory()?.getStackInSlot(37)
+
+        fun getBoots(): Item? = getInventory()?.getStackInSlot(36)
+    }
 }
