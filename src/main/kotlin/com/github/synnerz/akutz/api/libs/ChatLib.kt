@@ -3,6 +3,8 @@ package com.github.synnerz.akutz.api.libs
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.api.wrappers.Player
+import com.github.synnerz.akutz.api.wrappers.message.Message
+import com.github.synnerz.akutz.api.wrappers.message.TextComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.util.ChatComponentText
 import net.minecraftforge.client.ClientCommandHandler
@@ -18,9 +20,33 @@ object ChatLib {
     private val replaceCodesRegex = "\\u00a7(?=[0-9a-fk-or])".toRegex()
 
     @JvmStatic
-    fun chat(msg: String) {
-        // TODO: we'll probably implement a Wrapper for things like this later on don't forget to change
-        Player.getPlayer()?.addChatMessage(ChatComponentText(msg))
+    fun chat(msg: Any) {
+        when (msg) {
+            is String -> Message(msg).chat()
+            is Message -> msg.chat()
+            is TextComponent -> msg.chat()
+            else -> Message(msg.toString()).chat()
+        }
+    }
+
+    @JvmStatic
+    fun actionBar(msg: Any) {
+        when (msg) {
+            is String -> Message(msg).actionBar()
+            is Message -> msg.actionBar()
+            is TextComponent -> msg.actionBar()
+            else -> Message(msg.toString()).actionBar()
+        }
+    }
+
+    @JvmStatic
+    fun simulateChat(msg: Any) {
+        when (msg) {
+            is String -> Message(msg).setRecursive(true).chat()
+            is Message -> msg.setRecursive(true).chat()
+            is TextComponent -> Message(msg).setRecursive(true).chat()
+            else -> Message(msg.toString()).setRecursive(true).chat()
+        }
     }
 
     @JvmStatic
