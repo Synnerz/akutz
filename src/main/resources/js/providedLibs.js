@@ -294,9 +294,9 @@ const implGui = Java.type("com.github.synnerz.akutz.api.objects.gui.Gui")
 // We need to make a wrapper for our own implementation
 // due to the engine being a tad bit too funny and making
 // the listeners' args into a single array
-globalThis.Gui = class Gui {
+class AbstractGui {
   constructor() {
-    this.gui = new implGui()
+    this.gui = null
   }
 
   isOpen() {
@@ -372,4 +372,32 @@ globalThis.Gui = class Gui {
   onDragged(cb) {
     return this.gui.onDragged((args) => cb(...args))
   }
+}
+
+globalThis.Gui = class Gui extends AbstractGui {
+  constructor() {
+    super()
+    this.gui = new implGui()
+  }
+}
+
+const implDraggableGui = Java.type("com.github.synnerz.akutz.api.objects.gui.DraggableGui")
+
+globalThis.DraggableGui = class DraggableGui extends AbstractGui {
+    constructor(x = 0, y = 0, scale = 1) {
+      super()
+      this.gui = new implDraggableGui(x, y, scale)
+    }
+
+    getX() {
+      return this.gui.getX()
+    }
+
+    getY() {
+      return this.gui.getY()
+    }
+
+    getScale() {
+      return this.gui.getScale()
+    }
 }
