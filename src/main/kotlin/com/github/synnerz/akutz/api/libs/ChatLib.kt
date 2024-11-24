@@ -226,7 +226,7 @@ object ChatLib {
     }
 
     @JvmStatic
-    fun deleteMessages(vararg delete: String) {
+    fun deleteMessage(vararg delete: String) {
         deleteChatLineList { msg ->
             val unformatted = removeFormatting(msg.getChatMessage().unformattedText)
             delete.any { it == unformatted }
@@ -234,7 +234,7 @@ object ChatLib {
     }
 
     @JvmStatic
-    fun deleteMessages(vararg delete: Message) {
+    fun deleteMessage(vararg delete: Message) {
         deleteChatLineList { msg ->
             val comp = msg.getChatMessage().formattedText.substring(4)
             delete.any { it.getChatMessage().formattedText == comp }
@@ -242,7 +242,7 @@ object ChatLib {
     }
 
     @JvmStatic
-    fun deleteMessages(vararg delete: Int) {
+    fun deleteMessage(vararg delete: Int) {
         deleteChatLineList {
             val compId = it.getChatLineId()
             delete.any { it == compId }
@@ -253,29 +253,8 @@ object ChatLib {
     // logic, this is to avoid us having to remove certain things.
     // for example patcher's compact mode messages
     @JvmStatic
-    fun deleteMessages(method: (Message) -> Boolean) {
+    fun deleteMessage(method: (Message) -> Boolean) {
         deleteChatLineList(method)
-    }
-
-    @JvmStatic
-    fun deleteMessage(delete: String) {
-        deleteChatLineList {
-            removeFormatting(it.getChatMessage().unformattedText) == delete
-        }
-    }
-
-    @JvmStatic
-    fun deleteMessage(delete: Message) {
-        deleteChatLineList {
-            delete.getChatMessage().formattedText == it.getChatMessage().formattedText.substring(4)
-        }
-    }
-
-    @JvmStatic
-    fun deleteMessage(delete: Int) {
-        deleteChatLineList {
-            it.getChatLineId() == delete
-        }
     }
 
     private fun deleteChatLineList(toDelete: (Message) -> Boolean) {
