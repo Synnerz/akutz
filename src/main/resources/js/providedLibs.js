@@ -237,7 +237,6 @@ loadInstance("com.github.synnerz.akutz.api.libs.render.Tessellator")
 // Objects
 loadClass("com.github.synnerz.akutz.api.objects.render.Color")
 loadClass("com.github.synnerz.akutz.api.objects.render.Image")
-loadClass("com.github.synnerz.akutz.api.objects.render.Display")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateVar")
 loadClass("com.github.synnerz.akutz.api.objects.state.StateExp")
 loadClass("com.github.synnerz.akutz.api.objects.gui.GuiHandler")
@@ -407,4 +406,321 @@ globalThis.JavaAdapter = function JavaAdapter() {
   if (arguments.length > 2) throw "sorry, can only extend 1 class at a time :("
   return javet.extend(arguments[0], arguments[1])
   // return javet.extend(Array.from(arguments).slice(0, -1), arguments[arguments.length - 1])
+}
+
+const implDisplay = Java.type("com.github.synnerz.akutz.api.objects.render.Display")
+const implDisplayLine = Java.type("com.github.synnerz.akutz.api.objects.render.DisplayLine")
+
+class DisplayLine {
+  constructor(_displayLine) {
+    this.displayLine = _displayLine
+  }
+
+  onClick(cb) {
+    return this.displayLine.onClick((args) => cb(...args))
+  }
+
+  onScroll(cb) {
+    return this.displayLine.onScroll((args) => cb(...args))
+  }
+
+  onDragged(cb) {
+    return this.displayLine.onDragged((args) => cb(...args))
+  }
+
+  getText() {
+    return this.displayLine.getText()
+  }
+
+  getString() {
+    return this.displayLine.getString()
+  }
+
+  setString(str) {
+    this.displayLine.setString(str)
+    return this
+  }
+
+  getX() {
+    return this.displayLine.getX()
+  }
+
+  getY() {
+    return this.displayLine.getY()
+  }
+
+  getScale() {
+    return this.displayLine.getScale()
+  }
+
+  setScale(scale) {
+    this.displayLine.setScale(scale)
+    return this
+  }
+
+  getShadow() {
+    return this.displayLine.getShadow()
+  }
+
+  setShadow(shadow) {
+    this.displayLine.setShadow(shadow)
+    return this
+  }
+
+  getResolution() {
+    return this.displayLine.getResolution()
+  }
+
+  setResolution(res) {
+    this.displayLine.setResolution(res)
+    return this
+  }
+
+  getWidth() {
+    return this.displayLine.getWidth()
+  }
+
+  getHeight() {
+    return this.displayLine.getHeight()
+  }
+
+  getVisibleWidth() {
+    return this.displayLine.getVisibleWidth()
+  }
+
+  getVisibleHeight() {
+    return this.displayLine.getVisibleHeight()
+  }
+
+  update() {
+    this.displayLine.update()
+  }
+
+  render(x, y, graph) {
+    if(!graph) return this.displayLine.render(x, y)
+    this.displayLine.render(x, y, graph)
+  }
+}
+
+globalThis.Display = class Display {
+  constructor(isBuffered = false) {
+    this.display = new implDisplay(isBuffered)
+    this.HorzAlign = {
+      START: implDisplay.HorzAlign.START,
+      CENTER: implDisplay.HorzAlign.CENTER,
+      END: implDisplay.HorzAlign.END
+    }
+    this.VertAlign = {
+      START: implDisplay.VertAlign.START,
+      CENTER: implDisplay.VertAlign.CENTER,
+      BOTTOM: implDisplay.VertAlign.BOTTOM,
+    }
+    this.Background = {
+      NONE: implDisplay.Background.NONE,
+      FULL: implDisplay.Background.FULL,
+      LINE: implDisplay.Background.LINE,
+    }
+
+    // Used for js intercept to the cb methods
+    /** @private */
+    this._isDirty = true
+    /** @private */
+    this._lines = []
+  }
+
+  onClick(cb) {
+    return this.display.onClick((args) => cb(...args))
+  }
+
+  onScroll(cb) {
+    return this.display.onScroll((args) => cb(...args))
+  }
+
+  onDragged(cb) {
+    return this.display.onDragged((args) => cb(...args))
+  }
+
+  onCreateLine(cb) {
+    return this.display.onCreateLine((line) => cb(new DisplayLine(line[0])))
+  }
+
+  onLineCreate(cb) {
+    return this.onCreateLine(cb)
+  }
+
+  mark() {
+    this.display.mark()
+    return this
+  }
+
+  getLines() {
+    if (this._isDirty) {
+      this._lines = []
+      this.display.getLines().forEach(it => {
+        this._lines.push(new DisplayLine(it))
+      })
+    }
+    return this._lines
+  }
+
+  getX() {
+    return this.display.getX()
+  }
+
+  getY() {
+    return this.display.getY()
+  }
+
+  setX(x) {
+    this.display.setX(x)
+    return this
+  }
+
+  setY(y) {
+    this.display.setY(y)
+    return this
+  }
+
+  getTopLeftX() {
+    return this.display.getTopLeftX()
+  }
+
+  getTopLeftY() {
+    return this.display.getTopLeftY()
+  }
+
+  getScale() {
+    return this.display.getScale()
+  }
+
+  setScale(s) {
+    this.display.setScale(s)
+    return this
+  }
+
+  getGap() {
+    return this.display.getGap()
+  }
+
+  setGap(g) {
+    this.display.setGap(g)
+    return this
+  }
+
+  getShadow() {
+    return this.display.getShadow()
+  }
+
+  setShadow(s) {
+    this.display.setShadow(s)
+    return this
+  }
+
+  getResolution() {
+    return this.display.getResolution()
+  }
+
+  setResolution(r) {
+    this.display.setResolution(s)
+    return this
+  }
+
+  setLine(line) {
+    this._isDirty = true
+    this.display.setLine(line)
+    return this
+  }
+
+  setLines(lines) {
+    this._isDirty = true
+    this.display.setLines(lines)
+    return this
+  }
+
+  addLine(line) {
+    this._isDirty = true
+    this.display.addLine(line)
+    return this
+  }
+
+  addLines(lines) {
+    this._isDirty = true
+    this.display.addLines(lines)
+    return this
+  }
+
+  clearLines() {
+    this._isDirty = true
+    this._lines = []
+    this.display.clearLines()
+    return this
+  }
+
+  getWidth() {
+    return this.display.getWidth()
+  }
+
+  getVisibleWidth() {
+    return this.display.getVisibleWidth()
+  }
+
+  getLineHeight() {
+    return this.display.getLineHeight()
+  }
+
+  getHeight() {
+    return this.display.getHeight()
+  }
+
+  getVisibleHeight() {
+    return this.display.getVisibleHeight()
+  }
+
+  getHorzAlign() {
+    return this.display.getHorzAlign()
+  }
+
+  setHorzAlign(align) {
+    this.display.setHorzAlign(align)
+    return this
+  }
+
+  getVertAlign() {
+    return this.display.getVertAlign()
+  }
+
+  setVertAlign(align) {
+    this.display.setVertAlign(align)
+    return this
+  }
+
+  getBackground() {
+    return this.display.getBackground()
+  }
+
+  setBackground(bg) {
+    this.display.setBackground(bg)
+    return this
+  }
+
+  getBackgroundColor() {
+    return this.display.getBackgroundColor()
+  }
+
+  setBackgroundColor(col) {
+    this.display.setBackgroundColor(col)
+    return this
+  }
+
+  render() {
+    this.display.render()
+  }
+
+  getLineUnder(x, y) {
+    return this.display.getLineUnder(x, y)
+  }
+
+  isInBounds(x, y) {
+    return this.display.isInBounds(x, y)
+  }
 }
