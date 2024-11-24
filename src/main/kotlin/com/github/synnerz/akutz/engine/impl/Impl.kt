@@ -3,11 +3,15 @@ package com.github.synnerz.akutz.engine.impl
 import com.caoccao.javet.buddy.interop.proxy.JavetReflectionObjectFactory
 import com.caoccao.javet.interception.jvm.JavetJVMInterceptor
 import com.caoccao.javet.interop.V8Runtime
+import com.caoccao.javet.interop.callback.IJavetDirectCallable.NoThisAndResult
+import com.caoccao.javet.interop.callback.JavetCallbackContext
+import com.caoccao.javet.interop.callback.JavetCallbackType
 import com.caoccao.javet.interop.converters.JavetObjectConverter
 import com.caoccao.javet.interop.converters.JavetProxyConverter
 import com.caoccao.javet.interop.engine.IJavetEnginePool
 import com.caoccao.javet.interop.engine.JavetEngineConfig
 import com.caoccao.javet.interop.engine.JavetEnginePool
+import com.caoccao.javet.utils.V8ValueUtils
 import com.caoccao.javet.values.V8Value
 import com.caoccao.javet.values.reference.*
 import com.github.synnerz.akutz.Akutz
@@ -24,8 +28,10 @@ import com.github.synnerz.akutz.listeners.MouseListener
 import java.io.File
 import java.nio.file.Paths
 
+
 object Impl {
-    private var enginePool: IJavetEnginePool<V8Runtime> = JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
+    private var enginePool: IJavetEnginePool<V8Runtime> =
+        JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
     private var v8runtime: V8Runtime? = null
     private var javetJVMInterceptor: JavetJVMInterceptor? = null
     private var javetProxyConverter: JavetProxyConverter? = null
@@ -68,7 +74,8 @@ object Impl {
     }
 
     fun setup() {
-        if (enginePool.releasedEngineCount <= 0) enginePool = JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
+        if (enginePool.releasedEngineCount <= 0) enginePool =
+            JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
 
         v8runtime = enginePool.engine.v8Runtime
         v8runtime!!.setPromiseRejectCallback { jevent, valpromise, value ->
@@ -97,6 +104,25 @@ object Impl {
         v8runtime!!.setConverter(javetProxyConverter!!)
 
         javetJVMInterceptor = JavetJVMInterceptor(v8runtime)
+        javetJVMInterceptor!!.addCallbackContexts(
+            JavetCallbackContext(
+                "extend",
+                this, JavetCallbackType.DirectCallNoThisAndResult,
+                NoThisAndResult<java.lang.Exception?> { v8Values: Array<V8Value?> ->
+                    if (v8Values.size >= 2) {
+                        val obj: Any = v8runtime!!.toObject(v8Values[0])
+                        if (obj is Class<*>) {
+                            val v8ValueObject = V8ValueUtils.asV8ValueObject(v8Values, 1)
+                            if (v8ValueObject != null) {
+                                val childClass = JavetReflectionObjectFactory.getInstance()
+                                    .extend(obj, v8ValueObject)
+                                return@NoThisAndResult v8runtime!!.toV8Value(childClass)
+                            }
+                        }
+                    }
+                    v8runtime!!.createV8ValueUndefined()
+                })
+        )
         javetJVMInterceptor!!.register(v8runtime!!.globalObject)
 
         v8runtime!!.getExecutor(
@@ -112,6 +138,7 @@ object Impl {
             javetJVMInterceptor = null
         }
         if (javetProxyConverter != null) {
+            JavetReflectionObjectFactory.getInstance().clear()
             javetProxyConverter!!.config.setReflectionObjectFactory(null)
             javetProxyConverter = null
         }
@@ -128,7 +155,8 @@ object Impl {
     }
 
     fun execute(script: File) {
-        val module = v8runtime!!.getExecutor(script.readText()).setResourceName(script.path).setModule(true).compileV8Module()
+        val module =
+            v8runtime!!.getExecutor(script.readText()).setResourceName(script.path).setModule(true).compileV8Module()
         try {
             module.executeVoid()
             modulesLoaded.add(module)

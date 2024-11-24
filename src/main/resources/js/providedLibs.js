@@ -384,20 +384,27 @@ globalThis.Gui = class Gui extends AbstractGui {
 const implDraggableGui = Java.type("com.github.synnerz.akutz.api.objects.gui.DraggableGui")
 
 globalThis.DraggableGui = class DraggableGui extends AbstractGui {
-    constructor(x = 0, y = 0, scale = 1) {
-      super()
-      this.gui = new implDraggableGui(x, y, scale)
-    }
+  constructor(x = 0, y = 0, scale = 1) {
+    super()
+    this.gui = new implDraggableGui(x, y, scale)
+  }
 
-    getX() {
-      return this.gui.getX()
-    }
+  getX() {
+    return this.gui.getX()
+  }
 
-    getY() {
-      return this.gui.getY()
-    }
+  getY() {
+    return this.gui.getY()
+  }
 
-    getScale() {
-      return this.gui.getScale()
-    }
+  getScale() {
+    return this.gui.getScale()
+  }
+}
+
+globalThis.JavaAdapter = function JavaAdapter() {
+  if (arguments.length < 2) throw "Missing arguments for JavaAdapter(...clazzes, obj)"
+  if (arguments.length > 2) throw "sorry, can only extend 1 class at a time :("
+  return javet.extend(arguments[0], arguments[1])
+  // return javet.extend(Array.from(arguments).slice(0, -1), arguments[arguments.length - 1])
 }
