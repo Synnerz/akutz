@@ -559,6 +559,7 @@ globalThis.Display = class Display {
       this.display.getLines().forEach(it => {
         this._lines.push(new DisplayLine(it))
       })
+      this._isDirty = false
     }
     return this._lines
   }
