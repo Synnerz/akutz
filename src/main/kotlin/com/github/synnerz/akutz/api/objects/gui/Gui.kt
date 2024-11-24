@@ -15,7 +15,7 @@ import java.util.ArrayList
  * Taken from ChatTriggers under MIT License
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/objects/gui/Gui.kt)
  */
-class Gui : GuiScreen() {
+open class Gui : GuiScreen() {
     private val listeners = object {
         var onDraw: NormalEvent? = null
         var onKeyTyped: NormalEvent? = null
