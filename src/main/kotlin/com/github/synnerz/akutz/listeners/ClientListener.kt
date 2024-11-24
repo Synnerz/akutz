@@ -211,6 +211,9 @@ object ClientListener {
 
     @SubscribeEvent
     fun onRenderTick(event: RenderTickEvent) {
+        if (World.isLoaded()) {
+            MouseListener.handleDragged()
+        }
         if (event.phase !== TickEvent.Phase.END) return
         if (Tessellator.pushedMatrix != 0) {
             ChatLib.chat("[Akutz] Looks like you forgot to #finishDraw while drawing with Tessellator, please make sure to finish your draws")
