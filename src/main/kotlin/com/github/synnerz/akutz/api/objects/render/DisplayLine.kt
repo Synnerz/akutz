@@ -1,15 +1,35 @@
 package com.github.synnerz.akutz.api.objects.render
 
+import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.api.events.NormalEvent
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import java.awt.Graphics2D
 
 class DisplayLine(private val isBuffered: Boolean) {
+    internal var onClick: NormalEvent? = null
+    internal var onScroll: NormalEvent? = null
+    internal var onDragged: NormalEvent? = null
     private val text: Text = if (isBuffered) BufferedText() else NormalText()
     private var x: Int = 0
     private var y: Int = 0
     private var scale: Float = 1f
     private var shadow: Boolean = false
     private var resolution: Float = 24f
+
+    fun onClick(method: (args: Array<out Any?>) -> Unit) = run {
+        onClick = NormalEvent(method, EventType.Other)
+        onClick
+    }
+
+    fun onScroll(method: (args: Array<out Any?>) -> Unit) = run {
+        onScroll = NormalEvent(method, EventType.Other)
+        onScroll
+    }
+
+    fun onDragged(method: (args: Array<out Any?>) -> Unit) = run {
+        onDragged = NormalEvent(method, EventType.Other)
+        onDragged
+    }
 
     fun getText() = text
     fun getString() = text.getText()
