@@ -193,10 +193,12 @@ class Display @JvmOverloads constructor(
 
     fun render() {
         if (lines.size == 0) return
+
         // hi if you're trying to refactor this, do not call .getTopLeft[X/Y]() here and pass into the img.draw() later on, because the `BufferedText` have not been necessarily updated yet by `forceRenderBuffered()`, viz. `lines.forEach { it.update() }`
-        if (dirty) forceRenderBuffered()
-        if (isBuffered) img!!.draw(getTopLeftX(), getTopLeftY(), getWidth().toDouble(), getHeight().toDouble())
-        else {
+        if (isBuffered) {
+            if (dirty) forceRenderBuffered()
+            img!!.draw(getTopLeftX(), getTopLeftY(), getWidth().toDouble(), getHeight().toDouble())
+        } else {
             val tx = getTopLeftX()
             var y = getTopLeftY()
             Renderer.beginDraw(backgroundColor, false)
