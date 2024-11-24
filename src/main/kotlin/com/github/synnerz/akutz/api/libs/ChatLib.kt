@@ -243,8 +243,8 @@ object ChatLib {
 
     @JvmStatic
     fun deleteMessage(vararg delete: Int) {
-        deleteChatLineList {
-            val compId = it.getChatLineId()
+        deleteChatLineList { msg ->
+            val compId = msg.getChatLineId()
             delete.any { it == compId }
         }
     }
