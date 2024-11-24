@@ -12,6 +12,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import org.lwjgl.input.Mouse
 import org.lwjgl.opengl.Display
+import org.lwjgl.opengl.GL11
 import kotlin.math.*
 
 
@@ -22,7 +23,8 @@ import kotlin.math.*
 object Renderer : Base() {
     fun getStringWidth(text: String) = getFontRenderer().getStringWidth(text)
 
-    fun beginDraw(color: Color) = beginDraw(color, true)
+    @JvmOverloads
+    fun beginDraw(color: Color = Color.WHITE) = beginDraw(color, true)
 
     override fun beginDraw(color: Color, pushMatrix: Boolean) = apply {
         super.beginDraw(color, pushMatrix)

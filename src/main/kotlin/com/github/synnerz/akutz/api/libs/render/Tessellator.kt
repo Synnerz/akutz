@@ -19,9 +19,8 @@ object Tessellator : Base() {
 
     fun getRenderZ() = rendManager.renderZ
 
-    fun beginDraw() = Tessellator.beginDraw(Color.WHITE)
-
-    fun beginDraw(color: Color) = beginDraw(color, true)
+    @JvmOverloads
+    fun beginDraw(color: Color = Color.WHITE) = beginDraw(color, true)
 
     override fun beginDraw(color: Color, pushMatrix: Boolean) = beginDraw(color, pushMatrix, false)
 

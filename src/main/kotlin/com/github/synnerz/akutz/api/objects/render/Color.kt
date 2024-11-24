@@ -4,11 +4,11 @@ import java.awt.Color as AWTColor
 
 class Color @JvmOverloads constructor(
     @JvmField
-    val r: Int,
+    val r: Int = 255,
     @JvmField
-    val g: Int,
+    val g: Int = 255,
     @JvmField
-    val b: Int,
+    val b: Int = 255,
     @JvmField
     val a: Int = 255
 ) {
