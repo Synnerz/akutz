@@ -30,6 +30,7 @@ class Display(private val isBuffered: Boolean) {
 
     private fun createLine() = DisplayLine(isBuffered).setScale(scale).setShadow(shadow).setResolution(resolution)
 
+    fun getLines() = lines
     fun getX() = x
     fun getY() = y
     fun setX(x: Double) = apply { this.x = x }
@@ -210,6 +211,12 @@ class Display(private val isBuffered: Boolean) {
         // mouse is in gap
         if (dy % getLineHeight() > 10 * scale) return null
         return lines[i]
+    }
+
+    fun isInBounds(x: Double, y: Double): Boolean {
+        val tx = getTopLeftX()
+        val ty = getTopLeftY()
+        return x >= tx && x <= tx + getWidth() && y >= ty && y <= ty + getHeight()
     }
 
     enum class HorzAlign {
