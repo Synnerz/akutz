@@ -3,10 +3,12 @@ package com.github.synnerz.akutz.api.libs
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.api.wrappers.Player
+import com.github.synnerz.akutz.api.wrappers.World
 import com.github.synnerz.akutz.api.wrappers.message.Message
 import com.github.synnerz.akutz.api.wrappers.message.TextComponent
 import net.minecraft.client.Minecraft
 import net.minecraft.client.gui.ChatLine
+import net.minecraft.command.ICommand
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 
@@ -274,4 +276,17 @@ object ChatLib {
     }
 
     // TODO: might want to make regex matching for #editMessage & #deleteMessage
+
+    @JvmStatic
+    fun getCommandHandler() : ClientCommandHandler = ClientCommandHandler.instance
+
+    @JvmStatic
+    fun getCommands(): MutableMap<String, ICommand> = getCommandHandler().commands
+
+    @JvmStatic
+    fun isClientCmd(command: String) : Boolean {
+        if (!World.isLoaded()) return false
+        val cmd = getCommands()[command.replace("/", "")] ?: return false
+        return cmd.canCommandSenderUseCommand(Player.getPlayer())
+    }
 }
