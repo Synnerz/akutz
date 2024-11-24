@@ -1,11 +1,20 @@
 package com.github.synnerz.akutz.api.objects.render
 
+import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.api.events.NormalEvent
 import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.listeners.MouseListener
 import java.awt.image.BufferedImage
 
 class Display @JvmOverloads constructor(
     private val isBuffered: Boolean = false
 ) {
+    private val listeners = object {
+        var onClick: NormalEvent? = null
+        var onScroll: NormalEvent? = null
+        var onDragged: NormalEvent? = null
+        var onCreateLine: NormalEvent? = null
+    }
     private val lines = mutableListOf<DisplayLine>()
     private var x: Double = 0.0
     private var y: Double = 0.0
@@ -23,6 +32,51 @@ class Display @JvmOverloads constructor(
     private var cvh: Float? = null
     private var img: Image? = null
 
+    init {
+        MouseListener.registerClickListener { x, y, button, pressed ->
+            val lineUnder = getLineUnder(x, y)
+            if (lineUnder != null) lineUnder.onClick?.trigger(arrayOf(x, y, button, pressed))
+
+            listeners.onClick?.trigger(arrayOf(x, y, button, pressed))
+        }
+
+        MouseListener.registerScrollListener { x, y, delta ->
+            val lineUnder = getLineUnder(x, y)
+            if (lineUnder != null) lineUnder.onScroll?.trigger(arrayOf(x, y, delta))
+
+            listeners.onScroll?.trigger(arrayOf(x, y, delta))
+        }
+
+        MouseListener.registerDraggedListener { deltaX, deltaY, x, y, button ->
+            val lineUnder = getLineUnder(x, y)
+            if (lineUnder != null) lineUnder.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button))
+
+            listeners.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button))
+        }
+    }
+
+    fun onClick(method: (args: Array<out Any?>) -> Unit) = run {
+        listeners.onClick = NormalEvent(method, EventType.Other)
+        listeners.onClick
+    }
+
+    fun onScroll(method: (args: Array<out Any?>) -> Unit) = run {
+        listeners.onScroll = NormalEvent(method, EventType.Other)
+        listeners.onScroll
+    }
+
+    fun onDragged(method: (args: Array<out Any?>) -> Unit) = run {
+        listeners.onDragged = NormalEvent(method, EventType.Other)
+        listeners.onDragged
+    }
+
+    fun onCreateLine(method: (args: Array<out Any?>) -> Unit) = run {
+        listeners.onCreateLine = NormalEvent(method, EventType.Other)
+        listeners.onCreateLine
+    }
+
+    fun onLineCreate(method: (args: Array<out Any?>) -> Unit) = onCreateLine(method)
+
     fun mark() = apply {
         dirty = true
         cw = null
@@ -30,7 +84,11 @@ class Display @JvmOverloads constructor(
         cvh = null
     }
 
-    private fun createLine() = DisplayLine(isBuffered).setScale(scale).setShadow(shadow).setResolution(resolution)
+    private fun createLine() = run {
+        val line = DisplayLine(isBuffered).setScale(scale).setShadow(shadow).setResolution(resolution)
+        listeners.onCreateLine?.trigger(arrayOf(line))
+        line
+    }
 
     fun getLines() = lines
     fun getX() = x
