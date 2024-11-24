@@ -6,6 +6,7 @@ import com.github.synnerz.akutz.api.wrappers.Player
 import com.github.synnerz.akutz.api.wrappers.message.Message
 import com.github.synnerz.akutz.api.wrappers.message.TextComponent
 import net.minecraft.client.Minecraft
+import net.minecraft.client.gui.ChatLine
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.ClientChatReceivedEvent
 
@@ -156,4 +157,142 @@ object ChatLib {
 
         else -> centerMessage(message.toString())
     }
+
+    @JvmStatic
+    fun clearChat(vararg chatLineIds: Int) {
+        if (chatLineIds.isEmpty()) {
+            Client.getChatGui()?.clearChatMessages()
+            return
+        }
+
+        chatLineIds.forEach { Client.getChatGui()?.deleteChatLine(it) }
+    }
+
+    @JvmStatic
+    fun editMessage(replace: String, vararg repl: Message) {
+        editChatLineList({
+                removeFormatting(it.getChatMessage().unformattedText) == replace
+            },
+            *repl
+        )
+    }
+
+    @JvmStatic
+    fun editMessage(replace: Message, vararg repl: Message) {
+        editChatLineList({
+                replace.getChatMessage().formattedText == it.getChatMessage().formattedText.substring(4)
+            },
+            *repl
+        )
+    }
+
+    @JvmStatic
+    fun editMessage(replace: Int, vararg repl: Message) {
+        editChatLineList({
+                it.getChatLineId() == replace
+            },
+            *repl
+        )
+    }
+
+    private fun editChatLineList(
+        toReplace: (Message) -> Boolean,
+        vararg replacements: Message
+    ) {
+        val iter = Client.getChatGui()!!.chatLines.listIterator()
+
+        while (iter.hasNext()) {
+            val chatLine = iter.next()
+            val result = toReplace(Message(chatLine.chatComponent).setChatLineId(chatLine.chatLineID))
+            if (!result) continue
+
+            iter.remove()
+            replacements.map {
+                val lineId = if (it.getChatLineId() == -1) 0 else it.getChatLineId()
+
+                ChatLine(chatLine.updatedCounter, it.getChatMessage(), lineId)
+            }.forEach(iter::add)
+        }
+
+        Client.getChatGui()!!.refreshChat()
+    }
+
+    @JvmOverloads
+    @JvmStatic
+    fun addToMessageHistory(index: Int = -1, msg: String) {
+        val messages = Client.getChatGui()!!.sentMessages
+        if (index == -1) messages.add(msg)
+        else messages.add(index, msg)
+    }
+
+    @JvmStatic
+    fun deleteMessages(vararg delete: String) {
+        deleteChatLineList { msg ->
+            val unformatted = removeFormatting(msg.getChatMessage().unformattedText)
+            delete.any { it == unformatted }
+        }
+    }
+
+    @JvmStatic
+    fun deleteMessages(vararg delete: Message) {
+        deleteChatLineList { msg ->
+            val comp = msg.getChatMessage().formattedText.substring(4)
+            delete.any { it.getChatMessage().formattedText == comp }
+        }
+    }
+
+    @JvmStatic
+    fun deleteMessages(vararg delete: Int) {
+        deleteChatLineList {
+            val compId = it.getChatLineId()
+            delete.any { it == compId }
+        }
+    }
+
+    // Add a way for the user to be able to make their own custom
+    // logic, this is to avoid us having to remove certain things.
+    // for example patcher's compact mode messages
+    @JvmStatic
+    fun deleteMessages(method: (Message) -> Boolean) {
+        deleteChatLineList(method)
+    }
+
+    @JvmStatic
+    fun deleteMessage(delete: String) {
+        deleteChatLineList {
+            removeFormatting(it.getChatMessage().unformattedText) == delete
+        }
+    }
+
+    @JvmStatic
+    fun deleteMessage(delete: Message) {
+        deleteChatLineList {
+            delete.getChatMessage().formattedText == it.getChatMessage().formattedText.substring(4)
+        }
+    }
+
+    @JvmStatic
+    fun deleteMessage(delete: Int) {
+        deleteChatLineList {
+            it.getChatLineId() == delete
+        }
+    }
+
+    private fun deleteChatLineList(toDelete: (Message) -> Boolean) {
+        val iter = Client.getChatGui()!!.chatLines.listIterator()
+        val start = Client.getSystemTime()
+
+        while (iter.hasNext()) {
+            if (Client.getSystemTime() - start > 50) break
+
+            val chatLine = iter.next()
+
+            if (toDelete(Message(chatLine.chatComponent).setChatLineId(chatLine.chatLineID)))
+                iter.remove()
+        }
+
+        Client.getChatGui()!!.refreshChat()
+    }
+
+    // TODO: might want to make regex matching for #editMessage & #deleteMessage
 }
