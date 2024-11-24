@@ -497,7 +497,7 @@ class DisplayLine {
   }
 
   render(x, y, graph) {
-    if(!graph) return this.displayLine.render(x, y)
+    if (!graph) return this.displayLine.render(x, y)
     this.displayLine.render(x, y, graph)
   }
 }
@@ -505,21 +505,6 @@ class DisplayLine {
 globalThis.Display = class Display {
   constructor(isBuffered = false) {
     this.display = new implDisplay(isBuffered)
-    this.HorzAlign = {
-      START: implDisplay.HorzAlign.START,
-      CENTER: implDisplay.HorzAlign.CENTER,
-      END: implDisplay.HorzAlign.END
-    }
-    this.VertAlign = {
-      START: implDisplay.VertAlign.START,
-      CENTER: implDisplay.VertAlign.CENTER,
-      BOTTOM: implDisplay.VertAlign.BOTTOM,
-    }
-    this.Background = {
-      NONE: implDisplay.Background.NONE,
-      FULL: implDisplay.Background.FULL,
-      LINE: implDisplay.Background.LINE,
-    }
 
     // Used for js intercept to the cb methods
     /** @private */
