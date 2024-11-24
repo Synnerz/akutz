@@ -12,7 +12,7 @@ import java.util.regex.Matcher
 import java.util.regex.Pattern
 import javax.imageio.ImageIO
 
-class Image(
+class Image @JvmOverloads constructor(
     private var img: BufferedImage?,
     private var width: Int = img!!.width,
     private var height: Int = img!!.height

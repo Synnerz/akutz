@@ -2,7 +2,9 @@ package com.github.synnerz.akutz.api.objects.render
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
 
-class NormalText(private var text: String = "") : Text {
+class NormalText @JvmOverloads constructor(
+    private var text: String = ""
+) : Text {
     private var w: Float = 0f
     private var vw: Float = 0f
     private fun calcWidth() {

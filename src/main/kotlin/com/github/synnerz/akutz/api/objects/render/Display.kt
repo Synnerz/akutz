@@ -3,7 +3,9 @@ package com.github.synnerz.akutz.api.objects.render
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import java.awt.image.BufferedImage
 
-class Display(private val isBuffered: Boolean) {
+class Display @JvmOverloads constructor(
+    private val isBuffered: Boolean = false
+) {
     private val lines = mutableListOf<DisplayLine>()
     private var x: Double = 0.0
     private var y: Double = 0.0

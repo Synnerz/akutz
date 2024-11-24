@@ -13,7 +13,7 @@ import java.util.function.Consumer
 import kotlin.math.ceil
 
 
-class BufferedText(
+class BufferedText @JvmOverloads constructor(
     private var text: String = "",
     private var shadow: Boolean = false,
     private var resolution: Float = 24f,
