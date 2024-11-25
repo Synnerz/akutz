@@ -262,7 +262,7 @@ class BufferedText @JvmOverloads constructor(
 
         @JvmStatic
         private val mojanglesFont =
-            Font.createFont(Font.TRUETYPE_FONT, BufferedText::class.java.getResourceAsStream("/Mojangles.tff"))
+            Font.createFont(Font.TRUETYPE_FONT, BufferedText::class.java.getResourceAsStream("/Mojangles.ttf"))
 
         @JvmStatic
         fun getFont(family: String, resolution: Float): Font {
