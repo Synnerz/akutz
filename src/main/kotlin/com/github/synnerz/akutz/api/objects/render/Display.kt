@@ -169,11 +169,11 @@ class Display @JvmOverloads constructor(
         lines.clear()
     }
 
-    fun getWidth() = cw ?: lines.maxOf { it.getWidth() }.also { cw = it }
-    fun getVisibleWidth() = cvw ?: lines.maxOf { it.getVisibleWidth() }.also { cvw = it }
+    fun getWidth() = cw ?: if (lines.size == 0) 0f else lines.maxOf { it.getWidth() }.also { cw = it }
+    fun getVisibleWidth() = cvw ?: if (lines.size == 0) 0f else lines.maxOf { it.getVisibleWidth() }.also { cvw = it }
     fun getLineHeight() = 10 * scale + gap
     fun getHeight() = if (lines.size == 0) 0f else getLineHeight() * lines.size - gap
-    fun getVisibleHeight() = cvh ?: {
+    fun getVisibleHeight(): Float = cvh ?: run {
         val s = lines.indexOfFirst { it.getVisibleWidth() > 0f }
         val e = lines.indexOfLast { it.getVisibleWidth() > 0f }
         if (s == -1) 0f else (e - s + 1) * getLineHeight()
