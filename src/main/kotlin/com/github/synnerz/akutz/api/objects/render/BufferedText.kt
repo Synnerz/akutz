@@ -120,17 +120,17 @@ class BufferedText @JvmOverloads constructor(
                         return@removeAll false
                     }
                     cAtts.add(attsObj(k, sb.length, 0))
-                    i++
+                    i += 2
                     continue
                 }
                 if (k == 'k') {
                     obfS = sb.length
-                    i++
+                    i += 2
                     continue
                 }
                 if (k == 'l' || k == 'o' || k == 'm' || k == 'n') {
                     cAtts.add(attsObj(k, sb.length, 0))
-                    i++
+                    i += 2
                     continue
                 }
                 if (k == 'r') {
@@ -138,7 +138,7 @@ class BufferedText @JvmOverloads constructor(
                     cAtts.clear()
                     if (obfS >= 0) o.add(obfObj(obfS, sb.length))
                     obfS = -1
-                    i++
+                    i += 2
                     continue
                 }
             }
