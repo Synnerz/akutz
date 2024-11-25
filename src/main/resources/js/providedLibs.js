@@ -607,7 +607,7 @@ globalThis.Display = class Display {
   }
 
   setResolution(r) {
-    this.display.setResolution(s)
+    this.display.setResolution(r)
     return this
   }
 
