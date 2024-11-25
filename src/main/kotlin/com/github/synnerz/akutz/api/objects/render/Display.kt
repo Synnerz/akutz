@@ -36,21 +36,24 @@ class Display @JvmOverloads constructor(
 
     init {
         MouseListener.registerClickListener { x, y, button, pressed ->
+            if (!isInBounds(x, y)) return@registerClickListener
             val lineUnder = getLineUnder(x, y)
             if (lineUnder != null) lineUnder.onClick?.trigger(arrayOf(x, y, button, pressed))
-            if (isInBounds(x, y)) listeners.onClick?.trigger(arrayOf(x, y, button, pressed, lineUnder))
+            listeners.onClick?.trigger(arrayOf(x, y, button, pressed, lineUnder))
         }
 
         MouseListener.registerScrollListener { x, y, delta ->
+            if (!isInBounds(x, y)) return@registerScrollListener
             val lineUnder = getLineUnder(x, y)
             if (lineUnder != null) lineUnder.onScroll?.trigger(arrayOf(x, y, delta))
-            if (isInBounds(x, y)) listeners.onScroll?.trigger(arrayOf(x, y, delta, lineUnder))
+            listeners.onScroll?.trigger(arrayOf(x, y, delta, lineUnder))
         }
 
         MouseListener.registerDraggedListener { deltaX, deltaY, x, y, button ->
+            if (!isInBounds(x, y)) return@registerDraggedListener
             val lineUnder = getLineUnder(x, y)
             if (lineUnder != null) lineUnder.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button))
-            if (isInBounds(x, y)) listeners.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button, lineUnder))
+            listeners.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button, lineUnder))
         }
     }
 
