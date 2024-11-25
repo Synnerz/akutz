@@ -17,7 +17,7 @@ class BufferedText @JvmOverloads constructor(
     private var text: String = "",
     private var shadow: Boolean = false,
     private var resolution: Float = 24f,
-    private var fontFamily: String = "Mojangles"
+    private var fontFamily: String = "mojangles"
 ) : Text {
     private val OBFUSCATED_REG = "[&§]k".toRegex()
     private var dirty = true
@@ -87,7 +87,7 @@ class BufferedText @JvmOverloads constructor(
     }
 
     fun getFontFamily() = fontFamily
-    fun setFontFamily(v: String) = mark().also { fontFamily = v; font = getFont(fontFamily, resolution) }
+    fun setFontFamily(v: String) = mark().also { fontFamily = normalizeFont(v); font = getFont(fontFamily, resolution) }
     fun getFont() = font
 
     fun render(graphics: Graphics2D, x: Int, y: Int) {
