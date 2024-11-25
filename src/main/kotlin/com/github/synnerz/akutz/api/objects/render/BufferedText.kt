@@ -253,7 +253,12 @@ class BufferedText @JvmOverloads constructor(
 
     companion object {
         @JvmStatic
-        val FONTS = GraphicsEnvironment.getLocalGraphicsEnvironment().availableFontFamilyNames.toSet()
+        private val FONT_MAP = GraphicsEnvironment.getLocalGraphicsEnvironment().availableFontFamilyNames.associateBy { normalizeFont(it) }
+
+        @JvmStatic
+        val FONTS = FONT_MAP.keys
+
+        fun normalizeFont(family: String) = family.replace("\\W".toRegex(), "").lowercase()
 
         @JvmStatic
         private val mojanglesFont =
@@ -261,11 +266,11 @@ class BufferedText @JvmOverloads constructor(
 
         @JvmStatic
         fun getFont(family: String, resolution: Float): Font {
-            if (family == "Mojangles") return mojanglesFont.deriveFont(Font.PLAIN, resolution)
+            if (family == "mojangles") return mojanglesFont.deriveFont(Font.PLAIN, resolution)
             if (family == "%MONOSPACED%") return Font(Font.MONOSPACED, Font.PLAIN, resolution.toInt())
             if (family == "%SANS_SERIF%") return Font(Font.SANS_SERIF, Font.PLAIN, resolution.toInt())
             if (!FONTS.contains(family)) throw IllegalArgumentException("Unknown font: $family")
-            return Font(family, Font.PLAIN, resolution.toInt())
+            return Font(FONT_MAP[family], Font.PLAIN, resolution.toInt())
         }
     }
 }

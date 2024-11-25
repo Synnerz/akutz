@@ -4,6 +4,7 @@ import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.events.NormalEvent
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.listeners.MouseListener
+import java.awt.Font
 import java.awt.image.BufferedImage
 
 class Display @JvmOverloads constructor(
@@ -26,6 +27,7 @@ class Display @JvmOverloads constructor(
     private var vertAlign: VertAlign = VertAlign.TOP
     private var background: Background = Background.NONE
     private var backgroundColor: Color = Color.EMPTY
+    private var font: String? = null
     private var dirty = false
     private var cw: Float? = null
     private var cvw: Float? = null
@@ -86,6 +88,7 @@ class Display @JvmOverloads constructor(
 
     private fun createLine() = run {
         val line = DisplayLine(isBuffered).setScale(scale).setShadow(shadow).setResolution(resolution)
+        if (font != null) (line.getText() as BufferedText).setFontFamily(font!!)
         listeners.onCreateLine?.trigger(arrayOf(line))
         line
     }
@@ -134,6 +137,17 @@ class Display @JvmOverloads constructor(
         if (!isBuffered) throw UnsupportedOperationException("only to be used when `isBuffered` is set to true")
         resolution = r
         lines.forEach { it.setResolution(r) }
+        dirty = true
+    }
+
+    fun getFont() = font
+    fun setFont(f: Font): Display = setFont(f.family)
+    fun setFont(f: String) = apply {
+        if (!isBuffered) throw UnsupportedOperationException("only to be used when `isBuffered` is set to true")
+        val family = BufferedText.normalizeFont(f)
+        if (!BufferedText.FONTS.contains(family)) throw IllegalArgumentException("Unknown font: $f. If you are trying to use a custom installed font on windows, make sure it is installed for all users otherwise the JVM will not recognize it.")
+        font = family
+        lines.forEach { (it.getText() as BufferedText).setFontFamily(family) }
         dirty = true
     }
 
