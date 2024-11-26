@@ -46,6 +46,9 @@ open class Base {
         _color(color)
     }
 
+    @JvmOverloads
+    fun color(r: Int, g: Int, b: Int, a: Int = 255) = color(Color(r, g, b, a))
+
     fun setColor(color: Color) = apply {
         this.color(color)
     }
