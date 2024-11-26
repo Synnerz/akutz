@@ -261,14 +261,29 @@ class BufferedText @JvmOverloads constructor(
         fun normalizeFont(family: String) = family.replace("\\W".toRegex(), "").lowercase()
 
         @JvmStatic
-        private val mojanglesFont =
-            Font.createFont(Font.TRUETYPE_FONT, BufferedText::class.java.getResourceAsStream("/Mojangles.ttf"))
+        private val CUSTOM_FONTS = mutableMapOf<String, Font>()
+
+        @JvmStatic
+        fun registerFont(name: String, font: Font): Boolean {
+            val n = normalizeFont(name)
+            if (FONTS.contains(n)) return false
+            CUSTOM_FONTS[name] = font
+            return true
+        }
+
+        init {
+            registerFont(
+                "Mojangles",
+                Font.createFont(Font.TRUETYPE_FONT, BufferedText::class.java.getResourceAsStream("/Mojangles.ttf"))
+            )
+        }
 
         @JvmStatic
         fun getFont(family: String, resolution: Float): Font {
-            if (family == "mojangles") return mojanglesFont.deriveFont(Font.PLAIN, resolution)
             if (family == "%MONOSPACED%") return Font(Font.MONOSPACED, Font.PLAIN, resolution.toInt())
             if (family == "%SANS_SERIF%") return Font(Font.SANS_SERIF, Font.PLAIN, resolution.toInt())
+
+            if (CUSTOM_FONTS.containsKey(family)) return CUSTOM_FONTS[family]!!.deriveFont(Font.PLAIN, resolution)
             if (!FONTS.contains(family)) throw IllegalArgumentException("Unknown font: $family")
             return Font(FONT_MAP[family], Font.PLAIN, resolution.toInt())
         }

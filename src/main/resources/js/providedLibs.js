@@ -410,6 +410,7 @@ globalThis.JavaAdapter = function JavaAdapter() {
 
 const implDisplay = Java.type("com.github.synnerz.akutz.api.objects.render.Display")
 const implDisplayLine = Java.type("com.github.synnerz.akutz.api.objects.render.DisplayLine")
+const implBufferedText = Java.type("com.github.synnerz.akutz.api.objects.render.BufferedText")
 
 class DisplayLine {
   constructor(_displayLine) {
@@ -708,5 +709,9 @@ globalThis.Display = class Display {
 
   isInBounds(x, y) {
     return this.display.isInBounds(x, y)
+  }
+
+  static registerFont(name, font) {
+    return implBufferedText.registerFont(name, font)
   }
 }
