@@ -275,7 +275,7 @@ class BufferedText @JvmOverloads constructor(
 
         init {
             registerFont(
-                "mojangles",
+                "Mojangles",
                 Font.createFont(Font.TRUETYPE_FONT, BufferedText::class.java.getResourceAsStream("/Mojangles.ttf"))
             )
         }
