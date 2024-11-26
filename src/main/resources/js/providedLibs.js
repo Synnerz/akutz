@@ -612,6 +612,15 @@ globalThis.Display = class Display {
     return this
   }
 
+  getFont() {
+    return this.display.getFont()
+  }
+
+  setFont(f) {
+    this.display.setFont(f)
+    return this
+  }
+
   setLine(line) {
     this._isDirty = true
     this.display.setLine(line)
