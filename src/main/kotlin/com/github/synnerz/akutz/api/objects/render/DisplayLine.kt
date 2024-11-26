@@ -52,8 +52,11 @@ class DisplayLine(private val isBuffered: Boolean) {
 
     fun getWidth() = if (isBuffered) text.getWidth() * scale * 10 / resolution else text.getWidth() * scale
     fun getHeight() = if (isBuffered) text.getHeight() * scale * 10 / resolution else text.getHeight() * scale
-    fun getVisibleWidth() = if (isBuffered) text.getVisibleWidth() * scale * 10 / resolution else text.getVisibleWidth() * scale
-    fun getVisibleHeight() = if (isBuffered) text.getVisibleHeight() * scale * 10 / resolution else text.getVisibleHeight() * scale
+    fun getVisibleWidth() =
+        if (isBuffered) text.getVisibleWidth() * scale * 10 / resolution else text.getVisibleWidth() * scale
+
+    fun getVisibleHeight() =
+        if (isBuffered) text.getVisibleHeight() * scale * 10 / resolution else text.getVisibleHeight() * scale
 
     fun update() {
         if (isBuffered) (text as BufferedText).update()

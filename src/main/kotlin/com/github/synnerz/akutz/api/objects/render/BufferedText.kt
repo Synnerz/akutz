@@ -253,11 +253,13 @@ class BufferedText @JvmOverloads constructor(
 
     companion object {
         @JvmStatic
-        private val FONT_MAP = GraphicsEnvironment.getLocalGraphicsEnvironment().availableFontFamilyNames.associateBy { normalizeFont(it) }
+        private val FONT_MAP =
+            GraphicsEnvironment.getLocalGraphicsEnvironment().availableFontFamilyNames.associateBy { normalizeFont(it) }
 
         @JvmStatic
         val FONTS = FONT_MAP.keys
 
+        @JvmStatic
         fun normalizeFont(family: String) = family.replace("\\W".toRegex(), "").lowercase()
 
         @JvmStatic
