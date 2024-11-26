@@ -32,6 +32,8 @@ class Display @JvmOverloads constructor(
     private var cw: Float? = null
     private var cvw: Float? = null
     private var cvh: Float? = null
+    private var bw: Float? = null
+    private var bh: Float? = null
     private var img: Image? = null
 
     init {
@@ -211,7 +213,12 @@ class Display @JvmOverloads constructor(
         // hi if you're trying to refactor this, do not call .getTopLeft[X/Y]() here and pass into the img.draw() later on, because the `BufferedText` have not been necessarily updated yet by `forceRenderBuffered()`, viz. `lines.forEach { it.update() }`
         if (isBuffered) {
             if (dirty) forceRenderBuffered()
-            img!!.draw(getTopLeftX(), getTopLeftY(), getWidth().toDouble(), getHeight().toDouble())
+            img!!.draw(
+                getTopLeftX(),
+                getTopLeftY(),
+                (getWidth() * roundPow2(bw!!) / bw!!).toDouble(),
+                (getHeight() * roundPow2(bh!!) / bh!!).toDouble()
+            )
         } else {
             val tx = getTopLeftX()
             var y = getTopLeftY()
@@ -246,12 +253,15 @@ class Display @JvmOverloads constructor(
     private fun roundPow2(f: Float) = (f.toInt() + 127) and (127).inv()
     private fun forceRenderBuffered() {
         dirty = false
+        cw = null
+        cvw = null
+        cvh = null
         lines.forEach { it.update() }
-        val w = getWidth()
-        val h = getHeight()
+        bw = lines.maxOf { it.getText().getWidth() } + if (shadow) resolution / 10 else 0f
+        bh = lines.size * resolution + (lines.size - 1) * (gap * resolution / 10) + if (shadow) resolution / 10 else 0f
         val bImg = BufferedImage(
-            roundPow2(w + if (shadow) resolution / 10 else 0f),
-            roundPow2(h + if (shadow) resolution / 10 else 0f),
+            roundPow2(bw!!),
+            roundPow2(bh!!),
             BufferedImage.TYPE_INT_ARGB
         )
         val g = bImg.createGraphics()
