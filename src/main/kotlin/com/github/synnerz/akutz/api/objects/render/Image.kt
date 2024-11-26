@@ -66,14 +66,29 @@ class Image @JvmOverloads constructor(
     fun draw(
         x: Double, y: Double,
         width: Double = getWidth().toDouble(),
-        height: Double = width / getWidth() * getHeight()
+        height: Double = width / getWidth() * getHeight(),
+        u: Double = 0.0,
+        v: Double = 0.0,
+        uw: Double = getWidth().toDouble(),
+        vh: Double = getHeight().toDouble()
     ) = apply {
         if (needBake) bake()
         if (texture == null) return@apply
 
         GlStateManager.enableTexture2D()
         GlStateManager.bindTexture(texture!!.glTextureId)
-        Renderer.drawTexturedRect(x, y, width, height)
+        Renderer.drawTexturedRect(
+            x,
+            y,
+            width,
+            height,
+            u,
+            v,
+            getWidth().toDouble(),
+            getHeight().toDouble(),
+            uw,
+            vh
+        )
     }
 
     companion object {
