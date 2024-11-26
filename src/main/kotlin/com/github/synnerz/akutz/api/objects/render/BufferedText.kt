@@ -269,7 +269,7 @@ class BufferedText @JvmOverloads constructor(
         fun registerFont(name: String, font: Font): Boolean {
             val n = normalizeFont(name)
             if (FONTS.contains(n)) return false
-            CUSTOM_FONTS[name] = font
+            CUSTOM_FONTS[n] = font
             return true
         }
 
