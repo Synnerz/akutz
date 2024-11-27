@@ -3,10 +3,10 @@ package com.github.synnerz.akutz.api.objects.gui
 import com.github.synnerz.akutz.api.libs.render.Renderer
 
 abstract class BaseGuiComponent @JvmOverloads constructor(
-    protected var x: Double,
-    protected var y: Double,
-    protected var w: Double,
-    protected var h: Double,
+    protected var _x: Double,
+    protected var _y: Double,
+    protected var _w: Double,
+    protected var _h: Double,
     protected var p: BaseGuiComponent? = null
 ) {
     protected val c = mutableListOf<BaseGuiComponent>()
@@ -20,6 +20,15 @@ abstract class BaseGuiComponent @JvmOverloads constructor(
     init {
         p?.addChild(this)
     }
+
+    fun getX() = cx
+    fun getY() = cy
+    fun getW() = cw
+    fun getH() = ch
+    fun setX(x: Double) = apply { mark()._x = x }
+    fun setY(y: Double) = apply { mark()._y = y }
+    fun setW(w: Double) = apply { mark()._w = w }
+    fun setH(h: Double) = apply { mark()._h = h }
 
     open fun addChild(child: BaseGuiComponent) = apply {
         if (child.p != null) {
@@ -41,10 +50,10 @@ abstract class BaseGuiComponent @JvmOverloads constructor(
     protected open fun update() {
         if (!d) return
         d = false
-        cx = x / 100 * (p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0)
-        cy = y / 100 * (p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0)
-        cw = w / 100 * (p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0)
-        ch = h / 100 * (p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0)
+        cx = _x / 100 * (p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0)
+        cy = _y / 100 * (p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0)
+        cw = _w / 100 * (p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0)
+        ch = _h / 100 * (p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0)
     }
 
     protected open fun mark() = apply { d = true }
