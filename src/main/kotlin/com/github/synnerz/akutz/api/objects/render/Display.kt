@@ -8,6 +8,7 @@ import java.awt.Font
 import java.awt.image.BufferedImage
 
 class Display @JvmOverloads constructor(
+    registerListeners: Boolean = false,
     private val isBuffered: Boolean = false
 ) {
     private val listeners = object {
@@ -37,25 +38,27 @@ class Display @JvmOverloads constructor(
     private var img: Image? = null
 
     init {
-        MouseListener.registerClickListener { x, y, button, pressed ->
-            if (!isInBounds(x, y)) return@registerClickListener
-            val lineUnder = getLineUnder(x, y)
-            if (lineUnder != null) lineUnder.onClick?.trigger(arrayOf(x, y, button, pressed))
-            listeners.onClick?.trigger(arrayOf(x, y, button, pressed, lineUnder))
-        }
+        if (registerListeners) {
+            MouseListener.registerClickListener { x, y, button, pressed ->
+                if (!isInBounds(x, y)) return@registerClickListener
+                val lineUnder = getLineUnder(x, y)
+                if (lineUnder != null) lineUnder.onClick?.trigger(arrayOf(x, y, button, pressed))
+                listeners.onClick?.trigger(arrayOf(x, y, button, pressed, lineUnder))
+            }
 
-        MouseListener.registerScrollListener { x, y, delta ->
-            if (!isInBounds(x, y)) return@registerScrollListener
-            val lineUnder = getLineUnder(x, y)
-            if (lineUnder != null) lineUnder.onScroll?.trigger(arrayOf(x, y, delta))
-            listeners.onScroll?.trigger(arrayOf(x, y, delta, lineUnder))
-        }
+            MouseListener.registerScrollListener { x, y, delta ->
+                if (!isInBounds(x, y)) return@registerScrollListener
+                val lineUnder = getLineUnder(x, y)
+                if (lineUnder != null) lineUnder.onScroll?.trigger(arrayOf(x, y, delta))
+                listeners.onScroll?.trigger(arrayOf(x, y, delta, lineUnder))
+            }
 
-        MouseListener.registerDraggedListener { deltaX, deltaY, x, y, button ->
-            if (!isInBounds(x, y)) return@registerDraggedListener
-            val lineUnder = getLineUnder(x, y)
-            if (lineUnder != null) lineUnder.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button))
-            listeners.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button, lineUnder))
+            MouseListener.registerDraggedListener { deltaX, deltaY, x, y, button ->
+                if (!isInBounds(x, y)) return@registerDraggedListener
+                val lineUnder = getLineUnder(x, y)
+                if (lineUnder != null) lineUnder.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button))
+                listeners.onDragged?.trigger(arrayOf(x, y, deltaX, deltaY, button, lineUnder))
+            }
         }
     }
 
