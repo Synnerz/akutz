@@ -3,14 +3,14 @@ package com.github.synnerz.akutz.api.objects.gui.components
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.objects.render.Display
 
-open class TextComponent @JvmOverloads constructor(
+open class UIText @JvmOverloads constructor(
     x: Double,
     y: Double,
     w: Double,
     h: Double,
-    p: BaseComponent? = null,
+    p: Component? = null,
     var display: Display = Display()
-) : RectangleComponent(x, y, w, h, p) {
+) : UIRectangle(x, y, w, h, p) {
     init {
         display.setHorzAlign(Display.HorzAlign.CENTER)
         display.setVertAlign(Display.VertAlign.CENTER)

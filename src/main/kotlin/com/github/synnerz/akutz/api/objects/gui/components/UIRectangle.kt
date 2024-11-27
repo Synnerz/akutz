@@ -4,18 +4,18 @@ import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.objects.gui.transition.AnimatedColor
 import com.github.synnerz.akutz.api.objects.render.Color
 
-open class RectangleComponent @JvmOverloads constructor(
+open class UIRectangle @JvmOverloads constructor(
     x: Double,
     y: Double,
     w: Double,
     h: Double,
-    p: BaseComponent? = null,
+    p: Component? = null,
     var bgColor: AnimatedColor = AnimatedColor(Color.EMPTY),
     var borderRadius: Double = 0.0,
     var outlineWidth: Double = 0.0,
     var outlineStyle: OutlineStyle = OutlineStyle.NONE,
     var outlineColor: Color = bgColor.get().asShade(0.5)
-) : BaseComponent(x, y, w, h, p) {
+) : Component(x, y, w, h, p) {
     override fun doRender() {
         Renderer.beginDraw(if (outlineStyle == OutlineStyle.NONE) bgColor.get() else outlineColor)
 

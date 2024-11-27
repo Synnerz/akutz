@@ -3,18 +3,18 @@ package com.github.synnerz.akutz.api.objects.gui.components
 import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.api.objects.render.Display
 
-open class ButtonComponent @JvmOverloads constructor(
+open class UIButton @JvmOverloads constructor(
     x: Double,
     y: Double,
     w: Double,
     h: Double,
-    p: BaseComponent? = null,
+    p: Component? = null,
     var onClick: () -> Unit = {},
     text: String = "",
     var normalColor: Color = Color.WHITE,
     var hoverColor: Color = Color.GRAY,
     var clickColor: Color = Color.DARK_GRAY
-) : TextComponent(x, y, w, h, p, Display().also { it.addLine(text) }) {
+) : UIText(x, y, w, h, p, Display().also { it.addLine(text) }) {
     private var stateBgColor = 1
     private fun setBgColor(col: BackgroundColor, on: Boolean) {
         stateBgColor = if (on) stateBgColor or col.flag
