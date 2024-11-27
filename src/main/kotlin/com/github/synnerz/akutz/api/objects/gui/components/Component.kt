@@ -27,6 +27,8 @@ open class Component @JvmOverloads constructor(
     fun getH() = ch
     fun getWidth() = cw
     fun getHeight() = ch
+    fun getP() = p
+    fun getParent() = p
     fun setX(x: Double) = apply { mark()._x = x }
     fun setY(y: Double) = apply { mark()._y = y }
     fun setW(w: Double) = apply { mark()._w = w }
