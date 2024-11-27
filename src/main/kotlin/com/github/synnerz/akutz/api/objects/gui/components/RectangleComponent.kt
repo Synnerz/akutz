@@ -12,43 +12,62 @@ open class RectangleComponent @JvmOverloads constructor(
     var bgColor: Color = Color.EMPTY,
     var borderRadius: Double = 0.0,
     var outlineWidth: Double = 0.0,
-    var outlineStyle: OutlineStyle = OutlineStyle.OUTER,
+    var outlineStyle: OutlineStyle = OutlineStyle.NONE,
     var outlineColor: Color = bgColor.asShade(0.5)
 ) : BaseComponent(x, y, w, h, p) {
     override fun doRender() {
-        Renderer.beginDraw(if (outlineWidth > 0) outlineColor else bgColor)
+        Renderer.beginDraw(outlineColor)
 
-        if (outlineWidth > 0) {
-            val x = when (outlineStyle) {
-                OutlineStyle.OUTER -> cx - outlineWidth
-                OutlineStyle.INNER -> cx + outlineWidth
-            }
-            val y = when (outlineStyle) {
-                OutlineStyle.OUTER -> cy - outlineWidth
-                OutlineStyle.INNER -> cy + outlineWidth
-            }
-            val w = when (outlineStyle) {
-                OutlineStyle.OUTER -> cw + outlineWidth * 2
-                OutlineStyle.INNER -> cw - outlineWidth * 2
-            }
-            val h = when (outlineStyle) {
-                OutlineStyle.OUTER -> ch + outlineWidth * 2
-                OutlineStyle.INNER -> ch - outlineWidth * 2
+        when (outlineStyle) {
+            OutlineStyle.NONE -> {
+                if (borderRadius > 0) Renderer.drawRectangle(cx, cy, cw, ch)
+                else Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
             }
 
-            if (borderRadius > 0) Renderer.drawRectangle(x, y, w, h)
-            else Renderer.drawRoundRectangle(x, y, w, h, borderRadius)
+            OutlineStyle.OUTER -> {
+                if (borderRadius > 0) Renderer.drawRectangle(
+                    cx - outlineWidth,
+                    cy - outlineWidth,
+                    cw + outlineWidth * 2,
+                    ch + outlineWidth * 2
+                )
+                else Renderer.drawRoundRectangle(
+                    cx - outlineWidth,
+                    cy - outlineWidth,
+                    cw + outlineWidth * 2,
+                    ch + outlineWidth * 2,
+                    borderRadius
+                )
+                Renderer.color(bgColor)
+                if (borderRadius > 0) Renderer.drawRectangle(cx, cy, cw, ch)
+                else Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
+            }
 
-            Renderer.color(bgColor)
+            OutlineStyle.INNER -> {
+                if (borderRadius > 0) Renderer.drawRectangle(cx, cy, cw, ch)
+                else Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
+                Renderer.color(bgColor)
+                if (borderRadius > 0) Renderer.drawRectangle(
+                    cx + outlineWidth,
+                    cy + outlineWidth,
+                    cw - outlineWidth * 2,
+                    ch - outlineWidth * 2
+                )
+                else Renderer.drawRoundRectangle(
+                    cx + outlineWidth,
+                    cy + outlineWidth,
+                    cw - outlineWidth * 2,
+                    ch - outlineWidth * 2,
+                    borderRadius
+                )
+            }
         }
-
-        if (borderRadius > 0) Renderer.drawRectangle(cx, cy, cw, ch)
-        else Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
     }
 
     enum class OutlineStyle {
         OUTER,
-        INNER;
+        INNER,
+        NONE;
 
         companion object {
             @JvmStatic
