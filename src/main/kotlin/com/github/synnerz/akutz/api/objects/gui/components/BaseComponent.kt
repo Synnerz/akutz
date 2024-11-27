@@ -2,7 +2,7 @@ package com.github.synnerz.akutz.api.objects.gui.components
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
 
-abstract class BaseComponent @JvmOverloads constructor(
+open class BaseComponent @JvmOverloads constructor(
     protected var _x: Double,
     protected var _y: Double,
     protected var _w: Double,
@@ -70,7 +70,7 @@ abstract class BaseComponent @JvmOverloads constructor(
         Renderer.finishDraw()
     }
 
-    protected abstract fun doRender()
+    protected open fun doRender() {}
     open fun render() {
         doRender()
         finishRender()
