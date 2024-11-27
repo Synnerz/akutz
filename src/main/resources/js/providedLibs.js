@@ -724,3 +724,136 @@ globalThis.Display = class Display {
     return implBufferedText.registerFont(name, font)
   }
 }
+
+function createBezier(x0, y0, xf, yf, ...p) {
+  const n = p.length >> 1
+  const c = []
+  {
+    let v = n + 1
+    for (let i = 0; i < n; i++) {
+      c.push(v)
+      v *= (n - i) / (i + 2)
+    }
+  }
+  return function(t) {
+    const u = 1 - t
+    let x = (u ** (n + 1)) * x0 + (t ** (n + 1)) * xf
+    let y = (u ** (n + 1)) * y0 + (t ** (n + 1)) * yf
+    for (let i = 0; i < n; i++) {
+      x += c[i] * (u ** (n - i)) * (t ** (i + 1)) * p[(i << 1) + 0]
+      y += c[i] * (u ** (n - i)) * (t ** (i + 1)) * p[(i << 1) + 1]
+    }
+    return [x, y]
+  }
+}
+function invBezier(bz) {
+  return function(x) {
+    let pt = 0
+    let t = x
+    let px = 0
+    for (let i = 0; i < 10; i++) {
+      const p = bz(t)
+      const dx = p[0] - px
+      const dt = t - pt
+      pt = t
+      px = p[0]
+      t += dx / dt * (x - p[0])
+    }
+    return bz(t)[1]
+  }
+}
+function createEaser(cb) {
+  return function(x) {
+    x = +x
+    if (Number.isNaN(x)) return x
+    if (x <= 0) return 0
+    if (x >= 1) return 1
+    return cb(x)
+  }
+}
+function createBezierEaser(...points) {
+  return createEaser(invBezier(createBezier(0, 0, 1, 1, ...points)))
+}
+// https://easings.net/
+const bounceFunc = x => {
+  const n1 = 7.5625
+  const d1 = 2.75
+  if (x < 1 / d1) return n1 * x * x
+  if (x < 2 / d1) return n1 * (x -= 1.5 / d1) * x + 0.75
+  if (x < 2.5 / d1) return n1 * (x -= 2.25 / d1) * x + 0.9375
+  return n1 * (x -= 2.625 / d1) * x + 0.984375
+}
+globalThis.Easing = {
+  easeInSine: createEaser(x => 1 - Math.cos((x * Math.PI) / 2)),
+  easeOutSine: createEaser(x => Math.sin((x * Math.PI) / 2)),
+  easeInOutSine: createEaser(x => -(Math.cos(Math.PI * x) - 1) / 2),
+
+  easeInQuad: createEaser(x => x * x),
+  easeOutQuad: createEaser(x => 1 - (1 - x) * (1 - x)),
+  easeInOutQuad: createEaser(x => x < 0.5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2),
+
+  easeInCubic: createEaser(x => x * x * x),
+  easeOutCubic: createEaser(x => 1 - Math.pow(1 - x, 3)),
+  easeInOutCubic: createEaser(x => x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2),
+
+  easeInQuart: createEaser(x => x * x * x * x),
+  easeOutQuart: createEaser(x => 1 - Math.pow(1 - x, 4)),
+  easeInOutQuart: createEaser(x => x < 0.5 ? 8 * x * x * x * x : 1 - Math.pow(-2 * x + 2, 4) / 2),
+
+  easeInQuint: createEaser(x => x * x * x * x * x),
+  easeOutQuint: createEaser(x => 1 - Math.pow(1 - x, 5)),
+  easeInOutQuint: createEaser(x => x < 0.5 ? 16 * x * x * x * x * x : 1 - Math.pow(-2 * x + 2, 5) / 2),
+
+  easeInExpo: createEaser(x => Math.pow(2, 10 * x - 10)),
+  easeOutExpo: createEaser(x => 1 - Math.pow(2, -10 * x)),
+  easeInOutExpo: createEaser(x => x < 0.5 ? Math.pow(2, 20 * x - 10) / 2 : (2 - Math.pow(2, -20 * x + 10)) / 2),
+
+  easeInCirc: createEaser(x => 1 - Math.sqrt(1 - Math.pow(x, 2))),
+  easeOutCirc: createEaser(x => Math.sqrt(1 - Math.pow(x - 1, 2))),
+  easeInOutCirc: createEaser(x => x < 0.5 ? (1 - Math.sqrt(1 - Math.pow(2 * x, 2))) / 2 : (Math.sqrt(1 - Math.pow(-2 * x + 2, 2)) + 1) / 2),
+
+  easeInBack: createEaser(x => {
+    const c1 = 1.70158
+    const c3 = c1 + 1
+    return c3 * x * x * x - c1 * x * x
+  }),
+  easeOutBack: createEaser(x => {
+    const c1 = 1.70158
+    const c3 = c1 + 1
+    return 1 + c3 * Math.pow(x - 1, 3) + c1 * Math.pow(x - 1, 2)
+  }),
+  easeInOutBack: createEaser(x => {
+    const c1 = 1.70158
+    const c2 = c1 * 1.525
+    return x < 0.5
+      ? (Math.pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+      : (Math.pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2
+  }),
+
+  easeInElastic: createEaser(x => {
+    const c4 = (2 * Math.PI) / 3
+    return -Math.pow(2, 10 * x - 10) * Math.sin((x * 10 - 10.75) * c4)
+  }),
+  easeOutElastic: createEaser(x => {
+    const c4 = (2 * Math.PI) / 3
+    return Math.pow(2, -10 * x) * Math.sin((x * 10 - 0.75) * c4) + 1
+  }),
+  easeInOutElastic: createEaser(x => {
+    const c5 = (2 * Math.PI) / 4.5
+    return x < 0.5
+      ? -(Math.pow(2, 20 * x - 10) * Math.sin((20 * x - 11.125) * c5)) / 2
+      : (Math.pow(2, -20 * x + 10) * Math.sin((20 * x - 11.125) * c5)) / 2 + 1
+  }),
+
+  easeInBounce: createEaser(x => 1 - bounceFunc(1 - x)),
+  easeOutBounce: createEaser(bounceFunc),
+  easeInOutBounce: createEaser(x => x < 0.5 ? (1 - bounceFunc(1 - 2 * x)) / 2 : (1 + bounceFunc(2 * x - 1)) / 2),
+
+  cssLinear: createBezierEaser(0, 0, 1, 1),
+  cssEase: createBezierEaser(0.25, 0.1, 0.25, 1),
+  cssEaseIn: createBezierEaser(0.42, 0, 1, 1),
+  cssEaseOut: createBezierEaser(0, 0, 0.58, 1),
+  cssEaseInOut: createBezierEaser(0.42, 0, 0.58, 1),
+
+  createBezier: createBezierEaser
+}
