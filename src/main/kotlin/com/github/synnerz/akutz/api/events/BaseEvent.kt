@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.events
 
+import com.github.synnerz.akutz.api.objects.state.IState
 import com.github.synnerz.akutz.api.objects.state.StateVar
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.impl.Loader
@@ -15,7 +16,7 @@ abstract class BaseEvent protected constructor(
     var registered: Boolean = false
     var actuallyRegistered: Boolean = false
     private var priority: Priority = Priority.NORMAL
-    var enabled: StateVar<Boolean> = StateVar(true)
+    var enabled: IState<Boolean> = StateVar(true)
 
     init {
         @Suppress("LeakingThis")
@@ -31,7 +32,7 @@ abstract class BaseEvent protected constructor(
         }
     }
 
-    fun setEnabled(state: StateVar<Boolean>) = apply {
+    fun setEnabled(state: IState<Boolean>) = apply {
         enabled = state
         enabled.listen { b -> update(b) }
         update(enabled.get())

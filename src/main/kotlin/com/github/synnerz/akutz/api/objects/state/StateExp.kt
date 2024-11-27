@@ -1,7 +1,7 @@
 package com.github.synnerz.akutz.api.objects.state
 
-class StateExp(private val left: StateVar<Any>) : StateVar<Boolean>(isTruthy(left.get())) {
-    private var right: StateVar<Any>? = null
+class StateExp(private val left: IState<Any>) : StateVar<Boolean>(isTruthy(left.get())) {
+    private var right: IState<Any>? = null
     private var cmpVal: Any? = null
     private var cmpList: List<*>? = null
     private var cmpCb1: ((Any) -> Boolean)? = null
@@ -15,7 +15,7 @@ class StateExp(private val left: StateVar<Any>) : StateVar<Boolean>(isTruthy(lef
         add(left)
     }
 
-    private fun add(p: StateVar<Any>) {
+    private fun add(p: IState<Any>) {
         p.listen { -> dirty().get() }
     }
 
@@ -51,7 +51,7 @@ class StateExp(private val left: StateVar<Any>) : StateVar<Boolean>(isTruthy(lef
     }
 
     fun and(v: Any): StateExp = and(StateVar(v))
-    fun and(v: StateVar<Any>): StateExp {
+    fun and(v: IState<Any>): StateExp {
         if (op != Operator.IDENTITY) return StateExp(left).and(v)
         right = v
         add(v)
@@ -60,7 +60,7 @@ class StateExp(private val left: StateVar<Any>) : StateVar<Boolean>(isTruthy(lef
     }
 
     fun or(v: Any): StateExp = or(StateVar(v))
-    fun or(v: StateVar<Any>): StateExp {
+    fun or(v: IState<Any>): StateExp {
         if (op != Operator.IDENTITY) return StateExp(left).or(v)
         right = v
         add(v)
@@ -93,7 +93,7 @@ class StateExp(private val left: StateVar<Any>) : StateVar<Boolean>(isTruthy(lef
     }
 
     fun customBinary(v: Any, cb: (Any, Any) -> Boolean): StateExp = customBinary(StateVar(v), cb)
-    fun customBinary(v: StateVar<Any>, cb: (Any, Any) -> Boolean): StateExp {
+    fun customBinary(v: IState<Any>, cb: (Any, Any) -> Boolean): StateExp {
         if (op != Operator.IDENTITY) return StateExp(left).customBinary(v, cb)
         right = v
         add(v)
