@@ -751,13 +751,15 @@ function invBezier(bz) {
     let pt = 0
     let t = x
     let px = 0
-    for (let i = 0; i < 10; i++) {
+    // should hit in 2-10, but who knows
+    for (let i = 0; i < 100; i++) {
       const p = bz(t)
       const dx = p[0] - px
+      if (Math.abs(dx) <= 0.00001) break
       const dt = t - pt
       pt = t
       px = p[0]
-      t += dx / dt * (x - p[0])
+      t += dt / dx * (x - p[0])
     }
     return bz(t)[1]
   }
