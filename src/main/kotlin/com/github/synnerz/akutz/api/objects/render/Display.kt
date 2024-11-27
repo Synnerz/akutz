@@ -126,6 +126,7 @@ class Display @JvmOverloads constructor(
     fun getMaxWidth() = maxW
     fun getMaxHeight() = maxH
     fun setMaxWidth(w: Double) = apply {
+        if (w == maxW) return@apply
         maxW = w
         cw = null
         cvw = null
@@ -133,6 +134,7 @@ class Display @JvmOverloads constructor(
     }
 
     fun setMaxHeight(h: Double) = apply {
+        if (h == maxH) return@apply
         maxH = h
         cw = null
         cvw = null
@@ -141,12 +143,14 @@ class Display @JvmOverloads constructor(
 
     fun getGap() = gap
     fun setGap(g: Float) = apply {
-        mark()
+        if (g == gap) return@apply
         gap = g
+        mark()
     }
 
     fun getShadow() = shadow
     fun setShadow(s: Boolean) = apply {
+        if (s == shadow) return@apply
         shadow = s
         lines.forEach { it.setShadow(s) }
         dirty = true
@@ -155,6 +159,7 @@ class Display @JvmOverloads constructor(
     fun getResolution() = resolution
     fun setResolution(r: Float) = apply {
         if (!isBuffered) throw UnsupportedOperationException("only to be used when `isBuffered` is set to true")
+        if (r == resolution) return@apply
         resolution = r
         lines.forEach { it.setResolution(r) }
         dirty = true
@@ -165,6 +170,7 @@ class Display @JvmOverloads constructor(
     fun setFont(f: String) = apply {
         if (!isBuffered) throw UnsupportedOperationException("only to be used when `isBuffered` is set to true")
         val family = BufferedText.normalizeFont(f)
+        if (family == font) return@apply
         if (!BufferedText.FONTS.contains(family)) throw IllegalArgumentException("Unknown font: $f. If you are trying to use a custom installed font on windows, make sure it is installed for all users otherwise the JVM will not recognize it.")
         font = family
         lines.forEach { (it.getText() as BufferedText).setFontFamily(family) }
