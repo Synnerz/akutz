@@ -20,18 +20,11 @@ open class RectangleComponent @JvmOverloads constructor(
 
         when (outlineStyle) {
             OutlineStyle.NONE -> {
-                if (borderRadius > 0) Renderer.drawRectangle(cx, cy, cw, ch)
-                else Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
+                Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
             }
 
             OutlineStyle.OUTER -> {
-                if (borderRadius > 0) Renderer.drawRectangle(
-                    cx - outlineWidth,
-                    cy - outlineWidth,
-                    cw + outlineWidth * 2,
-                    ch + outlineWidth * 2
-                )
-                else Renderer.drawRoundRectangle(
+                Renderer.drawRoundRectangle(
                     cx - outlineWidth,
                     cy - outlineWidth,
                     cw + outlineWidth * 2,
@@ -39,21 +32,13 @@ open class RectangleComponent @JvmOverloads constructor(
                     borderRadius
                 )
                 Renderer.color(bgColor)
-                if (borderRadius > 0) Renderer.drawRectangle(cx, cy, cw, ch)
-                else Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
+                Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
             }
 
             OutlineStyle.INNER -> {
-                if (borderRadius > 0) Renderer.drawRectangle(cx, cy, cw, ch)
-                else Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
+                Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
                 Renderer.color(bgColor)
-                if (borderRadius > 0) Renderer.drawRectangle(
-                    cx + outlineWidth,
-                    cy + outlineWidth,
-                    cw - outlineWidth * 2,
-                    ch - outlineWidth * 2
-                )
-                else Renderer.drawRoundRectangle(
+                Renderer.drawRoundRectangle(
                     cx + outlineWidth,
                     cy + outlineWidth,
                     cw - outlineWidth * 2,
