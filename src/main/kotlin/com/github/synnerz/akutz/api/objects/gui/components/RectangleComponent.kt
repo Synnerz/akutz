@@ -1,20 +1,20 @@
-package com.github.synnerz.akutz.api.objects.gui
+package com.github.synnerz.akutz.api.objects.gui.components
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.objects.render.Color
 
-open class GuiComponentBackground @JvmOverloads constructor(
+open class RectangleComponent @JvmOverloads constructor(
     x: Double,
     y: Double,
     w: Double,
     h: Double,
-    p: BaseGuiComponent? = null,
+    p: BaseComponent? = null,
     var bgColor: Color = Color.EMPTY,
     var borderRadius: Double = 0.0,
     var outlineWidth: Double = 0.0,
     var outlineStyle: OutlineStyle = OutlineStyle.OUTER,
     var outlineColor: Color = bgColor.asShade(0.5)
-) : BaseGuiComponent(x, y, w, h, p) {
+) : BaseComponent(x, y, w, h, p) {
     override fun doRender() {
         Renderer.beginDraw(if (outlineWidth > 0) outlineColor else bgColor)
 

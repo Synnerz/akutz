@@ -1,16 +1,16 @@
-package com.github.synnerz.akutz.api.objects.gui
+package com.github.synnerz.akutz.api.objects.gui.components
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.objects.render.Display
 
-open class GuiComponentText @JvmOverloads constructor(
+open class TextComponent @JvmOverloads constructor(
     x: Double,
     y: Double,
     w: Double,
     h: Double,
-    p: BaseGuiComponent? = null,
+    p: BaseComponent? = null,
     var display: Display = Display()
-) : GuiComponentBackground(x, y, w, h, p) {
+) : RectangleComponent(x, y, w, h, p) {
     init {
         display.setHorzAlign(Display.HorzAlign.CENTER)
         display.setVertAlign(Display.VertAlign.CENTER)

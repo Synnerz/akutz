@@ -1,15 +1,15 @@
-package com.github.synnerz.akutz.api.objects.gui
+package com.github.synnerz.akutz.api.objects.gui.components
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
 
-abstract class BaseGuiComponent @JvmOverloads constructor(
+abstract class BaseComponent @JvmOverloads constructor(
     protected var _x: Double,
     protected var _y: Double,
     protected var _w: Double,
     protected var _h: Double,
-    protected var p: BaseGuiComponent? = null
+    protected var p: BaseComponent? = null
 ) {
-    protected val c = mutableListOf<BaseGuiComponent>()
+    protected val c = mutableListOf<BaseComponent>()
     protected var d = true
 
     protected var cx = 0.0
@@ -30,7 +30,7 @@ abstract class BaseGuiComponent @JvmOverloads constructor(
     fun setW(w: Double) = apply { mark()._w = w }
     fun setH(h: Double) = apply { mark()._h = h }
 
-    open fun addChild(child: BaseGuiComponent) = apply {
+    open fun addChild(child: BaseComponent) = apply {
         if (child.p != null) {
             if (child.p == this) return@apply
             child.p!!.removeChild(child)
@@ -39,7 +39,7 @@ abstract class BaseGuiComponent @JvmOverloads constructor(
         child.p = this
     }
 
-    open fun removeChild(child: BaseGuiComponent): Boolean {
+    open fun removeChild(child: BaseComponent): Boolean {
         if (child.p != this) return false
         child.p = null
         return c.remove(child)
