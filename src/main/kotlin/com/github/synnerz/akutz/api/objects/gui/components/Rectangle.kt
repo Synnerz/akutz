@@ -8,13 +8,21 @@ open class Rectangle @JvmOverloads constructor(
     _y: Double,
     _width: Double,
     _height: Double,
-    outline: Boolean? = true,
     var bgColor: Color = Color(255, 255, 255),
     parent: Component? = null
-) : Component(_x, _y, _width, _height, outline, parent) {
+) : Component(_x, _y, _width, _height, parent) {
+
     override fun preRender() {
         Renderer.color(bgColor)
         Renderer.drawRectangle(x, y, width, height)
-        // TODO: outline
+    }
+
+    open fun setOutline(width: Double, color: Color? = null) {
+        if (color == null) {
+            super.setOutline(width, outlineStyle, Color.fromAWTColor(bgColor.asAWTColor().brighter()))
+            return
+        }
+
+        super.setOutline(width, outlineStyle, color)
     }
 }
