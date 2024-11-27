@@ -171,9 +171,14 @@ class Display @JvmOverloads constructor(
             mark()
         }
         s.forEachIndexed { i, v ->
-            if (i < lines.size && v == lines[i].getString()) return@forEachIndexed
-            mark()
-            lines[i] = createLine().setString(v)
+            if (i < lines.size) {
+                if (v == lines[i].getString())return@forEachIndexed
+                mark()
+                lines[i] = createLine().setString(v)
+            } else {
+                mark()
+                lines.add(createLine().setString(v))
+            }
         }
     }
 
