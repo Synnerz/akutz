@@ -109,6 +109,7 @@ object Renderer : Base() {
         solid: Boolean = true,
         segments: Int = 5
     ) = apply {
+        if (radius <= 0.0) return drawRectangle(x, y, w, h, solid)
         val r = min(w / 2, min(h / 2, max(radius, 0.0)))
         drawArc(x + r, y + r, r, r, PI / 2, PI, solid, segments)
         drawArc(x + w - r, y + r, r, r, 0.0, PI / 2, solid, segments)
