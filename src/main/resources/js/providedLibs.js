@@ -371,6 +371,11 @@ class AbstractGui {
   onDragged(cb) {
     return this.gui.onDragged((args) => cb(...args))
   }
+
+  setComponent(comp) {
+    this.gui.setComponent(comp)
+    return this
+  }
 }
 
 globalThis.Gui = class Gui extends AbstractGui {

@@ -3,6 +3,8 @@ package com.github.synnerz.akutz.api.objects.gui
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.events.NormalEvent
 import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.api.objects.gui.components.BaseComponent
+import com.github.synnerz.akutz.api.objects.gui.components.RootComponent
 import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.api.wrappers.Player
 import com.github.synnerz.akutz.listeners.MouseListener
@@ -31,6 +33,7 @@ open class Gui : GuiScreen() {
 
     private var mouseX = 0
     private var mouseY = 0
+    private val rootComp = RootComponent()
 
     init {
         MouseListener.registerScrollListener { x, y, delta ->
@@ -142,6 +145,7 @@ open class Gui : GuiScreen() {
         this.mouseX = mouseX
         this.mouseY = mouseY
 
+        rootComp.render()
         listeners.onDraw?.trigger(arrayOf(mouseX, mouseY, partialTicks))
 
         GlStateManager.popMatrix()
@@ -159,4 +163,9 @@ open class Gui : GuiScreen() {
 
     // You don't get to choose, I do.
     override fun doesGuiPauseGame(): Boolean = false
+
+    fun setComponent(comp: BaseComponent) = apply {
+        rootComp.clearChildren()
+        rootComp.addChild(comp)
+    }
 }
