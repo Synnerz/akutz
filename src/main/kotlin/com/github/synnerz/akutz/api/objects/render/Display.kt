@@ -223,9 +223,12 @@ class Display @JvmOverloads constructor(
                 (getHeight() * roundPow2(bh!!) / bh!!).toDouble()
             )
         } else {
-            val tx = getTopLeftX()
-            var y = getTopLeftY()
-            Renderer.beginDraw(backgroundColor, false)
+            val tx = getTopLeftX() - x
+            var y = getTopLeftY() - y
+            Renderer.beginDraw(backgroundColor, true)
+            Renderer.translate(this.x.toFloat(), this.y.toFloat())
+            Renderer.scale(scale)
+
             if (background == Background.FULL) Renderer.drawRectangle(
                 tx,
                 y,
