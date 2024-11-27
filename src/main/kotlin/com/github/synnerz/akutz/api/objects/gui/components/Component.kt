@@ -89,7 +89,6 @@ abstract class Component @JvmOverloads constructor(
         if (outlineWidth != 0.0 && outlineColor != null && outlineColor?.a != 0) {
             Renderer.color(outlineColor!!)
             if (outlineStyle == OutlineStyle.OUTTER) {
-                val a = (width - outlineWidth) to outlineWidth
                 Renderer.drawRectangle(
                     x - outlineWidth,
                     y - outlineWidth,
