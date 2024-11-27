@@ -49,15 +49,6 @@ abstract class BaseGuiComponent @JvmOverloads constructor(
 
     protected open fun mark() = apply { d = true }
 
-    fun getX() = cx
-    fun getY() = cy
-    fun getW() = cw
-    fun getH() = ch
-    fun setX(x: Double) = apply { mark().x = x }
-    fun setY(y: Double) = apply { mark().y = y }
-    fun setW(w: Double) = apply { mark().w = w }
-    fun setH(h: Double) = apply { mark().h = h }
-
     protected fun finishRender() {
         Renderer.translate(cx.toFloat(), cy.toFloat())
         update()
