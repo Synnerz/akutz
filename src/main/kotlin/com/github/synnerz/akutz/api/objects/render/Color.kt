@@ -37,9 +37,9 @@ class Color @JvmOverloads constructor(
     fun asTint(amount: Double): Color {
         val v = amount.coerceIn(0.0, 1.0)
         return Color(
-            ((255 - r) * v).toInt() + 255,
-            ((255 - g) * v).toInt() + 255,
-            ((255 - b) * v).toInt() + 255,
+            ((r - 255) * v).toInt() + 255,
+            ((g - 255) * v).toInt() + 255,
+            ((b - 255) * v).toInt() + 255,
             a
         )
     }
