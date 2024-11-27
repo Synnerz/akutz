@@ -1,23 +1,26 @@
 package com.github.synnerz.akutz.api.objects.gui.components
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.api.objects.render.Color
 
 abstract class Component @JvmOverloads constructor(
     private var _x: Double,
     private var _y: Double,
     private var _width: Double,
     private var _height: Double,
-    var outline: Boolean? = true,
     var parent: Component? = null
 ) {
-    private val children = mutableListOf<Component>()
-    private var dirty = false
-    private val listeners = null // TODO: finish this later
+    protected val children = mutableListOf<Component>()
+    protected var dirty = true
+    protected val listeners = null // TODO: finish this later
     var x: Double = 0.0
     var y: Double = 0.0
     var width: Double = 0.0
     var height: Double = 0.0
-    // TODO: outline
+    // Outline
+    protected var outlineWidth = 0.5
+    protected var outlineColor: Color? = null
+    protected var outlineStyle: OutlineStyle = OutlineStyle.OUTTER
 
     init {
         parent?.addChild(this)
@@ -55,14 +58,55 @@ abstract class Component @JvmOverloads constructor(
         y = getPercentPixels(_y, parent?.height ?: sheight) + (parent?.y ?: 0.0)
         width = getPercentPixels(_width, parent?.width ?: swidth)
         height = getPercentPixels(_height, parent?.height ?: sheight)
-        // TODO: outline
         dirty = false
+    }
+
+    fun setOutline(width: Double, style: OutlineStyle = OutlineStyle.OUTTER, color: Color) = apply {
+        outlineWidth = width
+        outlineStyle = style
+        outlineColor = color
+    }
+
+    fun setOutline(width: Double, style: String, color: Color) = apply {
+        outlineWidth = width
+        outlineStyle = OutlineStyle.getByName(style)
+        outlineColor = color
+    }
+
+    fun setOutline(width: Double, style: OutlineStyle) = apply {
+        outlineWidth = width
+        outlineStyle = style
+    }
+
+    fun setOutline(width: Double, style: String) = apply {
+        outlineWidth = width
+        outlineStyle = OutlineStyle.getByName(style)
     }
 
     abstract fun preRender()
 
     open fun postRender() {
-        Renderer.translate(x.toFloat(), y.toFloat())
+        if (outlineWidth != 0.0 && outlineColor != null && outlineColor?.a != 0) {
+            Renderer.color(outlineColor!!)
+            if (outlineStyle == OutlineStyle.OUTTER) {
+                val a = (width - outlineWidth) to outlineWidth
+                Renderer.drawRectangle(
+                    x - outlineWidth,
+                    y - outlineWidth,
+                    width + outlineWidth * 2,
+                    height + outlineWidth * 2,
+                    false
+                )
+            } else if (outlineStyle == OutlineStyle.INNER) {
+                Renderer.drawRectangle(
+                    x + outlineWidth,
+                    y + outlineWidth,
+                    width - outlineWidth * 2,
+                    height - outlineWidth * 2,
+                    false
+                )
+            }
+        }
         update()
         children.forEach { it.render() }
         Renderer.finishDraw()
@@ -79,4 +123,15 @@ abstract class Component @JvmOverloads constructor(
 
     private fun getScreenWidth(): Double = Renderer.sr?.scaledWidth_double ?: 0.0
     private fun getScreenHeight(): Double = Renderer.sr?.scaledHeight_double ?: 0.0
+
+    enum class OutlineStyle {
+        OUTTER,
+        INNER;
+
+        companion object {
+            @JvmStatic
+            fun getByName(name: String) =
+                OutlineStyle.entries.find { it.name == name.uppercase() } ?: throw IllegalArgumentException("Unknown parameter: $name")
+        }
+    }
 }
