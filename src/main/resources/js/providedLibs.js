@@ -742,6 +742,10 @@ globalThis.Display = class Display {
     return this.display.isInBounds(x, y)
   }
 
+  clone(registerListeners = false, isBuffered = false) {
+    return this.display.clone(registerListeners, isBuffered)
+  }
+
   static registerFont(name, font) {
     return implBufferedText.registerFont(name, font)
   }

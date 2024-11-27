@@ -350,6 +350,37 @@ class Display @JvmOverloads constructor(
         return x >= tx && x <= tx + getWidth() && y >= ty && y <= ty + getHeight()
     }
 
+    @JvmOverloads
+    fun clone(
+        registerListeners: Boolean = false,
+        isBuffered: Boolean = false
+    ): Display {
+        val d = Display(registerListeners, isBuffered)
+
+        listeners.onClick?.let { d.onClick(it.method) }
+        listeners.onScroll?.let { d.onScroll(it.method) }
+        listeners.onDragged?.let { d.onDragged(it.method) }
+        listeners.onCreateLine?.let { d.onCreateLine(it.method) }
+        d.setX(x)
+        d.setY(y)
+        d.setScale(scale)
+        d.setMaxWidth(maxW)
+        d.setMaxHeight(maxH)
+        d.setGap(gap)
+        d.setShadow(shadow)
+        if (isBuffered) {
+            d.setResolution(resolution)
+            font?.let { d.setFont(it) }
+        }
+        d.setHorzAlign(horzAlign)
+        d.setVertAlign(vertAlign)
+        d.setBackground(background)
+        d.setBackgroundColor(backgroundColor)
+        d.setLines(lines.map { it.getString() })
+
+        return d
+    }
+
     enum class HorzAlign {
         START,
         CENTER,
