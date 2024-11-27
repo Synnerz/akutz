@@ -47,6 +47,11 @@ abstract class BaseGuiComponent @JvmOverloads constructor(
 
     open fun remove(): Boolean = p?.removeChild(this) ?: false
 
+    open fun clearChildren() = apply {
+        c.forEach{ it.p = null }
+        c.clear()
+    }
+
     protected open fun update() {
         if (!d) return
         d = false
