@@ -504,8 +504,8 @@ class DisplayLine {
 }
 
 globalThis.Display = class Display {
-  constructor(isBuffered = false) {
-    this.display = new implDisplay(isBuffered)
+  constructor(registerListeners = false, isBuffered = false) {
+    this.display = new implDisplay(registerListeners, isBuffered)
 
     // Used for js intercept to the cb methods
     /** @private */
