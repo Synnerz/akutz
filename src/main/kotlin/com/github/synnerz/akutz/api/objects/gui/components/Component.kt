@@ -25,10 +25,14 @@ open class Component @JvmOverloads constructor(
     fun getY() = cy
     fun getW() = cw
     fun getH() = ch
+    fun getWidth() = cw
+    fun getHeight() = ch
     fun setX(x: Double) = apply { mark()._x = x }
     fun setY(y: Double) = apply { mark()._y = y }
     fun setW(w: Double) = apply { mark()._w = w }
     fun setH(h: Double) = apply { mark()._h = h }
+    fun setWidth(width: Double) = apply { mark()._w = width }
+    fun setHeight(height: Double) = apply { mark()._h = height }
 
     open fun addChild(child: Component) = apply {
         if (child.p != null) {
