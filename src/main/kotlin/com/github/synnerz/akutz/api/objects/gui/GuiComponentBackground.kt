@@ -13,7 +13,7 @@ open class GuiComponentBackground @JvmOverloads constructor(
     var borderRadius: Double = 0.0,
     var outlineWidth: Double = 0.0
 ) : BaseGuiComponent(x, y, w, h, p) {
-    override fun render() {
+    override fun doRender() {
         Renderer.beginDraw(if (outlineWidth > 0) bgColor.asShade(0.5) else bgColor)
         if (borderRadius > 0) {
             Renderer.drawRectangle(cx, cy, cw, ch)
@@ -39,6 +39,5 @@ open class GuiComponentBackground @JvmOverloads constructor(
                 )
             }
         }
-        finishRender()
     }
 }

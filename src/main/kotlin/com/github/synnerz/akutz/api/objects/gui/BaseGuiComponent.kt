@@ -65,5 +65,9 @@ abstract class BaseGuiComponent @JvmOverloads constructor(
         Renderer.finishDraw()
     }
 
-    abstract fun render()
+    protected abstract fun doRender()
+    open fun render() {
+        doRender()
+        finishRender()
+    }
 }
