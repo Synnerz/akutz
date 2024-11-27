@@ -80,6 +80,14 @@ class Color @JvmOverloads constructor(
             (a * 255).toInt().coerceIn(0, 255)
         )
 
+        @JvmStatic
+        fun fromAWTColor(col: AWTColor) = Color(
+            col.red,
+            col.green,
+            col.blue,
+            col.alpha
+        )
+
         @JvmField
         val BLACK = Color(0, 0, 0, 255)
 
