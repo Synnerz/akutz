@@ -585,6 +585,28 @@ globalThis.Display = class Display {
     return this
   }
 
+  getActualScale() {
+    return this.display.getActualScale()
+  }
+
+  getMaxWidth() {
+    return this.display.getMaxWidth()
+  }
+
+  getMaxHeight() {
+    return this.display.getMaxHeight()
+  }
+
+  setMaxWidth(w) {
+    this.display.setMaxWidth(w)
+    return this
+  }
+
+  setMaxHeight(h) {
+    this.display.setMaxHeight(h)
+    return this
+  }
+
   getGap() {
     return this.display.getGap()
   }

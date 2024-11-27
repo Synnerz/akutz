@@ -6,6 +6,7 @@ import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.listeners.MouseListener
 import java.awt.Font
 import java.awt.image.BufferedImage
+import kotlin.math.min
 
 class Display @JvmOverloads constructor(
     registerListeners: Boolean = false,
@@ -21,6 +22,9 @@ class Display @JvmOverloads constructor(
     private var x: Double = 0.0
     private var y: Double = 0.0
     private var scale: Float = 1f
+    private var scale2: Float = 1f
+    private var maxW: Double = Double.POSITIVE_INFINITY
+    private var maxH: Double = Double.POSITIVE_INFINITY
     private var gap: Float = 0f
     private var shadow: Boolean = false
     private var resolution: Float = 24f
@@ -116,12 +120,23 @@ class Display @JvmOverloads constructor(
     }
 
     fun getScale() = scale
-    fun setScale(s: Float) = apply {
-        scale = s
+    fun setScale(s: Float) = apply { scale = s }
+    fun getActualScale() = scale2
+
+    fun getMaxWidth() = maxW
+    fun getMaxHeight() = maxH
+    fun setMaxWidth(w: Double) = apply {
+        maxW = w
         cw = null
         cvw = null
         cvh = null
-        lines.forEach { it.setScale(s) }
+    }
+
+    fun setMaxHeight(h: Double) = apply {
+        maxH = h
+        cw = null
+        cvw = null
+        cvh = null
     }
 
     fun getGap() = gap
@@ -172,7 +187,7 @@ class Display @JvmOverloads constructor(
         }
         s.forEachIndexed { i, v ->
             if (i < lines.size) {
-                if (v == lines[i].getString())return@forEachIndexed
+                if (v == lines[i].getString()) return@forEachIndexed
                 mark()
                 lines[i] = createLine().setString(v)
             } else {
@@ -221,6 +236,7 @@ class Display @JvmOverloads constructor(
         // hi if you're trying to refactor this, do not call .getTopLeft[X/Y]() here and pass into the img.draw() later on, because the `BufferedText` have not been necessarily updated yet by `forceRenderBuffered()`, viz. `lines.forEach { it.update() }`
         if (isBuffered) {
             if (dirty) forceRenderBuffered()
+            checkSize()
             img!!.draw(
                 getTopLeftX(),
                 getTopLeftY(),
@@ -228,6 +244,7 @@ class Display @JvmOverloads constructor(
                 (getHeight() * roundPow2(bh!!) / bh!!).toDouble()
             )
         } else {
+            checkSize()
             val tx = getTopLeftX() - x
             var y = getTopLeftY() - y
             Renderer.beginDraw(backgroundColor, true)
@@ -296,6 +313,23 @@ class Display @JvmOverloads constructor(
         }
         if (img == null) img = Image(bImg)
         else img!!.update(bImg)
+    }
+
+    private fun checkSize() {
+        val s = min(
+            scale,
+            min(
+                getWidth() / maxW,
+                getHeight() / maxH
+            ).toFloat()
+        )
+        if (s != scale2) {
+            cw = null
+            cvw = null
+            cvh = null
+            lines.forEach { it.setScale(s) }
+            scale2 = s
+        }
     }
 
     fun getLineUnder(x: Double, y: Double): DisplayLine? {
