@@ -32,21 +32,19 @@ class GuiComponentRoot : BaseGuiComponent(0.0, 0.0, 100.0, 100.0) {
                 dragPosition[i] = Position(x, y)
             }
             if (state) {
-                val dx = x - dragPosition[i]!!.x
-                val dy = y - dragPosition[i]!!.y
-                if (dx != 0 || dy != 0) {
+                if (x - dragPosition[i]!!.x != 0 || y - dragPosition[i]!!.y != 0) {
                     propagateDrag(
                         clickPositions[i]!!.x.toDouble(),
                         clickPositions[i]!!.y.toDouble(),
-                        dx.toDouble(),
-                        dy.toDouble(),
+                        xd - clickPositions[i]!!.x,
+                        yd - clickPositions[i]!!.y,
                         i
                     )
                     propagateDragOver(
                         clickPositions[i]!!.x.toDouble(),
                         clickPositions[i]!!.y.toDouble(),
-                        dx.toDouble(),
-                        dy.toDouble(),
+                        xd - clickPositions[i]!!.x,
+                        yd - clickPositions[i]!!.y,
                         i
                     )
                     dragPosition[i]!!.x = x
@@ -57,8 +55,8 @@ class GuiComponentRoot : BaseGuiComponent(0.0, 0.0, 100.0, 100.0) {
                     propagateDrag(
                         clickPositions[i]!!.x.toDouble(),
                         clickPositions[i]!!.y.toDouble(),
-                        (x - dragPosition[i]!!.x).toDouble(),
-                        (y - dragPosition[i]!!.y).toDouble(),
+                        xd - clickPositions[i]!!.x,
+                        yd - clickPositions[i]!!.y,
                         i.inv()
                     )
                     dragPosition.remove(i)
