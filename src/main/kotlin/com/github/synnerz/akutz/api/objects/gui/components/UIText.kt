@@ -4,10 +4,10 @@ import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.objects.render.Display
 
 open class UIText @JvmOverloads constructor(
-    x: Double,
-    y: Double,
-    w: Double,
-    h: Double,
+    x: Double = 0.0,
+    y: Double = 0.0,
+    w: Double = 100.0,
+    h: Double = 100.0,
     p: Component? = null,
     var display: Display = Display()
 ) : UIRectangle(x, y, w, h, p) {

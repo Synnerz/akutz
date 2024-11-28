@@ -3,10 +3,10 @@ package com.github.synnerz.akutz.api.objects.gui.components
 import com.github.synnerz.akutz.api.libs.render.Renderer
 
 open class Component @JvmOverloads constructor(
-    protected var _x: Double,
-    protected var _y: Double,
-    protected var _w: Double,
-    protected var _h: Double,
+    protected var _x: Double = 0.0,
+    protected var _y: Double = 0.0,
+    protected var _w: Double = 100.0,
+    protected var _h: Double = 100.0,
     protected var p: Component? = null
 ) {
     protected val c = mutableListOf<Component>()

@@ -3,7 +3,7 @@ package com.github.synnerz.akutz.api.objects.gui.components
 import org.lwjgl.input.Mouse
 import kotlin.math.sign
 
-class UIRoot : Component(0.0, 0.0, 100.0, 100.0) {
+class UIRoot : Component() {
     private val clickPositions = mutableMapOf<Int, Position>()
     private val dragPosition = mutableMapOf<Int, Position>()
 

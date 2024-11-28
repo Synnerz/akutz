@@ -5,10 +5,10 @@ import com.github.synnerz.akutz.api.objects.gui.transition.AnimatedColor
 import com.github.synnerz.akutz.api.objects.render.Color
 
 open class UIRectangle @JvmOverloads constructor(
-    x: Double,
-    y: Double,
-    w: Double,
-    h: Double,
+    x: Double = 0.0,
+    y: Double = 0.0,
+    w: Double = 100.0,
+    h: Double = 100.0,
     p: Component? = null,
     var bgColor: AnimatedColor = AnimatedColor(Color.EMPTY),
     var borderRadius: Double = 0.0,

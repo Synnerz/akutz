@@ -4,10 +4,10 @@ import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.api.objects.render.Display
 
 class UITextButton(
-    x: Double,
-    y: Double,
-    w: Double,
-    h: Double,
+    x: Double = 0.0,
+    y: Double = 0.0,
+    w: Double = 100.0,
+    h: Double = 100.0,
     p: Component? = null,
     onClick: () -> Unit = {},
     text: String = "",
@@ -15,5 +15,5 @@ class UITextButton(
     hoverColor: Color = Color.GRAY,
     clickColor: Color = Color.DARK_GRAY
 ) : UIButton(x, y, w, h, p, onClick, normalColor, hoverColor, clickColor) {
-    val text = UIText(0.0, 0.0, 100.0, 100.0, this, Display().also { it.addLine(text) })
+    val text = UIText(p = this, display = Display().also { it.addLine(text) })
 }

@@ -3,10 +3,10 @@ package com.github.synnerz.akutz.api.objects.gui.components
 import com.github.synnerz.akutz.api.objects.render.Color
 
 open class UIButton @JvmOverloads constructor(
-    x: Double,
-    y: Double,
-    w: Double,
-    h: Double,
+    x: Double = 0.0,
+    y: Double = 0.0,
+    w: Double = 100.0,
+    h: Double = 100.0,
     p: Component? = null,
     var onClick: () -> Unit = {},
     var normalColor: Color = Color.WHITE,
