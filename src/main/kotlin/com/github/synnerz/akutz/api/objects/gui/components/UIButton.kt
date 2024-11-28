@@ -18,9 +18,12 @@ open class UIButton @JvmOverloads constructor(
     private fun setBgColor(col: BackgroundColor, on: Boolean) {
         stateBgColor = if (on) stateBgColor or col.flag
         else stateBgColor and col.flag.inv()
-        if (stateBgColor or BackgroundColor.CLICK.flag > 0) bgColor.set(clickColor.get())
-        else if (stateBgColor or BackgroundColor.HOVER.flag > 0) bgColor.set(hoverColor.get())
+        if (stateBgColor and BackgroundColor.CLICK.flag > 0) bgColor.set(clickColor.get())
+        else if (stateBgColor and BackgroundColor.HOVER.flag > 0) bgColor.set(hoverColor.get())
         else bgColor.set(normalColor.get())
+    }
+    fun updateColor() {
+        setBgColor(BackgroundColor.NORMAL, true)
     }
 
     init {
