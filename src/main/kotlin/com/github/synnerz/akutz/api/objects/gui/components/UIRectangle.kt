@@ -50,6 +50,26 @@ open class UIRectangle @JvmOverloads constructor(
         }
     }
 
+    @JvmOverloads
+    fun setOutline(width: Double, color: Color? = null) = apply {
+        outlineWidth = width
+        if (color != null) outlineColor = color
+    }
+
+    @JvmOverloads
+    fun setOutline(width: Double, style: OutlineStyle, color: Color? = null) = apply {
+        outlineWidth = width
+        outlineStyle = style
+        if (color != null) outlineColor = color
+    }
+
+    @JvmOverloads
+    fun setOutline(width: Double, style: String, color: Color? = null) = apply {
+        outlineWidth = width
+        outlineStyle = OutlineStyle.getByName(style)
+        if (color != null) outlineColor = color
+    }
+
     enum class OutlineStyle {
         OUTER,
         INNER,
