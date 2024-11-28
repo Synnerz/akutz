@@ -29,11 +29,20 @@ class UIRoot : Component() {
 
             if (state xor has) propagateMouseButton(xd, yd, if (state) i.inv() else i)
             if (state) {
+                var triggerDrag = false
                 if (!has) {
                     clickPositions[i] = Position(x, y)
-                    dragPosition[i] = Position(x, y)
-                }
-                if (x - dragPosition[i]!!.x != 0 || y - dragPosition[i]!!.y != 0) {
+                } else if (i !in dragPosition) {
+                    if (
+                        x - clickPositions[i]!!.x != 0 ||
+                        y - clickPositions[i]!!.y != 0
+                    ) {
+                        dragPosition[i] = Position(x, y)
+                        triggerDrag = true
+                    }
+                } else if (x - dragPosition[i]!!.x != 0 || y - dragPosition[i]!!.y != 0) triggerDrag = true
+
+                if (triggerDrag) {
                     propagateDrag(
                         clickPositions[i]!!.x.toDouble(),
                         clickPositions[i]!!.y.toDouble(),
