@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.objects.gui.components
 
+import com.github.synnerz.akutz.api.objects.gui.transition.AnimatedColor
 import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.api.objects.render.Display
 
@@ -14,6 +15,6 @@ class UITextButton(
     normalColor: Color = Color.WHITE,
     hoverColor: Color = Color.GRAY,
     clickColor: Color = Color.DARK_GRAY
-) : UIButton(x, y, w, h, p, onClick, normalColor, hoverColor, clickColor) {
+) : UIButton(x, y, w, h, p, onClick, AnimatedColor(normalColor), AnimatedColor(hoverColor), AnimatedColor(clickColor)) {
     val text = UIText(p = this, display = Display().also { it.addLine(text) })
 }
