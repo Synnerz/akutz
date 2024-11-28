@@ -53,7 +53,7 @@ open class Component @JvmOverloads constructor(
     open fun remove(): Boolean = p?.removeChild(this) ?: false
 
     open fun clearChildren() = apply {
-        c.forEach{ it.p = null }
+        c.forEach { it.p = null }
         c.clear()
     }
 
@@ -65,7 +65,10 @@ open class Component @JvmOverloads constructor(
         ch = _h / 100 * (p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0)
     }
 
-    protected open fun mark() = apply { d = true }
+    protected open fun mark(): Component = apply {
+        d = true
+        c.forEach { it.mark() }
+    }
 
     protected fun finishRender() {
         Renderer.translate(cx.toFloat(), cy.toFloat())
@@ -151,7 +154,7 @@ open class Component @JvmOverloads constructor(
         if (!v) {
             if (button < 0) {
                 v = onDragEnd(x0, y0, dx, dy, button.inv())
-            } else{
+            } else {
                 if (button !in dragState) v = onDragStart(x0, y0, dx, dy, button)
                 v = onDrag(x0, y0, dx, dy, button) || v
             }
