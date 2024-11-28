@@ -18,7 +18,7 @@ open class Component @JvmOverloads constructor(
     protected var ch = 0.0
 
     init {
-        p?.addChild(this)
+        p?.c?.add(this)
     }
 
     fun getX() = cx
