@@ -22,24 +22,18 @@ class UISwitch @JvmOverloads constructor(
     var knobOffClickColor: Color = knobOffColor.asTint(0.4)
 ) : UIStateValue<Boolean>(false, x, y, w, h, p) {
     val background = UIRectangle(p = this, bgColor = AnimatedColor(Color.GRAY)).also { it.setPadding(2.0) }
-    val trail = UIRectangle(p = background)
+    val trail = UIRectangle(0.0, 5.0, 0.0, 90.0, background, AnimatedColor(trailOffColor))
     val knob = UISwitchKnob(background, knobOffColor, knobOffHoverColor, knobOffClickColor, this)
 
     init {
         listen(::changeKnob)
     }
 
-    override fun update() {
-        super.update()
-        updateKnob()
-    }
-
-    private fun updateKnob() {
-        if (!knobPosition.isAnimating()) return
-        if (background.getW() == 0.0) return
+    override fun doRender() {
+        if (background.getInnerWidth() == 0.0) return
         val pos = knobPosition.get()
-        val maxW = background.getW() - knob.getW()
-        val w = MathLib.rescale(pos, 0.0, 1.0, 0.0, maxW / background.getW() * 100)
+        val maxW = background.getInnerWidth() - knob.getOuterWidth()
+        val w = MathLib.rescale(pos, 0.0, 1.0, 0.0, 100 * maxW / background.getInnerWidth())
         knob.setX(w)
         trail.setW(w)
     }
@@ -50,11 +44,20 @@ class UISwitch @JvmOverloads constructor(
         knob.normalColor.set(if (v) knobOnColor else knobOffColor)
         knob.hoverColor.set(if (v) knobOnHoverColor else knobOffHoverColor)
         knob.clickColor.set(if (v) knobOnClickColor else knobOffClickColor)
+        knob.updateColor()
     }
 
     override fun onMouseClick(x: Double, y: Double, button: Int): Boolean {
         set(!get())
-        knobPosition.set(knob.getX() / (background.getW() - knob.getW()) * background.getW() / 100)
+        knobPosition.set(
+            MathLib.rescale(
+                knob.getOuterX() - background.getInnerX(),
+                0.0,
+                background.getInnerWidth() - knob.getOuterWidth(),
+                0.0,
+                1.0
+            )
+        )
         knobPosition.set(if (get()) 1.0 else 0.0)
         return true
     }
@@ -80,7 +83,13 @@ class UISwitchKnob(
     private fun getPos(dx: Double): Double {
         val f = 100 / switch.background.getW()
         val x = ((if (switch.get()) 1.0 else 0.0) + dx * f).coerceIn(0.0..1.0)
-        return MathLib.rescale(x, 0.0, 1.0, 0.0, (switch.background.getW() - switch.knob.getW()) / switch.background.getW())
+        return MathLib.rescale(
+            x,
+            0.0,
+            1.0,
+            0.0,
+            (switch.background.getW() - switch.knob.getW()) / switch.background.getW()
+        )
     }
 
     override fun onMouseClick(x: Double, y: Double, button: Int): Boolean =
