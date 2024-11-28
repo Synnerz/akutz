@@ -23,12 +23,12 @@ open class Component @JvmOverloads constructor(
         p?.c?.add(this)
     }
 
-    fun getX() = cx
-    fun getY() = cy
-    fun getW() = cw
-    fun getH() = ch
-    fun getWidth() = cw
-    fun getHeight() = ch
+    fun getX() = _x
+    fun getY() = _y
+    fun getW() = _w
+    fun getH() = _h
+    fun getWidth() = _w
+    fun getHeight() = _h
     fun getParent() = p
     fun setX(x: Double) = apply { mark()._x = x }
     fun setY(y: Double) = apply { mark()._y = y }
@@ -38,6 +38,15 @@ open class Component @JvmOverloads constructor(
     fun setHeight(height: Double) = apply { mark()._h = height }
     fun getPadding() = _padding
     fun setPadding(padding: Double) = apply { mark()._padding = padding }
+
+    fun getOuterX() = cx
+    fun getOuterY() = cy
+    fun getInnerX() = cx + _padding
+    fun getInnerY() = cy + _padding
+    fun getOuterWidth() = cw
+    fun getOuterHeight() = ch
+    fun getInnerWidth() = cw - _padding * 2
+    fun getInnerHeight() = ch - _padding * 2
 
     open fun addChild(child: Component) = apply {
         if (child.p != null) {
@@ -63,10 +72,12 @@ open class Component @JvmOverloads constructor(
 
     protected open fun update() {
         d = false
-        cx = _x / 100 * ((p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0) - (p?._padding ?: 0.0) * 2) + (p?.cx ?: 0.0) + (p?._padding ?: 0.0)
-        cy = _y / 100 * ((p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0) - (p?._padding ?: 0.0) * 2) + (p?.cy ?: 0.0) + (p?._padding ?: 0.0)
-        cw = _w / 100 * ((p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0) - (p?._padding ?: 0.0) * 2)
-        ch = _h / 100 * ((p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0) - (p?._padding ?: 0.0) * 2)
+        val pw = p?.getInnerWidth() ?: Renderer.sr?.scaledWidth_double ?: 0.0
+        val ph = p?.getInnerHeight() ?: Renderer.sr?.scaledHeight_double ?: 0.0
+        cx = _x / 100 * pw + (p?.getInnerX() ?: 0.0)
+        cy = _y / 100 * ph + (p?.getInnerY() ?: 0.0)
+        cw = _w / 100 * pw
+        ch = _h / 100 * ph
     }
 
     protected open fun mark(): Component = apply {
