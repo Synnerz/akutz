@@ -22,4 +22,6 @@ abstract class AnimatedValue<T> @JvmOverloads constructor(
         newValue = value
         startTime = System.currentTimeMillis()
     }
+
+    open fun isAnimating() = System.currentTimeMillis() - startTime < animationTimeMS
 }
