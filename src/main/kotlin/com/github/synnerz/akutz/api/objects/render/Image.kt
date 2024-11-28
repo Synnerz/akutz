@@ -34,11 +34,11 @@ class Image @JvmOverloads constructor(
                 img = null
                 return
             }
-            width = img!!.width
-            height = img!!.height
             texture!!.deleteGlTexture()
         }
         texture = DynamicTexture(img)
+        width = img!!.width
+        height = img!!.height
         img = null
 
         IMAGES.add(this)

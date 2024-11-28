@@ -325,8 +325,8 @@ class Display @JvmOverloads constructor(
         val s = min(
             scale,
             min(
-                getWidth() / maxW,
-                getHeight() / maxH
+                maxW / getWidth(),
+                maxH / getHeight()
             ).toFloat()
         )
         if (s != scale2) {
