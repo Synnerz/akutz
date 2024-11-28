@@ -3,7 +3,7 @@ package com.github.synnerz.akutz.api.objects.gui.components
 import com.github.synnerz.akutz.api.objects.state.IState
 import com.github.synnerz.akutz.api.objects.state.StateVar
 
-abstract class UIStateValue<T>(
+abstract class UIStateValue<T> @JvmOverloads constructor(
     initialValue: T,
     x: Double = 0.0,
     y: Double = 0.0,

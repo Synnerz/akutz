@@ -4,7 +4,7 @@ import com.github.synnerz.akutz.api.objects.gui.transition.AnimatedColor
 import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.api.objects.render.Display
 
-class UITextButton(
+class UITextButton @JvmOverloads constructor(
     x: Double = 0.0,
     y: Double = 0.0,
     w: Double = 100.0,

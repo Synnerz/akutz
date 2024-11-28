@@ -1,6 +1,5 @@
 package com.github.synnerz.akutz.api.objects.gui.components
 
-import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.objects.render.Display
 
 open class UIText @JvmOverloads constructor(
