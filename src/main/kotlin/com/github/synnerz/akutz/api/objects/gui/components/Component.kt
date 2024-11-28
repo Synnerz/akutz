@@ -166,6 +166,7 @@ open class Component @JvmOverloads constructor(
         if (!v) {
             if (button < 0) {
                 v = onDragEnd(x0, y0, dx, dy, button.inv())
+                buttonState.remove(button.inv())
             } else {
                 if (button !in dragState) v = onDragStart(x0, y0, dx, dy, button)
                 v = onDrag(x0, y0, dx, dy, button) || v

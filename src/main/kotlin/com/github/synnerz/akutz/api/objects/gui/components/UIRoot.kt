@@ -28,11 +28,11 @@ class UIRoot : Component() {
             val has = i in clickPositions
 
             if (state xor has) propagateMouseButton(xd, yd, if (state) i.inv() else i)
-            if (!has) {
-                clickPositions[i] = Position(x, y)
-                dragPosition[i] = Position(x, y)
-            }
             if (state) {
+                if (!has) {
+                    clickPositions[i] = Position(x, y)
+                    dragPosition[i] = Position(x, y)
+                }
                 if (x - dragPosition[i]!!.x != 0 || y - dragPosition[i]!!.y != 0) {
                     propagateDrag(
                         clickPositions[i]!!.x.toDouble(),
