@@ -58,7 +58,6 @@ open class Component @JvmOverloads constructor(
     }
 
     protected open fun update() {
-        if (!d) return
         d = false
         cx = _x / 100 * (p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0)
         cy = _y / 100 * (p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0)
@@ -70,7 +69,7 @@ open class Component @JvmOverloads constructor(
 
     protected fun finishRender() {
         Renderer.translate(cx.toFloat(), cy.toFloat())
-        update()
+        if (d) update()
         c.forEach { it.render() }
         Renderer.finishDraw()
     }
