@@ -1,13 +1,15 @@
 package com.github.synnerz.akutz.api.objects.gui.components
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.api.objects.render.Color
 
 open class Component @JvmOverloads constructor(
     protected var _x: Double = 0.0,
     protected var _y: Double = 0.0,
     protected var _w: Double = 100.0,
     protected var _h: Double = 100.0,
-    protected var p: Component? = null
+    protected var p: Component? = null,
+    protected var _padding: Double = 0.0
 ) {
     protected val c = mutableListOf<Component>()
     protected var d = true
@@ -34,6 +36,8 @@ open class Component @JvmOverloads constructor(
     fun setH(h: Double) = apply { mark()._h = h }
     fun setWidth(width: Double) = apply { mark()._w = width }
     fun setHeight(height: Double) = apply { mark()._h = height }
+    fun getPadding() = _padding
+    fun setPadding(padding: Double) = apply { mark()._padding = padding }
 
     open fun addChild(child: Component) = apply {
         if (child.p != null) {
@@ -59,10 +63,10 @@ open class Component @JvmOverloads constructor(
 
     protected open fun update() {
         d = false
-        cx = _x / 100 * (p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0)
-        cy = _y / 100 * (p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0)
-        cw = _w / 100 * (p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0)
-        ch = _h / 100 * (p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0)
+        cx = _x / 100 * ((p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0) - (p?._padding ?: 0.0) * 2) + (p?.cx ?: 0.0) + (p?._padding ?: 0.0)
+        cy = _y / 100 * ((p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0) - (p?._padding ?: 0.0) * 2) + (p?.cy ?: 0.0) + (p?._padding ?: 0.0)
+        cw = _w / 100 * ((p?.cw ?: Renderer.sr?.scaledWidth_double ?: 0.0) - (p?._padding ?: 0.0) * 2)
+        ch = _h / 100 * ((p?.ch ?: Renderer.sr?.scaledHeight_double ?: 0.0) - (p?._padding ?: 0.0) * 2)
     }
 
     protected open fun mark(): Component = apply {
@@ -71,18 +75,20 @@ open class Component @JvmOverloads constructor(
     }
 
     protected fun finishRender() {
-        Renderer.translate(cx.toFloat(), cy.toFloat())
         if (d) update()
         c.forEach { it.render() }
-        Renderer.finishDraw()
     }
 
     protected open fun doRender() {}
     open fun render() {
-        Renderer.beginDraw()
+        Renderer.beginDraw(Color.EMPTY, false)
         doRender()
         finishRender()
+        Renderer.finishDraw()
     }
+
+    protected fun getXBound() = cx..cx + cw
+    protected fun getYBound() = cy..cy + ch
 
     protected var isMouseIn = false
     protected open fun onMouseOver(x: Double, y: Double): Boolean = false
@@ -91,10 +97,8 @@ open class Component @JvmOverloads constructor(
 
     // call when mouse position changes
     protected fun propagateMouseMove(x: Double, y: Double): Boolean {
-        val x = x - cx
-        val y = y - cy
         var v = c.fold(false) { a, v -> v.propagateMouseMove(x, y) || a }
-        val isInside = x in 0.0..cw && y in 0.0..ch
+        val isInside = x in getXBound() && y in getYBound()
         if (!v) {
             if (isInside) {
                 if (!isMouseIn) v = onMouseEnter(x, y)
@@ -113,11 +117,9 @@ open class Component @JvmOverloads constructor(
 
     // call when state of a button changes, pass in the changed button
     protected fun propagateMouseButton(x: Double, y: Double, button: Int): Boolean {
-        val x = x - cx
-        val y = y - cy
         val isDown = button < 0
         val realButton = if (isDown) button.inv() else button
-        if (!(x in 0.0..cw && y in 0.0..ch)) {
+        if (!(x in getXBound() && y in getYBound())) {
             buttonState.remove(realButton)
             return false
         }
@@ -147,9 +149,7 @@ open class Component @JvmOverloads constructor(
 
     // call when is dragged, validates starting mouse position
     protected fun propagateDrag(x0: Double, y0: Double, dx: Double, dy: Double, button: Int): Boolean {
-        val x0 = x0 - cx
-        val y0 = y0 - cy
-        if (!(x0 in 0.0..cw && y0 in 0.0..ch)) return false
+        if (!(x0 in getXBound() && y0 in getYBound())) return false
 
         var v = c.fold(false) { a, v -> v.propagateDrag(x0, y0, dx, dy, button) || a }
         if (!v) {
@@ -171,11 +171,9 @@ open class Component @JvmOverloads constructor(
 
     // call when is dragged, validates current mouse position
     protected fun propagateDragOver(x0: Double, y0: Double, dx: Double, dy: Double, button: Int): Boolean {
-        val x0 = x0 - cx
-        val y0 = y0 - cy
         val x = x0 + dx
         val y = y0 + dy
-        if (!(x in 0.0..cw && y in 0.0..ch)) return false
+        if (!(x in getXBound() && y in getYBound())) return false
         return c.fold(false) { a, v -> v.propagateDragOver(x0, y0, dx, dy, button) || a } ||
                 onDragOver(x0, y0, dx, dy, button)
     }
@@ -184,9 +182,7 @@ open class Component @JvmOverloads constructor(
 
     // call when scroll
     protected fun propagateScroll(x: Double, y: Double, delta: Int): Boolean {
-        val x = x - cx
-        val y = y - cy
-        if (!(x in 0.0..cw && y in 0.0..ch)) return false
+        if (!(x in getXBound() && y in getYBound())) return false
         return c.fold(false) { a, v -> v.propagateScroll(x, y, delta) || a } ||
                 onScroll(x, y, delta)
     }

@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.objects.gui.components
 
+import com.github.synnerz.akutz.api.libs.render.Renderer
 import org.lwjgl.input.Mouse
 import kotlin.math.sign
 
@@ -14,10 +15,10 @@ class UIRoot : Component() {
     }
 
     override fun doRender() {
-        val x = Mouse.getX()
-        val y = Mouse.getY()
-        val xd = x.toDouble()
-        val yd = y.toDouble()
+        val x = Mouse.getX() / (Renderer.sr?.scaleFactor ?: 1)
+        val y = Mouse.getY() / (Renderer.sr?.scaleFactor ?: 1)
+        val xd = Mouse.getX().toDouble() / (Renderer.sr?.scaleFactor ?: 1)
+        val yd = Mouse.getY().toDouble() / (Renderer.sr?.scaleFactor ?: 1)
         val scroll = Mouse.getEventDWheel()
 
         if (scroll != 0) propagateScroll(xd, yd, scroll.sign)
