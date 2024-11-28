@@ -6,11 +6,11 @@ import com.github.synnerz.akutz.api.objects.gui.transition.AnimatedDouble
 import com.github.synnerz.akutz.api.objects.render.Color
 
 class UISwitch @JvmOverloads constructor(
-    p: Component? = null,
     x: Double = 0.0,
     y: Double = 0.0,
     w: Double = 100.0,
     h: Double = 100.0,
+    p: Component? = null,
     var knobPosition: AnimatedDouble = AnimatedDouble(0.0),
     var knobOnColor: Color = Color.GREEN,
     var knobOffColor: Color = Color.RED,
