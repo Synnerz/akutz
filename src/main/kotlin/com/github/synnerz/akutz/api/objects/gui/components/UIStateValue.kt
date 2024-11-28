@@ -5,12 +5,12 @@ import com.github.synnerz.akutz.api.objects.state.StateVar
 
 abstract class UIStateValue<T>(
     initialValue: T,
-    p: Component? = null,
-    x: Double,
-    y: Double,
-    w: Double,
-    h: Double
-) : Component(p, x, y, w, h), IState<T> {
+    _x: Double,
+    _y: Double,
+    _w: Double,
+    _h: Double,
+    p: Component? = null
+) : Component(_x, _y, _w, _h, p), IState<T> {
     private val state = StateVar(initialValue)
     override fun get(): T = state.get()
     override fun listen(callback: (newValue: T, oldValue: T) -> Unit) = state.listen(callback)

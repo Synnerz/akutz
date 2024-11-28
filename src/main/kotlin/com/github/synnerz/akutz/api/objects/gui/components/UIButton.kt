@@ -3,16 +3,16 @@ package com.github.synnerz.akutz.api.objects.gui.components
 import com.github.synnerz.akutz.api.objects.render.Color
 
 open class UIButton @JvmOverloads constructor(
+    x: Double,
+    y: Double,
+    w: Double,
+    h: Double,
     p: Component? = null,
-    x: Double = 0.0,
-    y: Double = 0.0,
-    w: Double = 100.0,
-    h: Double = 100.0,
     var onClick: () -> Unit = {},
     var normalColor: Color = Color.WHITE,
     var hoverColor: Color = Color.GRAY,
     var clickColor: Color = Color.DARK_GRAY
-) : UIRectangle(p, x, y, w, h) {
+) : UIRectangle(x, y, w, h, p) {
     private var stateBgColor = 1
     private fun setBgColor(col: BackgroundColor, on: Boolean) {
         stateBgColor = if (on) stateBgColor or col.flag
