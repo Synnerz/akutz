@@ -82,6 +82,9 @@ class UISwitchKnob(
         val x = ((if (switch.get()) 1.0 else 0.0) + dx * f).coerceIn(0.0..1.0)
         return MathLib.rescale(x, 0.0, 1.0, 0.0, (switch.background.getW() - switch.knob.getW()) / switch.background.getW())
     }
+
+    override fun onMouseClick(x: Double, y: Double, button: Int): Boolean =
+        super.onMouseClick(x, y, button).let { false }
 //    override fun onDrag(x0: Double, y0: Double, dx: Double, dy: Double, button: Int): Boolean {
 //        setX(getPos(dx) * 100)
 //        return true

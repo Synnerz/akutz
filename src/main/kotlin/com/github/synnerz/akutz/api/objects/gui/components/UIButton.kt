@@ -41,7 +41,7 @@ open class UIButton @JvmOverloads constructor(
     override fun onDragEnd(x0: Double, y0: Double, dx: Double, dy: Double, button: Int): Boolean =
         setBgColor(BackgroundColor.CLICK, false).let { false }
 
-    override fun onMouseClick(x: Double, y: Double, button: Int): Boolean = onClick().let { false }
+    override fun onMouseClick(x: Double, y: Double, button: Int): Boolean = onClick().let { true }
 
     private enum class BackgroundColor(val flag: Int) {
         NORMAL(1),
