@@ -39,9 +39,9 @@ open class UIRectangle @JvmOverloads constructor(
             }
 
             OutlineStyle.INNER -> {
-                Renderer.color(outlineColor)
-                Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
                 Renderer.color(bgColor.get())
+                Renderer.drawRoundRectangle(cx, cy, cw, ch, borderRadius)
+                Renderer.color(outlineColor)
                 Renderer.drawRoundRectangle(
                     cx + outlineWidth,
                     cy + outlineWidth,
