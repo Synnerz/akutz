@@ -61,6 +61,7 @@ class UIRoot : Component() {
                     dragPosition[i]!!.y = y
                 }
             } else {
+                if (!has) return
                 if (i in dragPosition) {
                     propagateDrag(
                         clickPositions[i]!!.x.toDouble(),
