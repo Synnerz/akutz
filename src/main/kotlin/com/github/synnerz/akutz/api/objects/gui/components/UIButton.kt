@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.objects.gui.components
 
+import com.github.synnerz.akutz.api.objects.gui.transition.AnimatedColor
 import com.github.synnerz.akutz.api.objects.render.Color
 
 open class UIButton @JvmOverloads constructor(
@@ -9,21 +10,21 @@ open class UIButton @JvmOverloads constructor(
     h: Double = 100.0,
     p: Component? = null,
     var onClick: () -> Unit = {},
-    var normalColor: Color = Color.WHITE,
-    var hoverColor: Color = Color.GRAY,
-    var clickColor: Color = Color.DARK_GRAY
+    var normalColor: AnimatedColor = AnimatedColor(Color.WHITE),
+    var hoverColor: AnimatedColor = AnimatedColor(Color.GRAY),
+    var clickColor: AnimatedColor = AnimatedColor(Color.DARK_GRAY)
 ) : UIRectangle(x, y, w, h, p) {
     private var stateBgColor = 1
     private fun setBgColor(col: BackgroundColor, on: Boolean) {
         stateBgColor = if (on) stateBgColor or col.flag
         else stateBgColor and col.flag.inv()
-        if (stateBgColor or BackgroundColor.CLICK.flag > 0) bgColor.set(clickColor)
-        else if (stateBgColor or BackgroundColor.HOVER.flag > 0) bgColor.set(hoverColor)
-        else bgColor.set(normalColor)
+        if (stateBgColor or BackgroundColor.CLICK.flag > 0) bgColor.set(clickColor.get())
+        else if (stateBgColor or BackgroundColor.HOVER.flag > 0) bgColor.set(hoverColor.get())
+        else bgColor.set(normalColor.get())
     }
 
     init {
-        bgColor.set(normalColor)
+        bgColor.set(normalColor.get())
     }
 
     override fun onMouseEnter(x: Double, y: Double): Boolean = setBgColor(BackgroundColor.HOVER, true).let { false }
