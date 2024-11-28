@@ -79,6 +79,7 @@ open class Component @JvmOverloads constructor(
 
     protected open fun doRender() {}
     open fun render() {
+        Renderer.beginDraw()
         doRender()
         finishRender()
     }

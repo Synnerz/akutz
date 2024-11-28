@@ -18,7 +18,6 @@ open class UIText @JvmOverloads constructor(
     }
     override fun doRender() {
         super.doRender()
-        Renderer.beginDraw()
         display.setX(cx + cw / 2)
         display.setY(cy + ch / 2)
         display.setMaxWidth(cw * 0.8)
