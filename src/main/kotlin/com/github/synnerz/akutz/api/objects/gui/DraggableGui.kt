@@ -39,16 +39,16 @@ class DraggableGui @JvmOverloads constructor(
         guiHeight = height
     }
 
-    private fun getScreenWidth(): Double? {
-        if (guiWidth == null) return Renderer.sr?.scaledWidth_double
+    private fun getScreenWidth(): Double {
+        if (guiWidth == null) return Renderer.sr?.scaledWidth_double ?: x
 
-        return Renderer.sr?.scaledWidth_double?.minus(guiWidth!!)
+        return Renderer.sr?.scaledWidth_double?.minus(guiWidth!!) ?: x
     }
 
-    private fun getScreenHeight(): Double? {
-        if (guiHeight == null) return Renderer.sr?.scaledHeight_double
+    private fun getScreenHeight(): Double {
+        if (guiHeight == null) return Renderer.sr?.scaledHeight_double ?: y
 
-        return Renderer.sr?.scaledHeight_double?.minus(guiHeight!!)
+        return Renderer.sr?.scaledHeight_double?.minus(guiHeight!!) ?: y
     }
 
     // TODO: once persistent data api is not shit add auto save and auto load etc
