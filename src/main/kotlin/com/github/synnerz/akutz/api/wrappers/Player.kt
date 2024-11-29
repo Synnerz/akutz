@@ -1,5 +1,7 @@
 package com.github.synnerz.akutz.api.wrappers
 
+import com.github.synnerz.akutz.api.libs.MathLib
+import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.api.wrappers.entity.PlayerMP
 import com.github.synnerz.akutz.api.wrappers.inventory.Inventory
@@ -36,6 +38,15 @@ object Player {
 
     @JvmStatic
     fun getLastZ(): Double = getPlayer()?.lastTickPosZ ?: 0.0
+
+    @JvmStatic
+    fun getRenderX(): Double = MathLib.lerp(getLastX(), getX(), Tessellator.partialTicks.toDouble())
+
+    @JvmStatic
+    fun getRenderY(): Double = MathLib.lerp(getLastY(), getY(), Tessellator.partialTicks.toDouble())
+
+    @JvmStatic
+    fun getRenderZ(): Double = MathLib.lerp(getLastZ(), getZ(), Tessellator.partialTicks.toDouble())
 
     @JvmStatic
     fun getName(): String = Client.getMinecraft().session.username
