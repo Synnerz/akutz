@@ -6,6 +6,8 @@ import com.github.synnerz.akutz.api.wrappers.Player
 import com.github.synnerz.akutz.api.wrappers.entity.Entity
 import com.github.synnerz.akutz.api.wrappers.message.TextComponent
 import com.github.synnerz.akutz.api.wrappers.world.block.Block
+import net.minecraft.client.renderer.GlStateManager
+import net.minecraft.client.renderer.RenderHelper
 import net.minecraft.entity.item.EntityItem
 import net.minecraft.block.Block as MCBlock
 import net.minecraft.item.ItemStack
@@ -88,8 +90,23 @@ class Item {
 
     fun getLore(): List<String> = itemStack.getTooltip(Player.getPlayer(), Client.getMinecraft().gameSettings.advancedItemTooltips)
 
-    // TODO
-    // fun draw()
+    @JvmOverloads
+    fun draw(x: Float = 0f, y: Float = 0f, scale: Float = 1f, z: Float = 200f) {
+        val itemRenderer = Client.getMinecraft().renderItem
+
+        GlStateManager.scale(scale, scale, 1f)
+        GlStateManager.translate(x / scale, y / scale, 0f)
+        GlStateManager.color(1f, 1f, 1f, 1f)
+
+        RenderHelper.enableStandardItemLighting()
+        RenderHelper.enableGUIStandardItemLighting()
+
+        itemRenderer.zLevel = z
+        itemRenderer.renderItemIntoGUI(itemStack, 0, 0)
+
+        GlStateManager.popMatrix()
+        GlStateManager.pushMatrix()
+    }
 
     fun getTextComponent() = TextComponent(itemStack.chatComponent)
 
