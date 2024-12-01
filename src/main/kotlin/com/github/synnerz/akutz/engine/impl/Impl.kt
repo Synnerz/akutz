@@ -1,13 +1,11 @@
 package com.github.synnerz.akutz.engine.impl
 
 import com.caoccao.javet.buddy.interop.proxy.JavetReflectionObjectFactory
-import com.caoccao.javet.interception.jvm.JavetJVMInterceptor
 import com.caoccao.javet.interop.V8Runtime
 import com.caoccao.javet.interop.callback.IJavetDirectCallable.NoThisAndResult
 import com.caoccao.javet.interop.callback.JavetCallbackContext
 import com.caoccao.javet.interop.callback.JavetCallbackType
 import com.caoccao.javet.interop.converters.JavetObjectConverter
-import com.caoccao.javet.interop.converters.JavetProxyConverter
 import com.caoccao.javet.interop.engine.IJavetEnginePool
 import com.caoccao.javet.interop.engine.JavetEngineConfig
 import com.caoccao.javet.interop.engine.JavetEnginePool
@@ -23,8 +21,11 @@ import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.objects.keybind.Keybind
 import com.github.synnerz.akutz.api.objects.render.Image
 import com.github.synnerz.akutz.api.wrappers.Client
+import com.github.synnerz.akutz.engine.impl.custom.JVMInterceptor
+import com.github.synnerz.akutz.engine.impl.custom.ProxyConverter
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import com.github.synnerz.akutz.listeners.MouseListener
+import net.minecraft.launchwrapper.Launch
 import java.io.File
 import java.nio.file.Paths
 
@@ -33,9 +34,10 @@ object Impl {
     private var enginePool: IJavetEnginePool<V8Runtime> =
         JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
     private var v8runtime: V8Runtime? = null
-    private var javetJVMInterceptor: JavetJVMInterceptor? = null
-    private var javetProxyConverter: JavetProxyConverter? = null
+    private var javetJVMInterceptor: JVMInterceptor? = null
+    private var javetProxyConverter: ProxyConverter? = null
     private var modulesLoaded = mutableListOf<IV8Module>()
+    val inDev = Launch.blackboard.getOrDefault("fml.deobfuscatedEnvironment", false) as Boolean
 
     fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
         v8runtime ?: return cb(null)
@@ -95,7 +97,7 @@ object Impl {
 
             return@setV8ModuleResolver module
         }
-        javetProxyConverter = JavetProxyConverter()
+        javetProxyConverter = ProxyConverter()
         javetProxyConverter!!.config.setProxyListEnabled(true)
         javetProxyConverter!!.config.setProxyMapEnabled(true)
         javetProxyConverter!!.config.setProxySetEnabled(true)
@@ -103,7 +105,7 @@ object Impl {
 
         v8runtime!!.setConverter(javetProxyConverter!!)
 
-        javetJVMInterceptor = JavetJVMInterceptor(v8runtime)
+        javetJVMInterceptor = JVMInterceptor(v8runtime)
         javetJVMInterceptor!!.addCallbackContexts(
             JavetCallbackContext(
                 "extend",
