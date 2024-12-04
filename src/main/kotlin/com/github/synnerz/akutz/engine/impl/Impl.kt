@@ -38,6 +38,8 @@ object Impl {
     private var javetProxyConverter: ProxyConverter? = null
     private var modulesLoaded = mutableListOf<IV8Module>()
     val inDev = Launch.blackboard.getOrDefault("fml.deobfuscatedEnvironment", false) as Boolean
+    var mappings: HashMap<String, Any>? = null
+        private set
 
     fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
         v8runtime ?: return cb(null)
@@ -188,5 +190,10 @@ object Impl {
         }
         Keybind.clearKeyBinds()
         MouseListener.clearListeners()
+    }
+
+    fun loadMappings() {
+        val json = FileLib.readFromResource("mappings2.json")
+        mappings = Akutz.gson.fromJson(json, HashMap::class.java) as HashMap<String, Any>?
     }
 }

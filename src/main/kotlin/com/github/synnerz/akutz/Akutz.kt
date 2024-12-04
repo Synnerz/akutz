@@ -34,6 +34,7 @@ class Akutz {
 
     @Mod.EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
+        Impl.loadMappings()
         ModuleManager.setup()
         Impl.setup()
         ClientCommandHandler.instance.registerCommand(AkutzCommand)
