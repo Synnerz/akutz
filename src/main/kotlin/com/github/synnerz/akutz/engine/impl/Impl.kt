@@ -192,7 +192,7 @@ object Impl {
         MouseListener.clearListeners()
     }
 
-    fun loadMappings() {
+    internal fun loadMappings() {
         val json = FileLib.readFromResource("mappings2.json")
         mappings = Akutz.gson.fromJson(json, HashMap::class.java) as HashMap<String, Any>?
     }
