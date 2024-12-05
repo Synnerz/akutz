@@ -22,113 +22,103 @@ open class ProxyConverter : JavetObjectConverter() {
 
     @Throws(JavetException::class)
     protected fun <T : V8Value?> toProxiedV8Value(v8Runtime: V8Runtime, obj: Any): T {
-        var v8Value: V8Value
-        if (obj is IJavetNonProxy) {
-            v8Value = v8Runtime.createV8ValueUndefined()
-        } else {
-            var proxyMode = V8ProxyMode.Object
-            val objectClass: Class<*> = obj.javaClass
-            if (obj is Class<*>) {
-                if (V8ProxyMode.isClassMode(obj)) {
-                    proxyMode = V8ProxyMode.Class
-                }
-            } else if (objectClass.isAnnotationPresent(V8Convert::class.java)) {
-                val v8Convert = objectClass.getAnnotation(V8Convert::class.java)
-                if (v8Convert.proxyMode == V8ProxyMode.Function) {
-                    proxyMode = V8ProxyMode.Function
-                }
-            }
-            v8Runtime.v8Scope.use { v8Scope ->
-                val v8ValueProxy: V8ValueProxy
-                var v8ValueTarget: V8Value? = null
-                try {
-                    when (proxyMode) {
-                        V8ProxyMode.Class -> v8ValueTarget = ProxyPrototypeStore.createOrGetPrototype(
-                            v8Runtime, proxyMode, obj as Class<*>
-                        )
+        if (obj is IJavetNonProxy) return v8Runtime.createV8ValueUndefined() as T
+        val v8Value: V8Value
 
-                        V8ProxyMode.Function -> v8ValueTarget = ProxyPrototypeStore.createOrGetPrototype(
-                            v8Runtime, proxyMode, objectClass
-                        )
-
-                        else -> if (obj is IJavetDirectProxyHandler<*>) {
-                            obj.v8Runtime = v8Runtime
-                            v8ValueTarget = obj.createTargetObject()
-                        } else {
-                            val v8ProxyMode = proxyMode
-                            v8ValueTarget = getConfig().proxyPlugins.stream()
-                                .filter { p: IClassProxyPlugin ->
-                                    p.isProxyable(
-                                        objectClass
-                                    )
-                                }
-                                .findFirst()
-                                .map<IClassProxyPluginFunction<java.lang.Exception?>> { p: IClassProxyPlugin ->
-                                    p.getTargetObjectConstructor<java.lang.Exception?>(
-                                        objectClass
-                                    )
-                                }
-                                .map<V8Value?> { f: IClassProxyPluginFunction<java.lang.Exception?> ->
-                                    try {
-                                        return@map f.invoke(v8Runtime, obj)
-                                    } catch (ignored: Throwable) {
-                                    }
-                                    null
-                                }
-                                .orElseGet {
-                                    try {
-                                        val protoval = ProxyPrototypeStore.createOrGetPrototype(
-                                            v8Runtime, v8ProxyMode, objectClass
-                                        )
-                                        val protoobj = v8Runtime.createV8ValueObject()
-                                        return@orElseGet EngineCache.builtInObject!!.setPrototypeOf(protoobj, protoval)
-                                    } catch (ignored: Throwable) {
-                                    }
-                                    null
-                                }
-                        }
-                    }
-                    v8ValueProxy = v8Scope.createV8ValueProxy(v8ValueTarget)
-                } finally {
-                    JavetResourceUtils.safeClose(v8ValueTarget)
-                }
-                v8ValueProxy.handler.use { iV8ValueObjectHandler ->
-                    val javetProxyHandler: IJavetProxyHandler<*, *> = when (proxyMode) {
-                        V8ProxyMode.Class -> JavetReflectionProxyClassHandler<Class<Any>, Exception>(
-                            v8Runtime,
-                            obj as Class<Any>
-                        )
-
-                        V8ProxyMode.Function -> if (obj is IJavetDirectProxyHandler<*>) {
-                            JavetDirectProxyFunctionHandler(
-                                v8Runtime, obj as IJavetDirectProxyHandler<Exception>
-                            )
-                        } else {
-                            JavetReflectionProxyFunctionHandler(v8Runtime, obj)
-                        }
-
-                        else -> if (obj is IJavetDirectProxyHandler<*>) {
-                            JavetDirectProxyObjectHandler(
-                                v8Runtime, obj as IJavetDirectProxyHandler<Exception>
-                            )
-                        } else {
-                            JavetReflectionProxyObjectHandler(v8Runtime, obj)
-                        }
-                    }
-                    val javetCallbackContexts = iV8ValueObjectHandler.bind(javetProxyHandler)
-                    v8Runtime.createV8ValueLong(
-                        javetCallbackContexts[0].handle
-                    ).use { v8ValueLongHandle ->
-                        iV8ValueObjectHandler.setPrivateProperty(
-                            PRIVATE_PROPERTY_PROXY_TARGET,
-                            v8ValueLongHandle
-                        )
-                    }
-                }
-                v8Value = v8ValueProxy
-                v8Scope.setEscapable()
+        var proxyMode = V8ProxyMode.Object
+        val objectClass: Class<*> = obj.javaClass
+        if (obj is Class<*> && V8ProxyMode.isClassMode(obj)) {
+            proxyMode = V8ProxyMode.Class
+        } else if (objectClass.isAnnotationPresent(V8Convert::class.java)) {
+            val v8Convert = objectClass.getAnnotation(V8Convert::class.java)
+            if (v8Convert.proxyMode == V8ProxyMode.Function) {
+                proxyMode = V8ProxyMode.Function
             }
         }
+
+        val v8Scope = v8Runtime.v8Scope
+        val v8ValueProxy: V8ValueProxy
+        var v8ValueTarget: V8Value? = null
+
+        try {
+            when (proxyMode) {
+                V8ProxyMode.Class -> v8ValueTarget = ProxyPrototypeStore.createOrGetPrototype(
+                    v8Runtime, proxyMode, obj as Class<*>
+                )
+
+                V8ProxyMode.Function -> v8ValueTarget = ProxyPrototypeStore.createOrGetPrototype(
+                    v8Runtime, proxyMode, objectClass
+                )
+
+                else -> if (obj is IJavetDirectProxyHandler<*>) {
+                    obj.v8Runtime = v8Runtime
+                    v8ValueTarget = obj.createTargetObject()
+                } else {
+                    v8ValueTarget = config.proxyPlugins.stream()
+                        .filter { p: IClassProxyPlugin -> p.isProxyable(objectClass) }
+                        .findFirst()
+                        .map<IClassProxyPluginFunction<Exception?>> { p: IClassProxyPlugin ->
+                            p.getTargetObjectConstructor<Exception?>(objectClass)
+                        }
+                        .map<V8Value> { f: IClassProxyPluginFunction<Exception?> ->
+                            try {
+                                return@map f.invoke(v8Runtime, obj)
+                            } catch (ignored: Throwable) {
+                            }
+                            null
+                        }
+                        .orElseGet {
+                            try {
+                                val protoval = ProxyPrototypeStore.createOrGetPrototype(
+                                    v8Runtime, proxyMode, objectClass
+                                )
+                                val protoobj = v8Runtime.createV8ValueObject()
+                                return@orElseGet EngineCache.builtInObject!!.setPrototypeOf(protoobj, protoval)
+                            } catch (ignored: Throwable) {
+                            }
+                            null
+                        }
+                }
+            }
+            v8ValueProxy = v8Scope.createV8ValueProxy(v8ValueTarget)
+        } finally {
+            JavetResourceUtils.safeClose(v8ValueTarget)
+        }
+
+        val valueHandler = v8ValueProxy.handler
+        val proxyHandler: IJavetProxyHandler<*, *> = when (proxyMode) {
+            V8ProxyMode.Class -> JavetReflectionProxyClassHandler<Class<*>, Exception>(
+                v8Runtime,
+                obj as Class<*>
+            )
+
+            V8ProxyMode.Function -> if (obj is IJavetDirectProxyHandler<*>) {
+                JavetDirectProxyFunctionHandler(
+                    v8Runtime, obj as IJavetDirectProxyHandler<Exception>
+                )
+            } else {
+                JavetReflectionProxyFunctionHandler(v8Runtime, obj)
+            }
+
+            else -> if (obj is IJavetDirectProxyHandler<*>) {
+                JavetDirectProxyObjectHandler(
+                    v8Runtime, obj as IJavetDirectProxyHandler<Exception>
+                )
+            } else {
+                JavetReflectionProxyObjectHandler(v8Runtime, obj)
+            }
+        }
+
+        val cbContexts = valueHandler.bind(proxyHandler)
+        val cbId = v8Runtime.createV8ValueLong(cbContexts[0].handle)
+        valueHandler.setPrivateProperty(
+            PRIVATE_PROPERTY_PROXY_TARGET,
+            cbId
+        )
+
+        v8Value = v8ValueProxy
+        v8Scope.setEscapable()
+
         return v8Value as T
     }
 
