@@ -21,6 +21,7 @@ import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.objects.keybind.Keybind
 import com.github.synnerz.akutz.api.objects.render.Image
 import com.github.synnerz.akutz.api.wrappers.Client
+import com.github.synnerz.akutz.engine.impl.custom.EngineCache
 import com.github.synnerz.akutz.engine.impl.custom.JVMInterceptor
 import com.github.synnerz.akutz.engine.impl.custom.ProxyConverter
 import com.github.synnerz.akutz.engine.module.ModuleManager
@@ -28,7 +29,6 @@ import com.github.synnerz.akutz.listeners.MouseListener
 import net.minecraft.launchwrapper.Launch
 import java.io.File
 import java.nio.file.Paths
-
 
 object Impl {
     private var enginePool: IJavetEnginePool<V8Runtime> =
@@ -39,7 +39,7 @@ object Impl {
     private var modulesLoaded = mutableListOf<IV8Module>()
     val inDev = Launch.blackboard.getOrDefault("fml.deobfuscatedEnvironment", false) as Boolean
     var mappings: HashMap<String, Any>? = null
-        private set
+        internal set
 
     fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
         v8runtime ?: return cb(null)
@@ -82,6 +82,12 @@ object Impl {
             JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
 
         v8runtime = enginePool.engine.v8Runtime
+        EngineCache.v8runtime = v8runtime
+        EngineCache.globalObject = v8runtime!!.globalObject
+        EngineCache.builtInReflect = EngineCache.globalObject!!.builtInReflect
+        EngineCache.loadBuiltins()
+        EngineCache.loadProps()
+
         v8runtime!!.setPromiseRejectCallback { jevent, valpromise, value ->
             println("event: $jevent")
             println("valPromise: $valpromise")
@@ -127,7 +133,7 @@ object Impl {
                     v8runtime!!.createV8ValueUndefined()
                 })
         )
-        javetJVMInterceptor!!.register(v8runtime!!.globalObject)
+        javetJVMInterceptor!!.register(EngineCache.globalObject!!)
 
         v8runtime!!.getExecutor(
             FileLib.readFromResource("js/providedLibs.js")!!
@@ -138,7 +144,7 @@ object Impl {
         if (!isLoaded()) return
 
         if (javetJVMInterceptor != null) {
-            javetJVMInterceptor!!.unregister(v8runtime!!.globalObject)
+            javetJVMInterceptor!!.unregister(EngineCache.globalObject!!)
             javetJVMInterceptor = null
         }
         if (javetProxyConverter != null) {
@@ -155,6 +161,10 @@ object Impl {
         v8runtime!!.lowMemoryNotification()
         enginePool.releaseEngine(enginePool.engine)
         v8runtime!!.close()
+        EngineCache.globalObject = null
+        EngineCache.builtInObject = null
+        EngineCache.builtInReflect = null
+        EngineCache.privateProperties.clear()
         v8runtime = null
     }
 
@@ -164,6 +174,8 @@ object Impl {
         try {
             module.executeVoid()
             modulesLoaded.add(module)
+            // TODO: i don't really think this needs to be here but just in case
+            EngineCache.loadBuiltins()
         } catch (e: Exception) {
             v8runtime!!.removeV8Module(module)
             modulesLoaded.remove(module)
