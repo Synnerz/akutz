@@ -43,11 +43,11 @@ open class ProxyConverter : JavetObjectConverter() {
                 var v8ValueTarget: V8Value? = null
                 try {
                     when (proxyMode) {
-                        V8ProxyMode.Class -> v8ValueTarget = JavetProxyPrototypeStore.createOrGetPrototype(
+                        V8ProxyMode.Class -> v8ValueTarget = ProxyPrototypeStore.createOrGetPrototype(
                             v8Runtime, proxyMode, obj as Class<*>
                         )
 
-                        V8ProxyMode.Function -> v8ValueTarget = JavetProxyPrototypeStore.createOrGetPrototype(
+                        V8ProxyMode.Function -> v8ValueTarget = ProxyPrototypeStore.createOrGetPrototype(
                             v8Runtime, proxyMode, objectClass
                         )
 
@@ -77,18 +77,11 @@ open class ProxyConverter : JavetObjectConverter() {
                                 }
                                 .orElseGet {
                                     try {
-                                        JavetProxyPrototypeStore.createOrGetPrototype(
+                                        val protoval = ProxyPrototypeStore.createOrGetPrototype(
                                             v8Runtime, v8ProxyMode, objectClass
-                                        ).use { v8ValuePrototype ->
-                                            v8Runtime.globalObject.builtInObject.use { v8ValueBuiltInObject ->
-                                                v8Runtime.createV8ValueObject().use { v8ValueObject ->
-                                                    return@orElseGet v8ValueBuiltInObject.setPrototypeOf(
-                                                        v8ValueObject,
-                                                        v8ValuePrototype
-                                                    )
-                                                }
-                                            }
-                                        }
+                                        )
+                                        val protoobj = v8Runtime.createV8ValueObject()
+                                        return@orElseGet EngineCache.builtInObject!!.setPrototypeOf(protoobj, protoval)
                                     } catch (ignored: Throwable) {
                                     }
                                     null
