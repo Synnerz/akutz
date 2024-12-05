@@ -5,6 +5,7 @@ import com.caoccao.javet.interop.V8Runtime
 import com.caoccao.javet.interop.callback.JavetCallbackContext
 import com.caoccao.javet.interop.proxy.BaseJavetReflectionProxyHandler
 import com.caoccao.javet.utils.JavetReflectionUtils
+import com.caoccao.javet.values.V8Value
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.google.gson.internal.LinkedTreeMap
 import java.lang.reflect.Field
@@ -90,5 +91,14 @@ abstract class BaseReflectionProxyHandler<T, E : Exception>(
             return
         }
         super.initializePublicMethods(currentClass, conversionMode, staticMode)
+    }
+
+    override fun getPrototypeOf(target: V8Value?): V8Value {
+        val value = ProxyPrototypeStore.getPrototype(
+            v8runtime, proxyMode, classDescriptor.targetClass
+        )
+        if (value != null) return value
+
+        return super.getPrototypeOf(target)
     }
 }
