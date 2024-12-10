@@ -79,7 +79,7 @@ class ChatEvent(
         if (mode == 2) {
             val m: MatchResult? =
                 if (parameters.size == 0 || parameters.contains(Parameter.START)) regex!!.matchAt(str, 0)
-                else regex!!.matchEntire(str)
+                else regex!!.find(str, 0)
             if (m == null) return null
 
             if ((parameters.size == 0 || parameters.contains(Parameter.END)) && m.range.last < str.length - 1) return null
