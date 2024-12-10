@@ -11,6 +11,7 @@ import net.minecraft.client.gui.ChatLine
 import net.minecraft.command.ICommand
 import net.minecraftforge.client.ClientCommandHandler
 import net.minecraftforge.client.event.ClientChatReceivedEvent
+import kotlin.math.roundToInt
 
 /**
  * Taken from ChatTriggers under MIT License
@@ -145,19 +146,28 @@ object ChatLib {
     }
 
     @JvmStatic
-    fun centerMessage(message: Any): String = when (message) {
-        // TODO:
-        // is Message ->
-        // is TextComponent ->
-        is String -> {
-            val scale = Minecraft.getMinecraft().gameSettings.chatScale
-            val msgWidth = Renderer.getStringWidth(message) * scale
-            val margins = getChatWidth() - msgWidth
-            val count = margins / Renderer.getStringWidth(" ") / scale
-            " ".repeat(count.toInt())
-        }
+    fun centerMessage(message: Any): String {
+        val scale = Minecraft.getMinecraft().gameSettings.chatScale
 
-        else -> centerMessage(message.toString())
+        return when (message) {
+            is Message -> {
+                centerMessage(message.getChatMessage().formattedText)
+            }
+            is TextComponent -> {
+                centerMessage(message.chatComponentText.formattedText)
+            }
+            is String -> {
+                val strWidth = Renderer.getStringWidth(removeFormatting(message)) * scale
+                val chatWidth = getChatWidth()
+                if (strWidth >= chatWidth) return message
+
+                val margin = (chatWidth - strWidth) / 2f
+                val count = margin / (Renderer.getStringWidth(" ") * scale)
+                " ".repeat(count.roundToInt()) + message
+            }
+
+            else -> centerMessage(message.toString())
+        }
     }
 
     @JvmStatic

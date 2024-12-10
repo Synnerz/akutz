@@ -404,6 +404,21 @@ globalThis.DraggableGui = class DraggableGui extends AbstractGui {
   getScale() {
     return this.gui.getScale()
   }
+
+  setWidth(width) {
+    this.gui.setWidth(width)
+    return this
+  }
+
+  setHeight(height) {
+    this.gui.setHeight(height)
+    return this
+  }
+
+  setSize(width, height) {
+    this.gui.setSize(width, height)
+    return this
+  }
 }
 
 globalThis.JavaAdapter = function JavaAdapter() {

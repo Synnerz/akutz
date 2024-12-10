@@ -1,5 +1,6 @@
 package com.github.synnerz.akutz.api.wrappers.message
 
+import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.api.wrappers.Player
 import com.github.synnerz.akutz.api.wrappers.inventory.Item
@@ -120,8 +121,9 @@ class Message {
 
     fun clone(): Message = copy()
 
-    // TODO: Impl whenever ChatLib has this method
-    // fun edit()
+    fun edit(vararg repl: Message) {
+        ChatLib.editMessage(this, *repl)
+    }
 
     fun chat() {
         parseMessage()
