@@ -82,11 +82,7 @@ object Impl {
             JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
 
         v8runtime = enginePool.engine.v8Runtime
-        EngineCache.v8runtime = v8runtime
-        EngineCache.globalObject = v8runtime!!.globalObject
-        EngineCache.builtInReflect = EngineCache.globalObject!!.builtInReflect
-        EngineCache.loadBuiltins()
-        EngineCache.loadProps()
+        EngineCache.load(v8runtime!!)
 
         v8runtime!!.setPromiseRejectCallback { jevent, valpromise, value ->
             println("event: $jevent")
@@ -161,10 +157,7 @@ object Impl {
         v8runtime!!.lowMemoryNotification()
         enginePool.releaseEngine(enginePool.engine)
         v8runtime!!.close()
-        EngineCache.globalObject = null
-        EngineCache.builtInObject = null
-        EngineCache.builtInReflect = null
-        EngineCache.privateProperties.clear()
+        EngineCache.clear()
         v8runtime = null
     }
 

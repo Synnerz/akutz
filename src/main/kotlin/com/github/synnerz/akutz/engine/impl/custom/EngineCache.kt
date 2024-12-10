@@ -47,4 +47,20 @@ object EngineCache {
         JavetResourceUtils.safeClose(builtObj)
         println("possible error while loading built ins")
     }
+
+    internal fun load(runtime: V8Runtime) {
+        v8runtime = runtime
+        globalObject = v8runtime!!.globalObject
+        builtInReflect = globalObject!!.builtInReflect
+        loadBuiltins()
+        loadProps()
+    }
+
+    internal fun clear() {
+        v8runtime = null
+        globalObject = null
+        builtInObject = null
+        builtInReflect = null
+        privateProperties.clear()
+    }
 }
