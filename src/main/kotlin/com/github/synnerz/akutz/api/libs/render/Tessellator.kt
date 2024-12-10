@@ -216,7 +216,7 @@ object Tessellator : Base() {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.toFloat())
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.toFloat())
 
-        val time = 0.2 * (World.getWorld()!!.totalWorldTime + partialTicks)
+        val time = 0.2 * ((World.getWorld()?.totalWorldTime ?: 0L) + partialTicks)
         val t0 = ceil(time) - time
         val t1 = time * -0.1875
         val d0 = cos(t1 + Math.PI * 1 / 4) * 0.2 * p[3]
