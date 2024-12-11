@@ -216,7 +216,7 @@ object Tessellator : Base() {
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT.toFloat())
         glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT.toFloat())
 
-        val time = 0.2 * (World.getTime() + partialTicks)
+        val time = 0.2 * ((World.getWorld()?.totalWorldTime ?: 0L) + partialTicks)
         val t0 = ceil(time) - time
         val t1 = time * -0.1875
         val d0 = cos(t1 + Math.PI * 1 / 4) * 0.2 * p[3]
@@ -225,61 +225,60 @@ object Tessellator : Base() {
         val d3 = sin(t1 + Math.PI * 3 / 4) * 0.2 * p[3]
         val d4 = cos(t1 + Math.PI * 5 / 4) * 0.2 * p[3]
         val d5 = sin(t1 + Math.PI * 5 / 4) * 0.2 * p[3]
-        val d6 = cos(t1 + Math.PI * 9 / 4) * 0.2 * p[3]
-        val d7 = sin(t1 + Math.PI * 9 / 4) * 0.2 * p[3]
+        val d6 = cos(t1 + Math.PI * 7 / 4) * 0.2 * p[3]
+        val d7 = sin(t1 + Math.PI * 7 / 4) * 0.2 * p[3]
         val t2 = -1 + t0
         val d8 = height * 2.5 + t2
 
         val r = prevCol.r
         val g = prevCol.g
         val b = prevCol.b
+        val a = prevCol.a
 
         GlStateManager.disableBlend()
         _color(Color(r, g, b, 255))
-        worldRen.begin(7, DefaultVertexFormats.POSITION_TEX)
-        worldRen.pos(x + d2, y + height, z + d3).tex(1.0, d8).endVertex()
-        worldRen.pos(x + d2, y, z + d3).tex(0.0, t2).endVertex()
-        worldRen.pos(x + d0, y, z + d1).tex(0.0, t2).endVertex()
-        worldRen.pos(x + d0, y + height, z + d1).tex(0.0, d8).endVertex()
-        worldRen.pos(x + d6, y + height, z + d7).tex(1.0, d8).endVertex()
-        worldRen.pos(x + d6, y, z + d7).tex(1.0, t2).endVertex()
-        worldRen.pos(x + d4, y, z + d5).tex(0.0, t2).endVertex()
-        worldRen.pos(x + d4, y + height, z + d5).tex(0.0, d8).endVertex()
-        worldRen.pos(x + d0, y + height, z + d1).tex(1.0, d8).endVertex()
-        worldRen.pos(x + d0, y, z + d1).tex(1.0, t2).endVertex()
-        worldRen.pos(x + d6, y, z + d7).tex(0.0, t2).endVertex()
-        worldRen.pos(x + d6, y + height, z + d7).tex(0.0, d8).endVertex()
-        worldRen.pos(x + d4, y + height, z + d5).tex(1.0, d8).endVertex()
-        worldRen.pos(x + d4, y, z + d5).tex(1.0, t2).endVertex()
-        worldRen.pos(x + d2, y, z + d3).tex(0.0, t2).endVertex()
-        worldRen.pos(x + d2, y + height, z + d3).tex(0.0, d8).endVertex()
+        worldRen.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR)
+        worldRen.pos(x + d2, y + height, z + d3).tex(1.0, d8).color(r, g, b, a).endVertex()
+        worldRen.pos(x + d2, y, z + d3).tex(1.0, t2).color(r, g, b, 255).endVertex()
+        worldRen.pos(x + d0, y, z + d1).tex(0.0, t2).color(r, g, b, 255).endVertex()
+        worldRen.pos(x + d0, y + height, z + d1).tex(0.0, d8).color(r, g, b, a).endVertex()
+        worldRen.pos(x + d6, y + height, z + d7).tex(1.0, d8).color(r, g, b, a).endVertex()
+        worldRen.pos(x + d6, y, z + d7).tex(1.0, t2).color(r, g, b, 255).endVertex()
+        worldRen.pos(x + d4, y, z + d5).tex(0.0, t2).color(r, g, b, 255).endVertex()
+        worldRen.pos(x + d4, y + height, z + d5).tex(0.0, d8).color(r, g, b, a).endVertex()
+        worldRen.pos(x + d0, y + height, z + d1).tex(1.0, d8).color(r, g, b, a).endVertex()
+        worldRen.pos(x + d0, y, z + d1).tex(1.0, t2).color(r, g, b, 255).endVertex()
+        worldRen.pos(x + d6, y, z + d7).tex(0.0, t2).color(r, g, b, 255).endVertex()
+        worldRen.pos(x + d6, y + height, z + d7).tex(0.0, d8).color(r, g, b, a).endVertex()
+        worldRen.pos(x + d4, y + height, z + d5).tex(1.0, d8).color(r, g, b, a).endVertex()
+        worldRen.pos(x + d4, y, z + d5).tex(1.0, t2).color(r, g, b, 255).endVertex()
+        worldRen.pos(x + d2, y, z + d3).tex(0.0, t2).color(r, g, b, 255).endVertex()
+        worldRen.pos(x + d2, y + height, z + d3).tex(0.0, d8).color(r, g, b, a).endVertex()
         tess.draw()
 
         GlStateManager.disableCull()
 
         val d9 = height + t2
         val w = 0.3 * p[3]
-        
         GlStateManager.enableBlend()
         GlStateManager.tryBlendFuncSeparate(770, 771, 1, 0)
-        _color(Color(r, g, b, 32))
-        worldRen.begin(7, DefaultVertexFormats.POSITION_TEX)
-        worldRen.pos(x - w, y + height, z - w).tex(1.0, d9).endVertex()
-        worldRen.pos(x - w, y, z - w).tex(1.0, t2).endVertex()
-        worldRen.pos(x + w, y, z - w).tex(0.0, t2).endVertex()
-        worldRen.pos(x + w, y + height, z - w).tex(0.0, d9).endVertex()
-        worldRen.pos(x + w, y + height, z + w).tex(1.0, d9).endVertex()
-        worldRen.pos(x + w, y, z + w).tex(1.0, t2).endVertex()
-        worldRen.pos(x - w, y, z + w).tex(0.0, t2).endVertex()
-        worldRen.pos(x - w, y + height, z + w).tex(0.0, d9).endVertex()
-        worldRen.pos(x + w, y + height, z - w).tex(1.0, d9).endVertex()
-        worldRen.pos(x + w, y, z - w).tex(1.0, t2).endVertex()
-        worldRen.pos(x + w, y, z + w).tex(0.0, t2).endVertex()
-        worldRen.pos(x + w, y + height, z + w).tex(0.0, d9).endVertex()
-        worldRen.pos(x - w, y + height, z + w).tex(1.0, d9).endVertex()
-        worldRen.pos(x - w, y, z + w).tex(1.0, t2).endVertex()
-        worldRen.pos(x - w, y, z - w).tex(0.0, t2).endVertex()
-        worldRen.pos(x - w, y + height, z - w).tex(0.0, d9).endVertex()
+        worldRen.begin(7, DefaultVertexFormats.POSITION_TEX_COLOR)
+        worldRen.pos(x - w, y + height, z - w).tex(1.0, d9).color(r, g, b, a shr 3).endVertex()
+        worldRen.pos(x - w, y, z - w).tex(1.0, t2).color(r, g, b, 32).endVertex()
+        worldRen.pos(x + w, y, z - w).tex(0.0, t2).color(r, g, b, 32).endVertex()
+        worldRen.pos(x + w, y + height, z - w).tex(0.0, d9).color(r, g, b, a shr 3).endVertex()
+        worldRen.pos(x + w, y + height, z + w).tex(1.0, d9).color(r, g, b, a shr 3).endVertex()
+        worldRen.pos(x + w, y, z + w).tex(1.0, t2).color(r, g, b, 32).endVertex()
+        worldRen.pos(x - w, y, z + w).tex(0.0, t2).color(r, g, b, 32).endVertex()
+        worldRen.pos(x - w, y + height, z + w).tex(0.0, d9).color(r, g, b, a shr 3).endVertex()
+        worldRen.pos(x + w, y + height, z - w).tex(1.0, d9).color(r, g, b, a shr 3).endVertex()
+        worldRen.pos(x + w, y, z - w).tex(1.0, t2).color(r, g, b, 32).endVertex()
+        worldRen.pos(x + w, y, z + w).tex(0.0, t2).color(r, g, b, 32).endVertex()
+        worldRen.pos(x + w, y + height, z + w).tex(0.0, d9).color(r, g, b, a shr 3).endVertex()
+        worldRen.pos(x - w, y + height, z + w).tex(1.0, d9).color(r, g, b, a shr 3).endVertex()
+        worldRen.pos(x - w, y, z + w).tex(1.0, t2).color(r, g, b, 32).endVertex()
+        worldRen.pos(x - w, y, z - w).tex(0.0, t2).color(r, g, b, 32).endVertex()
+        worldRen.pos(x - w, y + height, z - w).tex(0.0, d9).color(r, g, b, a shr 3).endVertex()
         tess.draw()
         _color(prevCol)
         if (prevCol.a == 255) GlStateManager.disableBlend()
