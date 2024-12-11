@@ -178,15 +178,11 @@ class Display @JvmOverloads constructor(
     }
 
     fun setLine(s: String) = apply {
-        if (lines.size != 1 || lines.getOrNull(0)?.getString() != s) {
-            clearLines()
-            addLine(s)
-        }
+        if (lines.size != 1 || lines.getOrNull(0)?.getString() != s) setLines(listOf(s))
     }
 
     fun setLines(s: List<String>) = apply {
         if (s.isEmpty()) return clearLines()
-        if (s.size == 1) return setLine(s[0])
         if (s.size < lines.size) {
             lines.dropLast(lines.size - s.size)
             mark()
@@ -195,7 +191,7 @@ class Display @JvmOverloads constructor(
             if (i < lines.size) {
                 if (v == lines[i].getString()) return@forEachIndexed
                 mark()
-                lines[i] = createLine().setString(v)
+                lines[i].setString(v)
             } else {
                 mark()
                 lines.add(createLine().setString(v))
