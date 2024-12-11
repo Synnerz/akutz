@@ -31,6 +31,7 @@ class Image @JvmOverloads constructor(
         if (texture != null) {
             if (width == img!!.width && height == img!!.height) {
                 img!!.getRGB(0, 0, width, height, texture!!.textureData, 0, width)
+                texture!!.updateDynamicTexture()
                 img = null
                 return
             }
