@@ -21,22 +21,23 @@ object ProxyPrototypeStore {
             return EngineCache.globalObject!!.getPrivateProperty(k)
         }
 
-        val v8Scope = v8Runtime.v8Scope
         val v8ValueObject: V8ValueObject
-
-        when (v8ProxyMode) {
-            V8ProxyMode.Class, V8ProxyMode.Function -> {
-                v8ValueObject = v8Scope.createV8ValueFunction(DUMMY_FUNCTION_STRING)
-                val proto = createOrGetPrototype(v8Runtime, V8ProxyMode.Object, clazz)
-                v8ValueObject.setPrototype(proto)
+        v8Runtime.v8Scope.use { v8Scope ->
+            when (v8ProxyMode) {
+                V8ProxyMode.Class, V8ProxyMode.Function -> {
+                    v8ValueObject = v8Scope.createV8ValueFunction(DUMMY_FUNCTION_STRING)
+                    createOrGetPrototype(v8Runtime, V8ProxyMode.Object, clazz).use { proto ->
+                        v8ValueObject.setPrototype(proto)
+                    }
+                }
+                V8ProxyMode.Object -> v8ValueObject = v8Scope.createV8ValueObject()
             }
-            V8ProxyMode.Object -> v8ValueObject = v8Scope.createV8ValueObject()
-        }
 
-        EngineCache.globalObject!!.setPrivateProperty(k, v8ValueObject)
-        EngineCache.privateProperties.add(k)
-        v8Scope.setEscapable()
-        return v8ValueObject
+            EngineCache.globalObject!!.setPrivateProperty(k, v8ValueObject)
+            EngineCache.privateProperties.add(k)
+            v8Scope.setEscapable()
+            return v8ValueObject
+        }
     }
 
     fun getPrototype(

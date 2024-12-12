@@ -11,7 +11,6 @@ import com.caoccao.javet.interop.binding.IClassProxyPlugin;
 import com.caoccao.javet.interop.binding.IClassProxyPluginFunction;
 import com.caoccao.javet.interop.callback.JavetCallbackContext;
 import com.caoccao.javet.interop.callback.JavetCallbackType;
-import com.caoccao.javet.interop.proxy.BaseJavetReflectionProxyHandler;
 import com.caoccao.javet.interop.proxy.plugins.JavetProxyPluginDefault;
 import com.caoccao.javet.utils.ArrayUtils;
 import com.caoccao.javet.utils.StringUtils;
