@@ -37,7 +37,7 @@ abstract class BaseReflectionProxyHandler<T, E : Exception>(
         conversionMode: V8ConversionMode?,
         staticMode: Boolean
     ) {
-        if (Impl.mappings?.containsKey(currentClass?.name) == true && !Impl.inDev) {
+        if (!Impl.inDev && Impl.mappings?.containsKey(currentClass?.name) == true) {
             val mappings = Impl.mappings?.get(currentClass?.name) as? LinkedTreeMap<String, Any> ?: return
             val fields = mappings["fields"] as? LinkedTreeMap<String, String> ?: return
 
@@ -72,7 +72,7 @@ abstract class BaseReflectionProxyHandler<T, E : Exception>(
         conversionMode: V8ConversionMode?,
         staticMode: Boolean
     ) {
-        if (Impl.mappings?.containsKey(currentClass?.name) == true && !Impl.inDev) {
+        if (!Impl.inDev && Impl.mappings?.containsKey(currentClass?.name) == true) {
             val mappings = Impl.mappings?.get(currentClass?.name) as? LinkedTreeMap<String, Any> ?: return
             val methods = mappings["methods"] as? LinkedTreeMap<String, String> ?: return
 
