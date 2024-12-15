@@ -50,6 +50,10 @@ class Keybind @JvmOverloads constructor(
 
     override fun set(v: Boolean) = throw UnsupportedOperationException()
 
+    override fun listen(callback: (Boolean, Boolean) -> Unit) {
+        hooks.add(callback)
+    }
+
     companion object {
         private val customKeyBindings = mutableListOf<KeyBinding>()
         private val uniqueCategories = mutableMapOf<String, Int>()
