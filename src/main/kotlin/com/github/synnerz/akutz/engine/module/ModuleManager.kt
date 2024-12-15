@@ -117,4 +117,14 @@ object ModuleManager {
             sources.add(url)
         }
     }
+
+    internal fun getCrashList(): MutableList<String> {
+        val mut = mutableListOf<String>()
+
+        installedModules?.forEach {
+            mut.add("Module{name=${it.name}, version=${it.version}}")
+        }
+
+        return mut
+    }
 }
