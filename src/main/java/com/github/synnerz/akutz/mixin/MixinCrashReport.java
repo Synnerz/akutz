@@ -20,5 +20,6 @@ public class MixinCrashReport {
     @Inject(method = "populateEnvironment", at = @At("HEAD"))
     public void onPreCrash(CallbackInfo ci) {
         this.theReportCategory.addCrashSection("Akutz Modules", ModuleManager.INSTANCE.getCrashList$akutz());
+        CrashReportHook.INSTANCE.trigger();
     }
 }
