@@ -270,6 +270,7 @@ loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vec4Uniform"
 loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vector2f")
 loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vector3f")
 loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vector4f")
+loadClass("org.lwjgl.input.Keyboard")
 
 globalThis.GlStateManager = Java.type("net.minecraft.client.renderer.GlStateManager")
 loadClass("org.lwjgl.opengl.GL11")
