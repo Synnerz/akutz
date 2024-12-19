@@ -260,6 +260,17 @@ loadClass("com.github.synnerz.akutz.api.wrappers.message.TextComponent")
 // Events
 loadInstance("com.github.synnerz.akutz.engine.impl.Register", "EventTrigger")
 
+// Misc
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.Shader")
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Uniform")
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.IntUniform")
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.FloatUniform")
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vec2Uniform")
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vec4Uniform")
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vector2f")
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vector3f")
+loadClass("com.github.synnerz.akutz.api.libs.render.shaders.uniform.Vector4f")
+
 globalThis.GlStateManager = Java.type("net.minecraft.client.renderer.GlStateManager")
 loadClass("org.lwjgl.opengl.GL11")
 globalThis.MCTessellator = Renderer.getTessellator()
