@@ -1,8 +1,10 @@
 package com.github.synnerz.akutz.api.libs
 
 import com.github.synnerz.akutz.Akutz
-import java.io.File
+import java.io.*
 import java.util.Base64
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 
 /**
  * Taken from ChatTriggers under MIT License
@@ -104,7 +106,46 @@ object FileLib {
         return resourceStream.bufferedReader().readText()
     }
 
-    // TODO: unzip feature
+    @JvmStatic
+    @Throws(IOException::class)
+    fun unzip(zipFilePath: String, destDirectory: String) {
+        val destDir = File(destDirectory)
+        if (!destDir.exists()) destDir.mkdir()
+
+        val zipIn = ZipInputStream(FileInputStream(zipFilePath))
+        var entry: ZipEntry? = zipIn.nextEntry
+        // iterates over entries in the zip file
+        while (entry != null) {
+            val filePath = destDirectory + File.separator + entry.name
+            if (!entry.isDirectory) {
+                // if the entry is a file, extracts it
+                extractFile(zipIn, filePath)
+            } else {
+                // if the entry is a directory, make the directory
+                val dir = File(filePath)
+                dir.mkdir()
+            }
+            zipIn.closeEntry()
+            entry = zipIn.nextEntry
+        }
+        zipIn.close()
+    }
+
+    @Throws(IOException::class)
+    private fun extractFile(zipIn: ZipInputStream, filePath: String) {
+        val toWrite = File(filePath)
+        toWrite.parentFile.mkdirs()
+        toWrite.createNewFile()
+
+        val bos = BufferedOutputStream(FileOutputStream(filePath))
+        val bytesIn = ByteArray(4096)
+        var read = zipIn.read(bytesIn)
+        while (read != -1) {
+            bos.write(bytesIn, 0, read)
+            read = zipIn.read(bytesIn)
+        }
+        bos.close()
+    }
 
     // Making a named object did not work in the JS side, so we are back
     // to it being a field
