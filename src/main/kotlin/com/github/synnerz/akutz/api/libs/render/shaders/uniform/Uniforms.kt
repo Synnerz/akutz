@@ -1,4 +1,4 @@
-package com.github.synnerz.akutz.shaders.uniform
+package com.github.synnerz.akutz.api.libs.render.shaders.uniform
 
 import net.minecraft.client.renderer.OpenGlHelper
 import org.lwjgl.opengl.ARBShaderObjects
