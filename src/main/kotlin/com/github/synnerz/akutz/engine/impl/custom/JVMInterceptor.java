@@ -6,7 +6,6 @@ import com.caoccao.javet.interfaces.IJavetUniFunction;
 import com.caoccao.javet.interop.V8Runtime;
 import com.caoccao.javet.interop.callback.JavetCallbackContext;
 import com.caoccao.javet.interop.callback.JavetCallbackType;
-import com.caoccao.javet.interop.converters.JavetProxyConverter;
 import com.caoccao.javet.interop.proxy.IJavetDirectProxyHandler;
 import com.caoccao.javet.utils.JavetResourceUtils;
 import com.caoccao.javet.utils.SimpleList;
@@ -35,14 +34,14 @@ public class JVMInterceptor extends BaseJavetDirectCallableInterceptor {
      *
      * @since 3.0.3
      */
-    protected static final String ERROR_THE_CONVERTER_MUST_BE_INSTANCE_OF_JAVET_PROXY_CONVERTER =
-            "The converter must be instance of JavetProxyConverter.";
+    protected static final String ERROR_THE_CONVERTER_MUST_BE_INSTANCE_OF_PROXY_CONVERTER =
+            "The converter must be instance of ProxyConverter.";
     /**
      * The constant JAVET_PROXY_CONVERTER.
      *
      * @since 3.0.3
      */
-    protected static final ProxyConverter JAVET_PROXY_CONVERTER = new ProxyConverter();
+    protected static final ProxyConverter PROXY_CONVERTER = new ProxyConverter();
     /**
      * The constant JS_PROPERTY_PACKAGE.
      *
@@ -76,7 +75,7 @@ public class JVMInterceptor extends BaseJavetDirectCallableInterceptor {
      */
     public JVMInterceptor(V8Runtime v8Runtime) {
         super(v8Runtime);
-        assert v8Runtime.getConverter() instanceof JavetProxyConverter : ERROR_THE_CONVERTER_MUST_BE_INSTANCE_OF_JAVET_PROXY_CONVERTER;
+        assert v8Runtime.getConverter() instanceof ProxyConverter : ERROR_THE_CONVERTER_MUST_BE_INSTANCE_OF_PROXY_CONVERTER;
         callbackContexts = SimpleList.of(
                 new JavetCallbackContext(
                         JS_PROPERTY_V8,
@@ -213,7 +212,7 @@ public class JVMInterceptor extends BaseJavetDirectCallableInterceptor {
                         }
                         try {
                             Class<?> clazz = Class.forName(name);
-                            v8Value = JAVET_PROXY_CONVERTER.toV8Value(v8Runtime, clazz);
+                            v8Value = PROXY_CONVERTER.toV8Value(v8Runtime, clazz);
                         } catch (Throwable ignored) {
                             Package namedPackage = Package.getPackage(name);
                             if (namedPackage != null) {
@@ -268,7 +267,7 @@ public class JVMInterceptor extends BaseJavetDirectCallableInterceptor {
          * @since 3.0.3
          */
         public V8Value toV8Value() throws JavetException {
-            return JAVET_PROXY_CONVERTER.toV8Value(v8Runtime, this);
+            return PROXY_CONVERTER.toV8Value(v8Runtime, this);
         }
     }
 
@@ -395,7 +394,7 @@ public class JVMInterceptor extends BaseJavetDirectCallableInterceptor {
          * @since 3.0.3
          */
         public V8Value toV8Value() throws JavetException {
-            return JAVET_PROXY_CONVERTER.toV8Value(v8Runtime, this);
+            return PROXY_CONVERTER.toV8Value(v8Runtime, this);
         }
     }
 
