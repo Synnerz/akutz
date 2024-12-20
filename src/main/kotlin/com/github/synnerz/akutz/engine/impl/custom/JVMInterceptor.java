@@ -1,19 +1,3 @@
-/*
- * Copyright (c) 2023-2024. caoccao.com Sam Cao
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.github.synnerz.akutz.engine.impl.custom;
 
 import com.caoccao.javet.exceptions.JavetException;
@@ -22,6 +6,7 @@ import com.caoccao.javet.interfaces.IJavetUniFunction;
 import com.caoccao.javet.interop.V8Runtime;
 import com.caoccao.javet.interop.callback.JavetCallbackContext;
 import com.caoccao.javet.interop.callback.JavetCallbackType;
+import com.caoccao.javet.interop.converters.JavetProxyConverter;
 import com.caoccao.javet.interop.proxy.IJavetDirectProxyHandler;
 import com.caoccao.javet.utils.JavetResourceUtils;
 import com.caoccao.javet.utils.SimpleList;
@@ -38,21 +23,6 @@ import java.util.stream.Stream;
 
 // Modified version of javet's [JavetJVMInterceptor] to use a different [JAVET_PROXY_CONVERTER]
 
-/**
- * The Javet JVM interceptor exposes the whole JVM as <code>javet</code> in V8.
- * It must be accompanied by {@link ProxyConverter}.
- * <p>
- * Usages:
- * <code>
- * let sb = new javet.package.java.util.StringBuilder();
- * sb.append(123).append('abc');
- * sb.toString(); // 123abc
- * sb = undefined;
- * javet.v8.gc();
- * </code>
- *
- * @since 3.0.3
- */
 public class JVMInterceptor extends BaseJavetDirectCallableInterceptor {
     /**
      * The constant DEFAULT_NAME.
@@ -66,7 +36,7 @@ public class JVMInterceptor extends BaseJavetDirectCallableInterceptor {
      * @since 3.0.3
      */
     protected static final String ERROR_THE_CONVERTER_MUST_BE_INSTANCE_OF_JAVET_PROXY_CONVERTER =
-            "The converter must be instance of ProxyConverter.";
+            "The converter must be instance of JavetProxyConverter.";
     /**
      * The constant JAVET_PROXY_CONVERTER.
      *
@@ -106,7 +76,7 @@ public class JVMInterceptor extends BaseJavetDirectCallableInterceptor {
      */
     public JVMInterceptor(V8Runtime v8Runtime) {
         super(v8Runtime);
-        assert v8Runtime.getConverter() instanceof ProxyConverter : ERROR_THE_CONVERTER_MUST_BE_INSTANCE_OF_JAVET_PROXY_CONVERTER;
+        assert v8Runtime.getConverter() instanceof JavetProxyConverter : ERROR_THE_CONVERTER_MUST_BE_INSTANCE_OF_JAVET_PROXY_CONVERTER;
         callbackContexts = SimpleList.of(
                 new JavetCallbackContext(
                         JS_PROPERTY_V8,

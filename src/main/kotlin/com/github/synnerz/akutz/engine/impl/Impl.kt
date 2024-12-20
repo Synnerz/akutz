@@ -129,7 +129,7 @@ object Impl {
                     v8runtime!!.createV8ValueUndefined()
                 })
         )
-        javetJVMInterceptor!!.register(v8runtime!!.globalObject)
+        javetJVMInterceptor!!.register(EngineCache.globalObject!!)
 
         v8runtime!!.getExecutor(
             FileLib.readFromResource("js/providedLibs.js")!!
@@ -140,7 +140,7 @@ object Impl {
         if (!isLoaded()) return
 
         if (javetJVMInterceptor != null) {
-            javetJVMInterceptor!!.unregister(v8runtime!!.globalObject)
+            javetJVMInterceptor!!.unregister(EngineCache.globalObject!!)
             javetJVMInterceptor = null
         }
         if (javetProxyConverter != null) {
@@ -167,6 +167,8 @@ object Impl {
         try {
             module.executeVoid()
             modulesLoaded.add(module)
+            // TODO: i don't really think this needs to be here but just in case
+            EngineCache.loadBuiltins()
         } catch (e: Exception) {
             v8runtime!!.removeV8Module(module)
             modulesLoaded.remove(module)
