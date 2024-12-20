@@ -1,0 +1,181 @@
+/*
+ * Copyright (c) 2021-2024. caoccao.com Sam Cao
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package com.github.synnerz.akutz.engine.impl.custom;
+
+import com.caoccao.javet.annotations.CheckReturnValue;
+import com.caoccao.javet.annotations.V8Convert;
+import com.caoccao.javet.enums.V8ProxyMode;
+import com.caoccao.javet.exceptions.JavetException;
+import com.caoccao.javet.interop.V8Runtime;
+import com.caoccao.javet.interop.V8Scope;
+import com.caoccao.javet.interop.callback.JavetCallbackContext;
+import com.caoccao.javet.interop.converters.JavetObjectConverter;
+import com.caoccao.javet.interop.proxy.*;
+import com.caoccao.javet.utils.JavetResourceUtils;
+import com.caoccao.javet.values.V8Value;
+import com.caoccao.javet.values.primitive.V8ValueLong;
+import com.caoccao.javet.values.reference.IV8ValueObject;
+import com.caoccao.javet.values.reference.V8ValueObject;
+import com.caoccao.javet.values.reference.V8ValueProxy;
+import com.caoccao.javet.values.reference.builtin.V8ValueBuiltInObject;
+
+import java.util.List;
+
+// Modified version of Javet's [JavetProxyConverer]
+
+public class ProxyConverter extends JavetObjectConverter {
+    public ProxyConverter() {
+        super();
+    }
+
+    /**
+     * To proxied V8 value.
+     *
+     * @param <T>       the type parameter
+     * @param v8Runtime the V8 runtime
+     * @param object    the object
+     * @return the proxied V8 value
+     * @throws JavetException the javet exception
+     */
+    @CheckReturnValue
+    protected <T extends V8Value> T toProxiedV8Value(V8Runtime v8Runtime, Object object) throws JavetException {
+        V8Value v8Value;
+        if (object instanceof IJavetNonProxy) {
+            v8Value = v8Runtime.createV8ValueUndefined();
+        } else {
+            V8ProxyMode proxyMode = V8ProxyMode.Object;
+            Class<?> objectClass = object.getClass();
+            if (object instanceof Class) {
+                if (V8ProxyMode.isClassMode((Class<?>) object)) {
+                    proxyMode = V8ProxyMode.Class;
+                }
+            } else if (objectClass.isAnnotationPresent(V8Convert.class)) {
+                V8Convert v8Convert = objectClass.getAnnotation(V8Convert.class);
+                if (v8Convert.proxyMode() == V8ProxyMode.Function) {
+                    proxyMode = V8ProxyMode.Function;
+                }
+            }
+            try (V8Scope v8Scope = v8Runtime.getV8Scope()) {
+                V8ValueProxy v8ValueProxy;
+                V8Value v8ValueTarget = null;
+                try {
+                    switch (proxyMode) {
+                        case Class:
+                            v8ValueTarget = ProxyPrototypeStore.createOrGetPrototype(
+                                    v8Runtime, proxyMode, (Class<?>) object);
+                            break;
+                        case Function:
+                            v8ValueTarget = ProxyPrototypeStore.createOrGetPrototype(
+                                    v8Runtime, proxyMode, objectClass);
+                            break;
+                        default:
+                            if (object instanceof IJavetDirectProxyHandler<?>) {
+                                IJavetDirectProxyHandler<?> javetDirectProxyHandler = (IJavetDirectProxyHandler<?>) object;
+                                javetDirectProxyHandler.setV8Runtime(v8Runtime);
+                                v8ValueTarget = javetDirectProxyHandler.createTargetObject();
+                            } else {
+                                V8ProxyMode v8ProxyMode = proxyMode;
+                                v8ValueTarget = getConfig().getProxyPlugins().stream()
+                                        .filter(p -> p.isProxyable(objectClass))
+                                        .findFirst()
+                                        .map(p -> p.getTargetObjectConstructor(objectClass))
+                                        .map(f -> {
+                                            try {
+                                                return f.invoke(v8Runtime, object);
+                                            } catch (Throwable ignored) {
+                                            }
+                                            return null;
+                                        })
+                                        .orElseGet(() -> {
+                                            try (V8Value v8ValuePrototype = ProxyPrototypeStore.createOrGetPrototype(
+                                                    v8Runtime, v8ProxyMode, objectClass);
+                                                 V8ValueBuiltInObject v8ValueBuiltInObject =
+                                                         v8Runtime.getGlobalObject().getBuiltInObject();
+                                                 V8ValueObject v8ValueObject = v8Runtime.createV8ValueObject()) {
+                                                return v8ValueBuiltInObject.setPrototypeOf(v8ValueObject, v8ValuePrototype);
+                                            } catch (Throwable ignored) {
+                                            }
+                                            return null;
+                                        });
+                            }
+                            break;
+                    }
+                    v8ValueProxy = v8Scope.createV8ValueProxy(v8ValueTarget);
+                } finally {
+                    JavetResourceUtils.safeClose(v8ValueTarget);
+                }
+                try (IV8ValueObject iV8ValueObjectHandler = v8ValueProxy.getHandler()) {
+                    IJavetProxyHandler<?, ?> javetProxyHandler;
+                    switch (proxyMode) {
+                        case Class:
+                            javetProxyHandler = new JavetReflectionProxyClassHandler<>(v8Runtime, (Class<?>) object);
+                            break;
+                        case Function:
+                            if (object instanceof IJavetDirectProxyHandler<?>) {
+                                javetProxyHandler = new JavetDirectProxyFunctionHandler<>(
+                                        v8Runtime, (IJavetDirectProxyHandler<?>) object);
+                            } else {
+                                javetProxyHandler = new JavetReflectionProxyFunctionHandler<>(v8Runtime, object);
+                            }
+                            break;
+                        default:
+                            if (object instanceof IJavetDirectProxyHandler<?>) {
+                                javetProxyHandler = new JavetDirectProxyObjectHandler<>(
+                                        v8Runtime, (IJavetDirectProxyHandler<?>) object);
+                            } else {
+                                javetProxyHandler = new JavetReflectionProxyObjectHandler<>(v8Runtime, object);
+                            }
+                            break;
+                    }
+                    List<JavetCallbackContext> javetCallbackContexts = iV8ValueObjectHandler.bind(javetProxyHandler);
+                    try (V8ValueLong v8ValueLongHandle = v8Runtime.createV8ValueLong(
+                            javetCallbackContexts.get(0).getHandle())) {
+                        iV8ValueObjectHandler.setPrivateProperty(PRIVATE_PROPERTY_PROXY_TARGET, v8ValueLongHandle);
+                    }
+                }
+                v8Value = v8ValueProxy;
+                v8Scope.setEscapable();
+            }
+        }
+        return (T) v8Value;
+    }
+
+    @Override
+    @CheckReturnValue
+    protected <T extends V8Value> T toV8Value(
+            V8Runtime v8Runtime, Object object, final int depth) throws JavetException {
+        if (object instanceof V8Value) {
+            return (T) object;
+        }
+        boolean proxyable = false;
+        if (object != null) {
+            if (object instanceof IJavetDirectProxyHandler<?>) {
+                proxyable = true;
+            } else if (!(object instanceof IJavetNonProxy)) {
+                final Class<?> objectClass = object.getClass();
+                proxyable = getConfig().getProxyPlugins().stream().anyMatch(p -> p.isProxyable(objectClass));
+            }
+        }
+        if (!proxyable) {
+            final V8Value v8Value = super.toV8Value(v8Runtime, object, depth);
+            if (v8Value != null && !(v8Value.isUndefined())) {
+                return (T) v8Value;
+            }
+        }
+        return toProxiedV8Value(v8Runtime, object);
+    }
+}

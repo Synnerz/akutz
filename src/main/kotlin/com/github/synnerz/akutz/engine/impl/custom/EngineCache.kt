@@ -1,13 +1,8 @@
 package com.github.synnerz.akutz.engine.impl.custom
 
 import com.caoccao.javet.interop.V8Runtime
-import com.caoccao.javet.utils.JavetResourceUtils
 import com.caoccao.javet.values.V8Value
 import com.caoccao.javet.values.primitive.V8ValueString
-import com.caoccao.javet.values.reference.V8ValueGlobalObject
-import com.caoccao.javet.values.reference.V8ValueObject
-import com.caoccao.javet.values.reference.builtin.V8ValueBuiltInObject
-import com.caoccao.javet.values.reference.builtin.V8ValueBuiltInReflect
 
 /**
  * This object represent an "EngineCache" which is used to avoid doing so many JNI calls
@@ -16,51 +11,30 @@ import com.caoccao.javet.values.reference.builtin.V8ValueBuiltInReflect
 object EngineCache {
     var v8runtime: V8Runtime? = null
         internal set
-    var globalObject: V8ValueGlobalObject? = null
-        internal set
-    var builtInObject: V8ValueBuiltInObject? = null
-        internal set
-    var builtInReflect: V8ValueBuiltInReflect? = null
-        internal set
     val privateProperties = mutableListOf<String>()
 
     internal fun loadProps() {
-        val props = globalObject?.propertyNames ?: return
-        if (privateProperties.size == props.length) return
+        v8runtime!!.globalObject.use {
+            val props = it.propertyNames
+            if (privateProperties.size == props.length) return
 
-        for (i in 0..props.length) {
-            val v = props.get<V8Value>(i)
-            if (v !is V8ValueString) continue
-            val p = v.toPrimitive()
+            for (i in 0..props.length) {
+                val v = props.get<V8Value>(i)
+                if (v !is V8ValueString) continue
+                val p = v.toPrimitive()
 
-            privateProperties.add(p)
+                privateProperties.add(p)
+            }
         }
-    }
-
-    internal fun loadBuiltins() {
-        val builtObj = v8runtime!!.getExecutor(V8ValueBuiltInObject.NAME).execute<V8Value>()
-        if (builtObj is V8ValueObject) {
-            builtInObject = V8ValueBuiltInObject(v8runtime, builtObj.handle)
-            return
-        }
-
-        JavetResourceUtils.safeClose(builtObj)
-        println("possible error while loading built ins")
     }
 
     internal fun load(runtime: V8Runtime) {
         v8runtime = runtime
-        globalObject = v8runtime!!.globalObject
-        builtInReflect = globalObject!!.builtInReflect
-        loadBuiltins()
         loadProps()
     }
 
     internal fun clear() {
         v8runtime = null
-        globalObject = null
-        builtInObject = null
-        builtInReflect = null
         privateProperties.clear()
     }
 }
