@@ -67,146 +67,7 @@ Object.defineProperties(globalThis, {
 globalThis.net = Java.type("net")
 globalThis.java = Java.type("java")
 
-loadClass("com.github.synnerz.akutz.api.libs.FileLib")
-
-const objToMap = o => new Map(Object.entries(o))
-/** @type {Map<string, Map<string, { t: 'f', n: string } | { t: 'm', n: string, s: string }>>} */
-const mappings = JSON.parse(FileLib.readFromResource("mappings.json"), (k, v) => typeof v === "object" && typeof v.t !== "string" ? objToMap(v) : v)
-const jObject = java.lang.Object
-const reflPropCache = new Map()
-function getField(className, c, n, o) {
-  const prop = `${className}/${n}`
-  let f = reflPropCache.get(prop)
-  if (!f) {
-    do {
-      try {
-        f = c.getDeclaredField(n)
-        break
-      } catch (_) { }
-    } while (c = c.getSuperclass())
-    if (!f) throw `Failed to get Field of field ${n} (${o}) in Class ${className}`
-    m.setAccessible(true)
-    reflPropCache.set(prop, f)
-  }
-  return f
-}
 const jClass = java.lang.Class
-function getClass(c) {
-  return jClass.isInstance(c) ? c : c.getClass?.()
-}
-const javaObjectKeysCache = new Map()
-function javaObjectKeys(c) {
-  if (javaObjectKeysCache.has(c)) return javaObjectKeysCache.get(c)
-  const s = new Set()
-  while (c) {
-    c.getDeclaredFields().forEach(v => s.add(v.getName()))
-    c.getDeclaredMethods().forEach(v => s.add(v.getName()))
-    c = c.getSuperclass()
-  }
-  javaObjectKeysCache.set(c, s)
-  return s
-}
-function $wrap(val) {
-  if (isDevEnv) return val
-  if (!jObject.isInstance(val)) return val
-
-  const clazz = getClass(val)
-  if (!clazz) return val
-  const className = clazz.getName().replace(/\./g, "/")
-  const propMap = mappings.get(className)
-  if (!propMap) throw "Cannot find mappings for class: " + className
-  {
-    const s = new Set(javaObjectKeys(clazz))
-    propMap.forEach((v, k) => s.add(k))
-    var ownKeys = Array.from(s.keys())
-  }
-
-  return new Proxy({}, {
-    get(t, p, r) {
-      if (typeof p === "symbol") return Reflect.get(val, p, r)
-      const d = propMap.get(p)
-      if (!d) return Reflect.get(val, p, r)
-      if (d.t === "m") return $wrapFunc(val, className, p)
-      try {
-        var v = Reflect.get(val, p, r)
-      } catch (_) {
-        v = getField(className, clazz, d.n, p).get(val)
-      }
-      return $wrap(v)
-    },
-    has(t, p) {
-      if (typeof p === "symbol") return Reflect.has(val, p)
-      return propMap.has(p) || Reflect.has(val, p)
-    },
-    ownKeys(t) {
-      return ownKeys
-    },
-    getOwnPropertyDescriptor(t, p) {
-      if (!this.has(t, p)) return
-      return {
-        value: this.get(t, p, t),
-        configurable: true,
-        enumerable: true
-      }
-    },
-    set(t, p, v, r) {
-      if (typeof p === "symbol") return Reflect.set(val, p, v, r)
-      const d = propMap.get(p)
-      if (!d) return Reflect.set(val, p, v, r)
-      if (d.t !== "f") throw `Cannot set property ${p} as it is a method`
-      try {
-        Reflect.set(val, p, v, r)
-      } catch (_) {
-        getField(className, clazz, d.n, p).set(val, v)
-      }
-      return true
-    }
-  })
-}
-const reflMethCache = new Map()
-const jMethodTypes = {
-  Z: java.lang.Boolean.TYPE,
-  B: java.lang.Byte.TYPE,
-  C: java.lang.Character.TYPE,
-  D: java.lang.Double.TYPE,
-  F: java.lang.Float.TYPE,
-  I: java.lang.Integer.TYPE,
-  J: java.lang.Long.TYPE,
-  S: java.lang.Short.TYPE,
-}
-function $wrapFunc(val, className, n) {
-  const d = mappings.get(className).get(n)
-  const meth = `${className}/${n}`
-  let m = reflMethCache.get(meth)
-  if (!m) {
-    const desc = d.s.slice(d.s.indexOf("(") + 1, d.s.lastIndexOf(")"))
-    const args = []
-    let i = 0
-    while (i < desc.length) {
-      const c = desc[i]
-      if (c in jMethodTypes) args.push(jMethodTypes[c])
-      else if (c === "L") args.push(jClass.forName(desc.slice(i + 1, i = desc.indexOf(";", i + 1)).replace(/\//g, ".")))
-      else throw "Unknown type " + c
-      i++
-    }
-    let c = getClass(val)
-    do {
-      try {
-        m = c.getDeclaredMethod(d.n, ...args)
-        break
-      } catch (_) { }
-    } while (c = c.getSuperclass())
-    if (!m) throw `Failed to get Method of method ${d.n} (${n}) in Class ${className}`
-    m.setAccessible(true)
-    reflMethCache.set(meth, m)
-  }
-  return new Proxy(Function.prototype, {
-    apply(t, h, a) {
-      return $wrap(m.invoke(val, ...a))
-    }
-  })
-}
-globalThis.wrap = val => $wrap(val)
 
 // Wrappers
 loadClass("com.github.synnerz.akutz.api.wrappers.Player")
@@ -231,6 +92,7 @@ loadClass("com.github.synnerz.akutz.api.wrappers.TabList")
 // Libs
 loadClass("com.github.synnerz.akutz.api.libs.ChatLib")
 loadClass("com.github.synnerz.akutz.api.libs.MathLib")
+loadClass("com.github.synnerz.akutz.api.libs.FileLib")
 loadInstance("com.github.synnerz.akutz.api.libs.render.Renderer")
 loadInstance("com.github.synnerz.akutz.api.libs.render.Tessellator")
 
