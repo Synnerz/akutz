@@ -198,7 +198,7 @@ object Impl {
     }
 
     internal fun loadMappings() {
-        val json = FileLib.readFromResource("mappings2.json")
+        val json = FileLib.readFromResource("mappings.json")
         mappings = Akutz.gson.fromJson(json, HashMap::class.java) as HashMap<String, Any>?
     }
 }
