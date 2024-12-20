@@ -68,7 +68,7 @@ open class ProxyConverter : JavetObjectConverter() {
                                         v8Runtime, proxyMode, objectClass
                                     ).use { protoval ->
                                         val protoobj = v8Runtime.createV8ValueObject()
-                                        return@orElseGet EngineCache.builtInObject!!.setPrototypeOf(protoobj, protoval)
+                                        return@orElseGet EngineCache.builtInObject.get()!!.setPrototypeOf(protoobj, protoval)
                                     }
                                 } catch (ignored: Throwable) {
                                 }

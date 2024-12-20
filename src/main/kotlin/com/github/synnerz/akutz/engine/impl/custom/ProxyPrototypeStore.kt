@@ -18,7 +18,7 @@ object ProxyPrototypeStore {
         val k = "${v8ProxyMode.name}${PREFIX}${clazz.name}"
 
         if (EngineCache.privateProperties.contains(k)) {
-            return EngineCache.globalObject!!.getPrivateProperty(k)
+            return EngineCache.globalObject.get()!!.getPrivateProperty(k)
         }
 
         val v8ValueObject: V8ValueObject
@@ -33,7 +33,7 @@ object ProxyPrototypeStore {
                 V8ProxyMode.Object -> v8ValueObject = v8Scope.createV8ValueObject()
             }
 
-            EngineCache.globalObject!!.setPrivateProperty(k, v8ValueObject)
+            EngineCache.globalObject.get()!!.setPrivateProperty(k, v8ValueObject)
             EngineCache.privateProperties.add(k)
             v8Scope.setEscapable()
             return v8ValueObject
@@ -45,6 +45,6 @@ object ProxyPrototypeStore {
     ): V8Value? {
         val k = "${v8ProxyMode.name}${PREFIX}${clazz.name}"
 
-        return if (EngineCache.privateProperties.contains(k)) EngineCache.globalObject!!.getPrivateProperty(k) else null
+        return if (EngineCache.privateProperties.contains(k)) EngineCache.globalObject.get()!!.getPrivateProperty(k) else null
     }
 }

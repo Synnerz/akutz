@@ -129,7 +129,7 @@ object Impl {
                     v8runtime!!.createV8ValueUndefined()
                 })
         )
-        javetJVMInterceptor!!.register(EngineCache.globalObject!!)
+        javetJVMInterceptor!!.register(EngineCache.globalObject.get()!!)
 
         v8runtime!!.getExecutor(
             FileLib.readFromResource("js/providedLibs.js")!!
@@ -140,7 +140,7 @@ object Impl {
         if (!isLoaded()) return
 
         if (javetJVMInterceptor != null) {
-            javetJVMInterceptor!!.unregister(EngineCache.globalObject!!)
+            javetJVMInterceptor!!.unregister(EngineCache.globalObject.get()!!)
             javetJVMInterceptor = null
         }
         if (javetProxyConverter != null) {

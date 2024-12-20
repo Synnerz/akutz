@@ -8,6 +8,7 @@ import com.caoccao.javet.values.reference.V8ValueGlobalObject
 import com.caoccao.javet.values.reference.V8ValueObject
 import com.caoccao.javet.values.reference.builtin.V8ValueBuiltInObject
 import com.caoccao.javet.values.reference.builtin.V8ValueBuiltInReflect
+import java.lang.ref.WeakReference
 
 /**
  * This object represent an "EngineCache" which is used to avoid doing so many JNI calls
@@ -16,16 +17,13 @@ import com.caoccao.javet.values.reference.builtin.V8ValueBuiltInReflect
 object EngineCache {
     var v8runtime: V8Runtime? = null
         internal set
-    var globalObject: V8ValueGlobalObject? = null
-        internal set
-    var builtInObject: V8ValueBuiltInObject? = null
-        internal set
-    var builtInReflect: V8ValueBuiltInReflect? = null
-        internal set
+    var globalObject: WeakReference<V8ValueGlobalObject> = WeakReference(null)
+    var builtInObject: WeakReference<V8ValueBuiltInObject> = WeakReference(null)
+    var builtInReflect: WeakReference<V8ValueBuiltInReflect> = WeakReference(null)
     val privateProperties = mutableListOf<String>()
 
     internal fun loadProps() {
-        val props = globalObject?.propertyNames ?: return
+        val props = globalObject.get()?.propertyNames ?: return
         if (privateProperties.size == props.length) return
 
         for (i in 0..props.length) {
@@ -40,7 +38,7 @@ object EngineCache {
     internal fun loadBuiltins() {
         val builtObj = v8runtime!!.getExecutor(V8ValueBuiltInObject.NAME).execute<V8Value>()
         if (builtObj is V8ValueObject) {
-            builtInObject = V8ValueBuiltInObject(v8runtime, builtObj.handle)
+            builtInObject = WeakReference(V8ValueBuiltInObject(v8runtime, builtObj.handle))
             return
         }
 
@@ -50,17 +48,17 @@ object EngineCache {
 
     internal fun load(runtime: V8Runtime) {
         v8runtime = runtime
-        globalObject = v8runtime!!.globalObject
-        builtInReflect = globalObject!!.builtInReflect
+        globalObject = WeakReference(v8runtime!!.globalObject)
+        builtInReflect = WeakReference(v8runtime!!.globalObject!!.builtInReflect)
         loadBuiltins()
         loadProps()
     }
 
     internal fun clear() {
         v8runtime = null
-        globalObject = null
-        builtInObject = null
-        builtInReflect = null
+        globalObject = WeakReference(null)
+        builtInObject = WeakReference(null)
+        builtInReflect = WeakReference(null)
         privateProperties.clear()
     }
 }
