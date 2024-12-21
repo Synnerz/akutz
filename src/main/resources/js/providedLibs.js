@@ -2,9 +2,6 @@ globalThis.Java = {
   type: (clazz) => javet.package[clazz]
 }
 
-const Launch = Java.type("net.minecraft.launchwrapper.Launch")
-const isDevEnv = Launch.blackboard.getOrDefault("fml.deobfuscatedEnvironment", false)
-
 const getClassName = path => path.substring(path.lastIndexOf(".") + 1)
 
 const loadClass = (clazz, name = getClassName(clazz)) => globalThis[name] = Java.type(clazz)
