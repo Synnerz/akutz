@@ -776,3 +776,17 @@ globalThis.Easing = {
 
   createBezier: createBezierEaser
 }
+
+String.prototype.addFormatting = function () {
+  return ChatLib.addColor(this)
+}
+
+String.prototype.addColor = String.prototype.addFormatting
+
+String.prototype.removeFormatting = function () {
+  return ChatLib.removeFormatting(this)
+}
+
+String.prototype.replaceFormatting = function () {
+  return ChatLib.replaceFormatting(this)
+}
