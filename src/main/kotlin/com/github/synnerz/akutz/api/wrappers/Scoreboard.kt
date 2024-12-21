@@ -54,7 +54,7 @@ object Scoreboard {
     fun getLineByIndex(index: Int): Score = getLines()[index]
 
     @JvmStatic
-    fun getLineByScore(score: Int): List<Score> = getLines().filter { it.getPoints() == score }
+    fun getLinesByScore(score: Int): List<Score> = getLines().filter { it.getPoints() == score }
 
     @JvmOverloads
     @JvmStatic
