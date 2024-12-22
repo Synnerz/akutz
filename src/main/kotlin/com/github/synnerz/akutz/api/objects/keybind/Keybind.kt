@@ -13,12 +13,12 @@ import org.apache.commons.lang3.ArrayUtils
  */
 class Keybind @JvmOverloads constructor(
     val description: String,
-    val keyCode: Int = 0,
+    var keyCode: Int = 0,
     val category: String = "Akutz"
 ) : StateVar<Boolean>(false) {
     constructor(keyBinding: KeyBinding) : this(keyBinding.keyDescription, keyBinding.keyCode, keyBinding.keyCategory)
 
-    private val keyBinding: KeyBinding
+    val keyBinding: KeyBinding
 
     init {
         KeybindHandler.registerKeybind(this)
@@ -54,11 +54,16 @@ class Keybind @JvmOverloads constructor(
         hooks.add(callback)
     }
 
+    fun setKeycode(keyCode: Int) {
+        keyBinding.keyCode = keyCode
+        this.keyCode = keyCode
+    }
+
     companion object {
         private val customKeyBindings = mutableListOf<KeyBinding>()
         private val uniqueCategories = mutableMapOf<String, Int>()
 
-        private fun removeKeyBinding(keyBinding: KeyBinding) {
+        private fun removeKeybinding(keyBinding: KeyBinding) {
             Minecraft.getMinecraft().gameSettings.keyBindings = ArrayUtils.removeElement(
                 Minecraft.getMinecraft().gameSettings.keyBindings,
                 keyBinding
@@ -76,18 +81,18 @@ class Keybind @JvmOverloads constructor(
         }
 
         @JvmStatic
-        fun removeKeyBind(keyBind: Keybind) {
+        fun removeKeybind(keyBind: Keybind) {
             val keyBinding = keyBind.keyBinding
             if (keyBinding !in customKeyBindings) return
 
-            removeKeyBinding(keyBinding)
+            removeKeybinding(keyBinding)
             customKeyBindings.remove(keyBinding)
             KeybindHandler.unregisterKeybind(keyBind)
         }
 
         @JvmStatic
-        fun clearKeyBinds() {
-            KeybindHandler.getKeybinds().forEach(::removeKeyBind)
+        fun clearKeybinds() {
+            KeybindHandler.getKeybinds().forEach(::removeKeybind)
             customKeyBindings.clear()
             KeybindHandler.clearKeybinds()
         }

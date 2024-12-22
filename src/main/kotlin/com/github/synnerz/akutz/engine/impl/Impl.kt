@@ -191,7 +191,7 @@ object Impl {
             Image.IMAGES.forEach(Image::destroy)
             Image.IMAGES.clear()
         }
-        Keybind.clearKeyBinds()
+        Keybind.clearKeybinds()
         MouseListener.clearListeners()
     }
 
