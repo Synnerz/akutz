@@ -59,6 +59,10 @@ class Keybind @JvmOverloads constructor(
         this.keyCode = keyCode
     }
 
+    fun isKeyDown(): Boolean = keyBinding.isKeyDown
+
+    fun isPressed(): Boolean = keyBinding.isPressed
+
     companion object {
         private val customKeyBindings = mutableListOf<KeyBinding>()
         private val uniqueCategories = mutableMapOf<String, Int>()
