@@ -5,6 +5,7 @@ import com.github.synnerz.akutz.api.commands.BaseCommand
 import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.objects.data.PersistentData
 import com.github.synnerz.akutz.engine.impl.Impl
+import com.github.synnerz.akutz.engine.module.ModuleGui
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import net.minecraft.client.entity.EntityPlayerSP
 import java.awt.Desktop
@@ -49,6 +50,9 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
                 if (ModuleManager.deleteModule(args[1])) ChatLib.chat("§b§lAkutz§r: §bSuccessfully deleted module with name §6${args[1]}")
                 else ChatLib.chat("§b§lAkutz§r: §cThere was a problem deleting module with name §6${args[1]}")
             }
+            "module", "modules" -> {
+                ModuleGui.open()
+            }
             else -> ChatLib.chat(getHelp())
         }
     }
@@ -62,6 +66,7 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
         §a/akutz file§8(s) §e- §bOpens the modules folder.
         §a/akutz import §e- §7Currently disabled.
         §a/akutz delete §e- §bDeletes an installed module.
+        §a/akutz module§8(s) §e-Opens a gui that displays all the modules you currently have installed.
         §a/akutz help §e- §bDisplays this message in chat.
     """.trimIndent()
 }
