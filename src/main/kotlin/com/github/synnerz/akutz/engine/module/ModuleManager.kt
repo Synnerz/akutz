@@ -127,4 +127,6 @@ object ModuleManager {
 
         return mut
     }
+
+    internal fun getInstalledModules(): List<ModuleMetadata>? = installedModules
 }
