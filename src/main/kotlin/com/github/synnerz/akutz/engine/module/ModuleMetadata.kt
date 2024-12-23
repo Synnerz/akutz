@@ -6,6 +6,7 @@ import java.io.File
 // https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/engine/module/ModuleMetadata.kt
 data class ModuleMetadata(
     val name: String? = null,
+    val description: String? = null,
     val version: String? = null,
     var entry: String? = null,
     val creator: String? = null,
