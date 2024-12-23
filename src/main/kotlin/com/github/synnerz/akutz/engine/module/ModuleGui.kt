@@ -118,7 +118,7 @@ class ModuleElement(module: ModuleMetadata) {
         Renderer.drawString(
             ChatLib.addColor("&7v$moduleVersion"),
             rx + ModuleGui.getPixelsWidth(0.5),
-            rbottom - 10f
+            rbottom - 12f
         )
         // Draw delete button
         bwidth = ModuleGui.getPixels(18.0, rwidth.toDouble()).toDouble()
