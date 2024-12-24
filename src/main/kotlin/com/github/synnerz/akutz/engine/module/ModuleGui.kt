@@ -63,6 +63,31 @@ object ModuleGui : GuiScreen() {
         val height = sr?.scaledHeight?.toFloat() ?: 0.0f
         return ((percent / 100) * height).toFloat()
     }
+
+    internal fun wrapStrByWidth(string: String, width: Double): List<String> {
+        val list = mutableListOf<String>()
+        var twidth = 0.0
+        var tstr = ""
+
+        string.forEachIndexed { index, c ->
+            tstr += c
+            twidth += Renderer.getStringWidth("$c")
+            if (twidth >= width) {
+                // Add the current string since it does not go over the limit
+                list.add(tstr.trim())
+                // Reset the values so we can re-make a new string
+                tstr = ""
+                twidth = 0.0
+            }
+            else if (index == string.length - 1) list.add(tstr.trim())
+        }
+
+        // If the list is empty this means that the
+        // string never got over the threshold, so we can add it
+        if (list.size == 0) list.add(tstr)
+
+        return list
+    }
 }
 
 class ModuleElement(module: ModuleMetadata) {
@@ -107,13 +132,19 @@ class ModuleElement(module: ModuleMetadata) {
             true
         )
         // Draw description
-        // TODO: add wrapping text if its width is bigger than the parent box's width
-        Renderer.drawString(
-            moduleDescription,
-            rx + ModuleGui.getPixelsWidth(0.5),
-            ry + ModuleGui.getPixels(30.0, rheight.toDouble()),
-            true
-        )
+        val mwidth = ModuleGui.getPixelsWidth(width - 1.5)
+        val descriptions = ModuleGui.wrapStrByWidth(moduleDescription, mwidth.toDouble())
+        var dy = ry + ModuleGui.getPixels(30.0, rheight.toDouble())
+
+        descriptions.forEach {
+            Renderer.drawString(
+                it,
+                rx + ModuleGui.getPixelsWidth(0.5),
+                dy,
+                true
+            )
+            dy += 9f
+        }
         // Draw version
         Renderer.drawString(
             ChatLib.addColor("&7v$moduleVersion"),
@@ -160,6 +191,5 @@ class ModuleElement(module: ModuleMetadata) {
             ChatLib.chat("&b&lAkutz&r: &bSuccessfully deleted module with name &6${moduleName}")
         else
             ChatLib.chat("&b&lAkutz&r: &cThere was a problem deleting module with name &6${moduleName}")
-        ModuleGui.markDirty()
     }
 }
