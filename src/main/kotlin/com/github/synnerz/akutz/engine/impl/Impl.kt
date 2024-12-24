@@ -24,6 +24,7 @@ import com.github.synnerz.akutz.api.wrappers.Client
 import com.github.synnerz.akutz.engine.impl.custom.EngineCache
 import com.github.synnerz.akutz.engine.impl.custom.JVMInterceptor
 import com.github.synnerz.akutz.engine.impl.custom.ProxyConverter
+import com.github.synnerz.akutz.engine.module.ModuleGui
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import com.github.synnerz.akutz.listeners.MouseListener
 import net.minecraft.launchwrapper.Launch
@@ -180,6 +181,7 @@ object Impl {
     fun forceWrap(obj: Any?) = javetObjectConverter.toV8Value<V8Value>(v8runtime, obj)
 
     fun shutdown() {
+        ModuleGui.markDirty()
         Tessellator.pushedMatrix = 0
         Renderer.pushedMatrix = 0
         clear()
