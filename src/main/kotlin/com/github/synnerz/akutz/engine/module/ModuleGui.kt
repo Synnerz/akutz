@@ -82,10 +82,6 @@ object ModuleGui : GuiScreen() {
             else if (index == string.length - 1) list.add(tstr.trim())
         }
 
-        // If the list is empty this means that the
-        // string never got over the threshold, so we can add it
-        if (list.size == 0) list.add(tstr)
-
         return list
     }
 }
