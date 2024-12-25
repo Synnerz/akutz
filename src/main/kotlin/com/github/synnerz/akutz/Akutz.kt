@@ -28,7 +28,7 @@ class Akutz {
         const val MOD_NAME = "Akutz"
         const val VERSION = "1.0.0-b.1"
         @JvmStatic
-        val configLocation = File("./config/Akutz/")
+        val configLocation = File("./config/Akutz/modules/")
         val gson = Gson()
     }
 
