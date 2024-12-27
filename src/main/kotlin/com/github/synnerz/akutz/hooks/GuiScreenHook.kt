@@ -24,9 +24,10 @@ object GuiScreenHook {
     }
 
     fun triggerGuiKey(
-        gui: GuiScreen,
+        gui: GuiScreen?,
         ci: CallbackInfo
     ) {
+        if (gui == null) return
         val event = Cancelable()
         EventType.GuiKey.triggerAll(
             Keyboard.getEventCharacter(),
@@ -42,9 +43,10 @@ object GuiScreenHook {
         x: Int,
         y: Int,
         mouseBtn: Int,
-        gui: GuiScreen,
+        gui: GuiScreen?,
         ci: CallbackInfo
     ) {
+        if (gui == null) return
         val event = Cancelable()
         EventType.GuiMouseClick.triggerAll(x, y, mouseBtn, gui, event)
 
@@ -55,9 +57,10 @@ object GuiScreenHook {
         x: Int,
         y: Int,
         mouseBtn: Int,
-        gui: GuiScreen,
+        gui: GuiScreen?,
         ci: CallbackInfo
     ) {
+        if (gui == null) return
         val event = Cancelable()
         EventType.GuiMouseRelease.triggerAll(x, y, mouseBtn, gui, event)
 
@@ -68,9 +71,10 @@ object GuiScreenHook {
         x: Int,
         y: Int,
         mouseBtn: Int,
-        gui: GuiScreen,
+        gui: GuiScreen?,
         ci: CallbackInfo
     ) {
+        if (gui == null) return
         val event = Cancelable()
         EventType.GuiMouseDrag.triggerAll(x, y, mouseBtn, gui, event)
 
