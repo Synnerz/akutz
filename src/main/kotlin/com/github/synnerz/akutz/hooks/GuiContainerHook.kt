@@ -8,20 +8,26 @@ import net.minecraft.inventory.Slot as MCSlot
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo
 
 object GuiContainerHook {
-    fun triggerDrawSlot(slot: MCSlot, container: GuiContainer, ci: CallbackInfo) {
+    fun triggerDrawSlot(slot: MCSlot, container: GuiContainer?, ci: CallbackInfo) {
+        if (container == null) return
+
         val event = Cancelable()
         EventType.RenderSlot.triggerAll(Slot(slot), container, event)
         if (event.isCanceled()) ci.cancel()
     }
 
-    fun triggerPreItemRender(slot: MCSlot?, mouseX: Int, mouseY: Int, container: GuiContainer) {
+    fun triggerPreItemRender(slot: MCSlot?, mouseX: Int, mouseY: Int, container: GuiContainer?) {
+        if (container == null) return
+
         if (slot != null) {
             EventType.PreItemRender.triggerAll(mouseX, mouseY, Slot(slot), container)
         }
     }
 
-    fun triggerDrawSlotHighlight(slot: MCSlot?, mouseX: Int, mouseY: Int, container: GuiContainer) {
+    fun triggerDrawSlotHighlight(slot: MCSlot?, mouseX: Int, mouseY: Int, container: GuiContainer?) {
         // TODO: maybe make this cancelable
+        if (container == null) return
+
         if (slot != null) {
             EventType.RenderSlotHighlight.triggerAll(Slot(slot), mouseX, mouseY, container)
         }
