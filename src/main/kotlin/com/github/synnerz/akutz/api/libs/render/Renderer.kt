@@ -2,6 +2,8 @@ package com.github.synnerz.akutz.api.libs.render
 
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.libs.ChatLib
+import com.github.synnerz.akutz.api.libs.render.shaders.ui.RoundedRect
+import com.github.synnerz.akutz.api.libs.render.shaders.ui.RoundedRectOutline
 import com.github.synnerz.akutz.api.objects.render.Color
 import com.github.synnerz.akutz.api.wrappers.Client.getMinecraft
 import net.minecraft.client.Minecraft
@@ -107,25 +109,27 @@ object Renderer : Base() {
         h: Double,
         radius: Double,
         solid: Boolean = true,
-        segments: Int = 5
+        lineWidth: Double = 0.5
     ) = apply {
-        if (radius <= 0.0) return drawRectangle(x, y, w, h, solid)
-        val r = min(w / 2, min(h / 2, max(radius, 0.0)))
-        drawArc(x + r, y + r, r, r, PI / 2, PI, solid, segments)
-        drawArc(x + w - r, y + r, r, r, 0.0, PI / 2, solid, segments)
-        drawArc(x + r, y + h - r, r, r, PI, PI * 3 / 2, solid, segments)
-        drawArc(x + w - r, y + h - r, r, r, PI * 3 / 2, PI * 2, solid, segments)
-
         if (solid) {
-            drawRectangle(x + r, y, w - 2 * r, h, true)
-            drawRectangle(x, y + r, r, h - 2 * r, true)
-            drawRectangle(x + w - r, y + r, r, h - 2 * r, true)
-        } else {
-            drawLine(x + r, y, x + w - r, y)
-            drawLine(x + r, y + h, x + w - r, y + h)
-            drawLine(x, y + r, x, y + h - r)
-            drawLine(x + w, y + r, x + w, y + h - r)
+            RoundedRect.drawRoundedRect(
+                x.toFloat(),
+                y.toFloat(),
+                w.toFloat(),
+                h.toFloat(),
+                radius.toFloat()
+            )
+            return@apply
         }
+
+        RoundedRectOutline.drawRoundedRectOutline(
+            x.toFloat(),
+            y.toFloat(),
+            w.toFloat(),
+            h.toFloat(),
+            radius.toFloat(),
+            lineWidth.toFloat()
+        )
     }
 
     @JvmOverloads
@@ -136,8 +140,8 @@ object Renderer : Base() {
         h: Double,
         radius: Double,
         solid: Boolean = true,
-        segments: Int = 5
-    ) = drawRoundRectangle(x, y, w, h, radius, solid, segments)
+        lineWidth: Double = 0.5
+    ) = drawRoundRectangle(x, y, w, h, radius, solid, lineWidth)
 
     @JvmOverloads
     fun drawString(text: String, x: Float, y: Float, shadow: Boolean = false) = apply {
