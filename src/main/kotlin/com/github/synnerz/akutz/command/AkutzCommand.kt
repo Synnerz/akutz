@@ -66,7 +66,7 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
         §a/akutz file§8(s) §e- §bOpens the modules folder.
         §a/akutz import §e- §7Currently disabled.
         §a/akutz delete §e- §bDeletes an installed module.
-        §a/akutz module§8(s) §e-Opens a gui that displays all the modules you currently have installed.
+        §a/akutz module§8(s) §e- §bOpens a gui that displays all the modules you currently have installed.
         §a/akutz help §e- §bDisplays this message in chat.
     """.trimIndent()
 }
