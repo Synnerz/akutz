@@ -12,8 +12,8 @@ float sdRoundBox(vec2 p, vec2 b, float r) {
 }
 
 void main() {
-    vec2 bottomLeft = u_InnerRect.xy - vec2(u_Radius, u_Radius);
-    vec2 topRight = u_InnerRect.zw + vec2(u_Radius, u_Radius);
+    vec2 bottomLeft = u_InnerRect.xy + u_OutlineWidth;
+    vec2 topRight = u_InnerRect.zw - u_OutlineWidth;
     vec2 center = (bottomLeft + topRight) * 0.5;
     vec2 size = (topRight - bottomLeft) * 0.5;
     vec2 roundedPosition = f_Position - center;

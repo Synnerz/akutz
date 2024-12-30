@@ -18,10 +18,10 @@ object RoundedRectOutline {
         shaderRadiusUniform.setValue(radius)
         shaderInnerRectUniform.setValue(
             Vector4f(
-            x + radius,
-            y + radius,
-            (x + width) - radius,
-            (y + height) - radius)
+            x,
+            y,
+            x + width,
+            y + height)
         )
         shaderOutlineWidth.setValue(lineWidth)
 
