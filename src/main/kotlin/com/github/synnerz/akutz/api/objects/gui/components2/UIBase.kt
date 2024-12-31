@@ -90,17 +90,20 @@ open class UIBase @JvmOverloads constructor(
         height = _height / 100 * parentHeight
     }
 
-    open fun preRender() {}
+    open fun preDraw() {}
 
-    open fun postRender() {
+    open fun render() {}
+
+    open fun postDraw() {
         if (dirty) update()
-        children.forEach { it.render() }
+        children.forEach { it.draw() }
     }
 
-    open fun render() {
+    open fun draw() {
         Renderer.beginDraw(bgColor, false)
-        preRender()
-        postRender()
+        preDraw()
+        render()
+        postDraw()
         Renderer.finishDraw()
     }
 
