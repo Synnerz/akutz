@@ -94,15 +94,19 @@ open class UIBase @JvmOverloads constructor(
 
     open fun render() {}
 
-    open fun postDraw() {
+    // TODO: probably make this less doc-like
+    open fun drawChild() {
         if (dirty) update()
         children.forEach { it.draw() }
     }
+
+    open fun postDraw() {}
 
     open fun draw() {
         Renderer.beginDraw(bgColor, false)
         preDraw()
         render()
+        drawChild()
         postDraw()
         Renderer.finishDraw()
     }
