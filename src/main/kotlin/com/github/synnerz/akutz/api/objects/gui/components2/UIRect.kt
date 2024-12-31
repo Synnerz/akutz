@@ -64,10 +64,8 @@ open class UIRect @JvmOverloads constructor(
         effect = ScissorEffect(c!!)
     }
 
-    @JvmOverloads
-    open fun addInverseEffect(comp: UIBase? = null) = apply {
-        val c = comp ?: parent
-        effect = InverseEffect(c!!)
+    open fun addInverseEffect() = apply {
+        effect = InverseEffect(parent!!)
     }
 
     open fun addEffect(effect: Effect) = apply {
