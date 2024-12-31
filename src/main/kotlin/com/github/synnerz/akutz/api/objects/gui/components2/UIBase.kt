@@ -114,4 +114,10 @@ open class UIBase @JvmOverloads constructor(
     }
 
     open fun hasChild(child: UIBase): Boolean = children.contains(child)
+
+    // These set the location/size in pixels not percent and does not call markDirty
+    open fun setPX(x: Double) = apply { this.x = x }
+    open fun setPY(y: Double) = apply { this.y = y }
+    open fun setPWidth(width: Double) = apply { this.width = width }
+    open fun setPHeight(height: Double) = apply { this.height = height }
 }
