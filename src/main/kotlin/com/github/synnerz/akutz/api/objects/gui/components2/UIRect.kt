@@ -2,6 +2,7 @@ package com.github.synnerz.akutz.api.objects.gui.components2
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
 import com.github.synnerz.akutz.api.objects.gui.effects.Effect
+import com.github.synnerz.akutz.api.objects.gui.effects.InverseEffect
 import com.github.synnerz.akutz.api.objects.gui.effects.OutlineEffect
 import com.github.synnerz.akutz.api.objects.gui.effects.ScissorEffect
 import com.github.synnerz.akutz.api.objects.render.Color
@@ -22,9 +23,10 @@ open class UIRect @JvmOverloads constructor(
     }
 
     override fun render() {
-        if (bgColor == Color.EMPTY) return
+        val forceColor = hasColorEffect()
+        if (bgColor == Color.EMPTY && !forceColor) return
 
-        Renderer.color(bgColor)
+        if (!forceColor) Renderer.color(bgColor)
 
         if (radius == 0.0) {
             Renderer.drawRect(x, y, width, height)
@@ -38,6 +40,8 @@ open class UIRect @JvmOverloads constructor(
         if (effect == null) return
         effect?.postDraw()
     }
+
+    open fun hasColorEffect(): Boolean = effect != null && effect!!.forceColor
 
     @JvmOverloads
     open fun setColor(r: Double, g: Double, b: Double, a: Double = 255.0) = apply {
@@ -58,6 +62,12 @@ open class UIRect @JvmOverloads constructor(
     open fun addScissorEffect(comp: UIBase? = null) = apply {
         val c = comp ?: parent
         effect = ScissorEffect(c!!)
+    }
+
+    @JvmOverloads
+    open fun addInverseEffect(comp: UIBase? = null) = apply {
+        val c = comp ?: parent
+        effect = InverseEffect(c!!)
     }
 
     open fun addEffect(effect: Effect) = apply {
