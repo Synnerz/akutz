@@ -42,4 +42,9 @@ open class UIRect @JvmOverloads constructor(
             a.toInt()
         )
     }
+
+    @JvmOverloads
+    open fun addOutlineEffect(width: Double, color: Color, radius: Double = 0.0) = apply {
+        effect = OutlineEffect(width, color, radius, this)
+    }
 }
