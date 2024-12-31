@@ -98,7 +98,7 @@ open class UIBase @JvmOverloads constructor(
     }
 
     open fun render() {
-        Renderer.beginDraw(Color.EMPTY, false)
+        Renderer.beginDraw(bgColor, false)
         preRender()
         postRender()
         Renderer.finishDraw()
