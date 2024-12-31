@@ -65,7 +65,7 @@ open class UIRect @JvmOverloads constructor(
     }
 
     open fun addInverseEffect() = apply {
-        effect = InverseEffect(parent!!)
+        effect = InverseEffect(this)
     }
 
     open fun addEffect(effect: Effect) = apply {
