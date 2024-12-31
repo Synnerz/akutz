@@ -11,7 +11,7 @@ open class UIRect @JvmOverloads constructor(
     var radius: Double = 0.0,
     parent: UIBase? = null
 ) : UIBase(_x, _y, _width, _height, parent) {
-    override fun preRender() {
+    override fun render() {
         if (bgColor == Color.EMPTY) return
 
         Renderer.color(bgColor)
@@ -21,7 +21,7 @@ open class UIRect @JvmOverloads constructor(
             return
         }
 
-        Renderer.drawRoundRect(x, y, width, height, radius, true, 1.0)
+        Renderer.drawRoundRect(x, y, width, height, radius)
     }
 
     @JvmOverloads
