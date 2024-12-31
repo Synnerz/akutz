@@ -1,6 +1,8 @@
 package com.github.synnerz.akutz.api.objects.gui.components2
 
 import com.github.synnerz.akutz.api.libs.render.Renderer
+import com.github.synnerz.akutz.api.objects.gui.effects.Effect
+import com.github.synnerz.akutz.api.objects.gui.effects.OutlineEffect
 import com.github.synnerz.akutz.api.objects.render.Color
 
 open class UIRect @JvmOverloads constructor(
@@ -11,6 +13,13 @@ open class UIRect @JvmOverloads constructor(
     var radius: Double = 0.0,
     parent: UIBase? = null
 ) : UIBase(_x, _y, _width, _height, parent) {
+    var effect: Effect? = null
+
+    override fun preDraw() {
+        if (effect == null) return
+        effect!!.preDraw()
+    }
+
     override fun render() {
         if (bgColor == Color.EMPTY) return
 
