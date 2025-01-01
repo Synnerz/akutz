@@ -13,6 +13,9 @@ import org.lwjgl.input.Mouse
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/listeners/MouseListener.kt)
  */
 object MouseListener {
+    internal val onScrollList = mutableListOf<(x: Double, y: Double, delta: Int) -> Unit>()
+    internal val onClickList = mutableListOf<(x: Double, y: Double, button: Int, pressed: Boolean) -> Unit>()
+    internal val onDraggedList = mutableListOf<(deltaX: Double, deltaY: Double, x: Double, y: Double, button: Int) -> Unit>()
     private val scrollListeners = mutableListOf<(x: Double, y: Double, delta: Int) -> Unit>()
     private val clickListeners = mutableListOf<(x: Double, y: Double, button: Int, pressed: Boolean) -> Unit>()
     private val draggedListeners = mutableListOf<(deltaX: Double, deltaY: Double, x: Double, y: Double, button: Int) -> Unit>()
@@ -38,16 +41,31 @@ object MouseListener {
         draggedListeners.add(listener)
     }
 
+    internal fun onScroll(cb: (x: Double, y: Double, delta: Int) -> Unit) {
+        onScrollList.add(cb)
+    }
+
+    internal fun onClick(cb: (x: Double, y: Double, button: Int, pressed: Boolean) -> Unit) {
+        onClickList.add(cb)
+    }
+
+    internal fun onDragged(cb: (deltaX: Double, deltaY: Double, x: Double, y: Double, button: Int) -> Unit) {
+        onDraggedList.add(cb)
+    }
+
     private fun scrolled(x: Double, y: Double, delta: Int) {
         scrollListeners.forEach { it(x, y, delta) }
+        onScrollList.forEach { it(x, y, delta) }
     }
 
     private fun clicked(x: Double, y: Double, button: Int, pressed: Boolean) {
         clickListeners.forEach { it(x, y, button, pressed) }
+        onClickList.forEach { it(x, y, button, pressed) }
     }
 
     private fun dragged(deltaX: Double, deltaY: Double, x: Double, y: Double, button: Int) {
         draggedListeners.forEach { it(deltaX, deltaY, x, y, button) }
+        onDraggedList.forEach { it(deltaX, deltaY, x, y, button) }
     }
 
     fun clearListeners() {
