@@ -13,9 +13,14 @@ import org.lwjgl.input.Mouse
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/minecraft/listeners/MouseListener.kt)
  */
 object MouseListener {
+    // Beware these listeners get cleaned up whenever the engine gets unloaded
     private val scrollListeners = mutableListOf<(x: Double, y: Double, delta: Int) -> Unit>()
     private val clickListeners = mutableListOf<(x: Double, y: Double, button: Int, pressed: Boolean) -> Unit>()
     private val draggedListeners = mutableListOf<(deltaX: Double, deltaY: Double, x: Double, y: Double, button: Int) -> Unit>()
+    // These do NOT get cleared and keep on triggering _should_ only be used for internal use i.e. `clicked` register
+    private val onScroll = mutableListOf<(x: Double, y: Double, delta: Int) -> Unit>()
+    private val onClick = mutableListOf<(x: Double, y: Double, button: Int, pressed: Boolean) -> Unit>()
+    private val onDragged = mutableListOf<(deltaX: Double, deltaY: Double, x: Double, y: Double, button: Int) -> Unit>()
 
     private val mouseState = mutableMapOf<Int, Boolean>()
     private val draggedState = mutableMapOf<Int, State>()
@@ -38,6 +43,18 @@ object MouseListener {
         draggedListeners.add(listener)
     }
 
+    internal fun onScroll(listener: (x: Double, y: Double, delta: Int) -> Unit) {
+        onScroll.add(listener)
+    }
+
+    internal fun onClick(listener: (x: Double, y: Double, button: Int, pressed: Boolean) -> Unit) {
+        onClick.add(listener)
+    }
+
+    internal fun onDragged(listener: (deltaX: Double, deltaY: Double, x: Double, y: Double, button: Int) -> Unit) {
+        onDragged.add(listener)
+    }
+
     private fun scrolled(x: Double, y: Double, delta: Int) {
         scrollListeners.forEach { it(x, y, delta) }
     }
@@ -57,9 +74,9 @@ object MouseListener {
     }
 
     fun registerTriggerListeners() {
-        registerScrollListener(EventType.Scrolled::triggerAll)
-        registerClickListener(EventType.Clicked::triggerAll)
-        registerDraggedListener(EventType.Dragged::triggerAll)
+        onScroll(EventType.Scrolled::triggerAll)
+        onClick(EventType.Clicked::triggerAll)
+        onDragged(EventType.Dragged::triggerAll)
     }
 
     private fun process(button: Int, dWheel: Int) {
