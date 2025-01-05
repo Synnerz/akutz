@@ -10,7 +10,9 @@ import net.minecraft.inventory.Slot as MCSlot
 class Slot(
     val mcSlot: MCSlot
 ) {
-    fun getIndex(): Int = if (mcSlot is CreativeSlot) {
+    private val creativeSlot: Boolean = mcSlot is CreativeSlot
+
+    fun getIndex(): Int = if (creativeSlot) {
         mcSlot.slotIndex
     } else {
         mcSlot.slotNumber
@@ -23,6 +25,8 @@ class Slot(
     fun getInventory(): Inventory = Inventory(mcSlot.inventory)
 
     fun getItem(): Item? = mcSlot.stack?.let(::Item)
+
+    fun isCreativeSlot() = creativeSlot
 
     fun toMC(): MCSlot = mcSlot
 
