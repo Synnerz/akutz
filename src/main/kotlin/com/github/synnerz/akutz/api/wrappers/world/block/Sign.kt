@@ -19,5 +19,5 @@ class Sign(
 
     fun getUnformattedLines(): List<String> = sign.signText.map { it?.unformattedText ?: "" }
 
-    override fun toString(): String = "Sign{lines=TODO, name=${mcBlock.registryName}, x=$x, y=$y, z=$z}"
+    override fun toString(): String = "Sign{lines=${getLines()}, name=${mcBlock.registryName}, x=$x, y=$y, z=$z}"
 }
