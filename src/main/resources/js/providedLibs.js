@@ -11,8 +11,10 @@ const loadInstance = (clazz, name = getClassName(clazz)) => globalThis[name] = J
 const getInstance = (clazz) => Java.type(clazz).INSTANCE
 
 const impl = getInstance("com.github.synnerz.akutz.engine.impl.Impl")
-const System = Java.type("java.lang.System")
-globalThis.print = (msg) => System.out.println(msg === undefined ? "undefined" : msg === null ? "null" : msg)
+const Console = Java.type("com.github.synnerz.akutz.console.Console").INSTANCE
+// TODO: make the console.warn stuff with this or something later on
+const LogType = Java.type("com.github.synnerz.akutz.console.LogType")
+globalThis.print = (msg) => Console.println(msg)
 
 const getRelFileName = () => {
   const stack = new Error().stack
