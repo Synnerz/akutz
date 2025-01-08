@@ -4,6 +4,7 @@ import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.commands.BaseCommand
 import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.api.objects.data.PersistentData
+import com.github.synnerz.akutz.console.Console
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleGui
 import com.github.synnerz.akutz.engine.module.ModuleManager
@@ -53,6 +54,9 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
             "module", "modules" -> {
                 ModuleGui.open()
             }
+            "console" -> {
+                Console.showConsole()
+            }
             else -> ChatLib.chat(getHelp())
         }
     }
@@ -67,6 +71,7 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
         §a/akutz import §e- §7Currently disabled.
         §a/akutz delete §e- §bDeletes an installed module.
         §a/akutz module§8(s) §e- §bOpens a gui that displays all the modules you currently have installed.
+        §a/akutz console §e- §bOpens a console for error debugging.
         §a/akutz help §e- §bDisplays this message in chat.
     """.trimIndent()
 }
