@@ -21,6 +21,7 @@ import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.objects.keybind.Keybind
 import com.github.synnerz.akutz.api.objects.render.Image
 import com.github.synnerz.akutz.api.wrappers.Client
+import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.custom.EngineCache
 import com.github.synnerz.akutz.engine.impl.custom.JVMInterceptor
 import com.github.synnerz.akutz.engine.impl.custom.ProxyConverter
@@ -85,10 +86,9 @@ object Impl {
         v8runtime = enginePool.engine.v8Runtime
         EngineCache.load(v8runtime!!)
 
-        v8runtime!!.setPromiseRejectCallback { jevent, valpromise, value ->
-            println("event: $jevent")
-            println("valPromise: $valpromise")
-            println("value: $value")
+        v8runtime!!.setPromiseRejectCallback { _, _, err ->
+            // TODO: find a way to at the very minimum tell the user which module gave error
+            printError("Module Error: $err")
         }
         v8runtime!!.setV8ModuleResolver { runtime, resourceName, v8ModuleReferrer ->
             val requestedModule = Paths.get(v8ModuleReferrer.resourceName)
@@ -163,8 +163,11 @@ object Impl {
     }
 
     fun execute(script: File) {
-        val module =
-            v8runtime!!.getExecutor(script.readText()).setResourceName(script.path).setModule(true).compileV8Module()
+        val module = v8runtime!!
+            .getExecutor(script.readText())
+            .setResourceName(script.path)
+            .setModule(true)
+            .compileV8Module()
         try {
             module.executeVoid()
             modulesLoaded.add(module)
@@ -172,6 +175,7 @@ object Impl {
             v8runtime!!.removeV8Module(module)
             modulesLoaded.remove(module)
             e.printStackTrace()
+            e.printError()
         }
     }
 
