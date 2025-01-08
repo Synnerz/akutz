@@ -21,6 +21,7 @@ import com.github.synnerz.akutz.api.libs.render.Tessellator
 import com.github.synnerz.akutz.api.objects.keybind.Keybind
 import com.github.synnerz.akutz.api.objects.render.Image
 import com.github.synnerz.akutz.api.wrappers.Client
+import com.github.synnerz.akutz.console.Console
 import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.custom.EngineCache
 import com.github.synnerz.akutz.engine.impl.custom.JVMInterceptor
@@ -199,6 +200,7 @@ object Impl {
         }
         Keybind.clearKeybinds()
         MouseListener.clearListeners()
+        Console.clearConsole()
     }
 
     internal fun loadMappings() {
