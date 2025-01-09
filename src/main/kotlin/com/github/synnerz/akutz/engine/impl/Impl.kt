@@ -43,6 +43,8 @@ object Impl {
     val inDev = Launch.blackboard.getOrDefault("fml.deobfuscatedEnvironment", false) as Boolean
     var mappings: HashMap<String, Any>? = null
         internal set
+    var possibleModule: String = ""
+        internal set
 
     fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
         v8runtime ?: return cb(null)
@@ -88,8 +90,12 @@ object Impl {
         EngineCache.load(v8runtime!!)
 
         v8runtime!!.setPromiseRejectCallback { _, _, err ->
-            // TODO: find a way to at the very minimum tell the user which module gave error
-            printError("Module Error: $err")
+            // Note: if the error comes from an actual un-handled promise
+            // the "possibleModule" will be wrong since this is set on execution and a promise
+            // is to be expected to run afterward or similar behavior
+            // meaning this will only work if the module errors on load
+            printError("$err | Possibly from \"$possibleModule\" module")
+            possibleModule = ""
         }
         v8runtime!!.setV8ModuleResolver { runtime, resourceName, v8ModuleReferrer ->
             val requestedModule = Paths.get(v8ModuleReferrer.resourceName)
@@ -163,7 +169,8 @@ object Impl {
         v8runtime = null
     }
 
-    fun execute(script: File) {
+    fun execute(script: File, moduleName: String) {
+        possibleModule = moduleName
         val module = v8runtime!!
             .getExecutor(script.readText())
             .setResourceName(script.path)
@@ -177,6 +184,7 @@ object Impl {
             modulesLoaded.remove(module)
             e.printStackTrace()
             e.printError()
+            possibleModule = ""
         }
     }
 
