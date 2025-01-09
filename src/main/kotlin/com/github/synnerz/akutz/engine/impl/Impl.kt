@@ -14,6 +14,7 @@ import com.caoccao.javet.values.V8Value
 import com.caoccao.javet.values.reference.*
 import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.commands.Command
+import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.api.events.ForgeEvent
 import com.github.synnerz.akutz.api.libs.FileLib
 import com.github.synnerz.akutz.api.libs.render.Renderer
@@ -194,6 +195,7 @@ object Impl {
     fun forceWrap(obj: Any?) = javetObjectConverter.toV8Value<V8Value>(v8runtime, obj)
 
     fun shutdown() {
+        EventType.Unload.triggerAll()
         ModuleGui.markDirty()
         Tessellator.pushedMatrix = 0
         Renderer.pushedMatrix = 0

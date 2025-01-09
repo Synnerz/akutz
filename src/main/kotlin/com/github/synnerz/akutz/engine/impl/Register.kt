@@ -36,6 +36,8 @@ object Register {
         registerMethod("scrolled", EventType.Scrolled)
         registerMethod("dragged", EventType.Dragged)
         registerMethod("crashed", EventType.Crashed)
+        registerMethod("load", EventType.Load)
+        registerMethod("unload", EventType.Unload)
 
         // Cancelable events
         registerMethod("guiopened", EventType.GuiOpened, MethodType.Cancelable)

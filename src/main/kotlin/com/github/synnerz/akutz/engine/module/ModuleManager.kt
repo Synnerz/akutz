@@ -1,6 +1,7 @@
 package com.github.synnerz.akutz.engine.module
 
 import com.github.synnerz.akutz.Akutz
+import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.engine.impl.Impl
 import java.io.File
 import java.net.URL
@@ -51,6 +52,7 @@ object ModuleManager {
             if (it.entry == null) return
             Impl.execute(File(it.directory, it.entry!!), it.moduleName!!)
         }
+        EventType.Load.triggerAll()
     }
 
     fun import(module: String) {

@@ -65,7 +65,9 @@ enum class EventType {
     Forge,
     Command,
     Other,
-    Crashed;
+    Crashed,
+    Load,
+    Unload;
 
     fun triggerAll(vararg args: Any?) {
         Loader.execute(this, args)
