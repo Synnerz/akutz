@@ -792,3 +792,11 @@ String.prototype.removeFormatting = function () {
 String.prototype.replaceFormatting = function () {
   return ChatLib.replaceFormatting(this)
 }
+
+const getEventLoop = () => impl.getTimersHandler()
+globalThis.setTimeout = (cb, delay) => getEventLoop().setTimeout(cb, delay)
+globalThis.setInterval = (cb, delay) => getEventLoop().setInterval(cb, delay)
+globalThis.setImmediate = (cb) => getEventLoop().setImmediate(cb)
+globalThis.clearTimeout = (n) => getEventLoop().clearTimeout(n)
+globalThis.clearInterval = (n) => getEventLoop().clearInterval(n)
+globalThis.clearImmediate = (n) => getEventLoop().clearImmediate(n)
