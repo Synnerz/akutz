@@ -2,6 +2,7 @@ package com.github.synnerz.akutz.engine.module
 
 import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.Impl
 import java.io.File
 import java.net.URL
@@ -92,7 +93,8 @@ object ModuleManager {
                 metadata.directory = dir
                 metadata.jars = (metadata.jars ?: emptyList()).map { File(dir, it).path }
             } catch (exception: Exception) {
-                println("Module ${dir.name} has invalid metadata.json")
+                printError("Module ${dir.name} has invalid metadata.json")
+                exception.printError()
             }
         }
 
