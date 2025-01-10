@@ -27,6 +27,8 @@ import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.custom.EngineCache
 import com.github.synnerz.akutz.engine.impl.custom.JVMInterceptor
 import com.github.synnerz.akutz.engine.impl.custom.ProxyConverter
+import com.github.synnerz.akutz.engine.impl.custom.event.EventLoop
+import com.github.synnerz.akutz.engine.impl.custom.event.timers.TimerHandler
 import com.github.synnerz.akutz.engine.module.ModuleGui
 import com.github.synnerz.akutz.engine.module.ModuleManager
 import com.github.synnerz.akutz.listeners.MouseListener
@@ -38,6 +40,8 @@ object Impl {
     private var enginePool: IJavetEnginePool<V8Runtime> =
         JavetEnginePool(JavetEngineConfig().setGCBeforeEngineClose(true))
     private var v8runtime: V8Runtime? = null
+    private var eventLoop: EventLoop? = null
+    private var timerHandler: TimerHandler? = null
     private var javetJVMInterceptor: JVMInterceptor? = null
     private var javetProxyConverter: ProxyConverter? = null
     private var modulesLoaded = mutableListOf<IV8Module>()
@@ -89,6 +93,8 @@ object Impl {
 
         v8runtime = enginePool.engine.v8Runtime
         EngineCache.load(v8runtime!!)
+        eventLoop = EventLoop(v8runtime!!)
+        timerHandler = TimerHandler(eventLoop!!)
 
         v8runtime!!.setPromiseRejectCallback { _, _, err ->
             // Note: if the error comes from an actual un-handled promise
@@ -166,6 +172,8 @@ object Impl {
         v8runtime!!.lowMemoryNotification()
         enginePool.releaseEngine(enginePool.engine)
         v8runtime!!.close()
+        timerHandler!!.close()
+        eventLoop!!.close()
         EngineCache.clear()
         v8runtime = null
     }
@@ -217,4 +225,11 @@ object Impl {
         val json = FileLib.readFromResource("mappings.json")
         mappings = Akutz.gson.fromJson(json, HashMap::class.java) as HashMap<String, Any>?
     }
+
+    /**
+     * * This acts essentially as the event loop handler
+     * that way we can provide it to the "user" although it's more used internally
+     * to make <set>Timeout/Interval/Immediate
+     */
+    fun getTimersHandler() = timerHandler
 }
