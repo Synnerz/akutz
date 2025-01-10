@@ -79,6 +79,8 @@ dependencies {
     implementation("net.bytebuddy:byte-buddy:1.15.5")
     shadowImpl("com.caoccao.javet:javet-v8-windows-x86_64:4.1.1")
     shadowImpl("com.caoccao.javet.buddy:javet-buddy:0.4.0")
+    // TODO: probably exclude useless classes that we do not use
+    shadowImpl("io.vertx:vertx-core:3.9.9")
 }
 
 tasks.withType(JavaCompile::class) {
