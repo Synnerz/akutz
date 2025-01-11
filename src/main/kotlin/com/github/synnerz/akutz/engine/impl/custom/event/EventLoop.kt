@@ -6,8 +6,8 @@ import com.caoccao.javet.interfaces.IJavetClosable
 import com.caoccao.javet.interop.V8Runtime
 import com.caoccao.javet.utils.SimpleMap
 import io.vertx.core.Vertx
-import scala.actors.threadpool.AtomicInteger
 import java.util.concurrent.TimeUnit
+import java.util.concurrent.atomic.AtomicInteger
 
 /**
  * * This event loop is based on [Javenode]'s implementation
