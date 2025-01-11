@@ -6,6 +6,7 @@ import com.github.synnerz.akutz.api.objects.gui.GuiHandler
 import com.github.synnerz.akutz.command.AkutzCommand
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleManager
+import com.github.synnerz.akutz.gui.Config
 import com.github.synnerz.akutz.listeners.ClientListener
 import com.github.synnerz.akutz.listeners.MouseListener
 import com.github.synnerz.akutz.listeners.WorldListener
@@ -16,6 +17,7 @@ import net.minecraftforge.fml.common.Mod
 import net.minecraftforge.fml.common.event.FMLInitializationEvent
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent
 import java.io.File
+import kotlin.concurrent.thread
 
 @Mod(
     modid = Akutz.MOD_ID,
@@ -35,8 +37,14 @@ class Akutz {
     @Mod.EventHandler
     fun preInit(event: FMLPreInitializationEvent) {
         Impl.loadMappings()
-        ModuleManager.setup()
         Impl.setup()
+        if (Config.get("threadLoading")) {
+            thread {
+                ModuleManager.setup()
+            }
+        } else {
+            ModuleManager.setup()
+        }
         ClientCommandHandler.instance.registerCommand(AkutzCommand)
         listOf(
             ForgeEvent,
