@@ -31,6 +31,7 @@ import com.github.synnerz.akutz.engine.impl.custom.event.EventLoop
 import com.github.synnerz.akutz.engine.impl.custom.event.timers.TimerHandler
 import com.github.synnerz.akutz.engine.module.ModuleGui
 import com.github.synnerz.akutz.engine.module.ModuleManager
+import com.github.synnerz.akutz.gui.Config
 import com.github.synnerz.akutz.listeners.MouseListener
 import net.minecraft.launchwrapper.Launch
 import java.io.File
@@ -219,6 +220,7 @@ object Impl {
         Keybind.clearKeybinds()
         MouseListener.clearListeners()
         Console.clearConsole()
+        Config.save()
     }
 
     internal fun loadMappings() {
