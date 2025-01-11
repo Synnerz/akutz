@@ -8,8 +8,11 @@ import com.github.synnerz.akutz.console.Console
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.engine.module.ModuleGui
 import com.github.synnerz.akutz.engine.module.ModuleManager
+import com.github.synnerz.akutz.gui.Config
+import com.github.synnerz.akutz.gui.ConfigGui
 import net.minecraft.client.entity.EntityPlayerSP
 import java.awt.Desktop
+import kotlin.concurrent.thread
 
 object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
     override fun processCommand(player: EntityPlayerSP, args: Array<String>) {
@@ -20,9 +23,19 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
                 PersistentData.INSTANCES.forEach{ it.save() }
                 PersistentData.INSTANCES.clear()
                 Impl.shutdown()
-                ModuleManager.setup()
                 Impl.setup()
-                ModuleManager.start()
+                if (Config.get("threadLoading")) {
+                    thread {
+                        ModuleManager.setup()
+                        ModuleManager.start()
+                    }
+                } else {
+                    if (Config.get("autoUpdate")) {
+                        ChatLib.chat("§b§lAkutz§r: §cLooks like you just attempted to load akutz while having Auto Update Modules enabled, it is not recommended to reload while having this feature enabled and Thread Loading disabled as it may cause a crash (the probabilities of this happening are very high)")
+                    }
+                    ModuleManager.setup()
+                    ModuleManager.start()
+                }
                 ChatLib.chat("§b§lAkutz§r: §bLoaded modules.")
             }
             "unload" -> {
@@ -41,10 +54,8 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
                 }
             }
             "import" -> {
-                // TODO: uncomment whenever we recode ModuleManager or something
-                // if (args.getOrNull(1).isNullOrEmpty()) return ChatLib.chat("§b§lAkutz§r: §cPlease specify a module name")
-                // ModuleManager.import(args[1])
-                ChatLib.chat("§b§lAkutz§r: §cCommand currently disabled.")
+                if (args.getOrNull(1).isNullOrEmpty()) return ChatLib.chat("§b§lAkutz§r: §cPlease specify a module name")
+                ModuleManager.import(args[1])
             }
             "delete" -> {
                 if (args.getOrNull(1).isNullOrEmpty()) return ChatLib.chat("§b§lAkutz§r: §cPlease specify a module name to delete")
@@ -56,6 +67,9 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
             }
             "console" -> {
                 Console.showConsole()
+            }
+            "config" -> {
+                ConfigGui.open()
             }
             else -> ChatLib.chat(getHelp())
         }
@@ -72,6 +86,7 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
         §a/akutz delete §e- §bDeletes an installed module.
         §a/akutz module§8(s) §e- §bOpens a gui that displays all the modules you currently have installed.
         §a/akutz console §e- §bOpens a console for error debugging.
+        §a/akutz console §e- §bOpens akutz configurations.
         §a/akutz help §e- §bDisplays this message in chat.
     """.trimIndent()
 }
