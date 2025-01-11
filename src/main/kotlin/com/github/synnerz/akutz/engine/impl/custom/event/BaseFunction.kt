@@ -6,7 +6,7 @@ import com.caoccao.javet.utils.JavetResourceUtils
 import com.caoccao.javet.values.V8Value
 import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.custom.event.timers.TimerHandler
-import scala.actors.threadpool.AtomicInteger
+import java.util.concurrent.atomic.AtomicInteger
 
 abstract class BaseFunction(
     val timerHandler: TimerHandler
