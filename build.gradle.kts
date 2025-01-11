@@ -81,6 +81,7 @@ dependencies {
     shadowImpl("com.caoccao.javet.buddy:javet-buddy:0.4.0")
     // TODO: probably exclude useless classes that we do not use
     shadowImpl("io.vertx:vertx-core:3.9.9")
+    shadowImpl(files("libs/talium-0.0.1.jar"))
 }
 
 tasks.withType(JavaCompile::class) {
