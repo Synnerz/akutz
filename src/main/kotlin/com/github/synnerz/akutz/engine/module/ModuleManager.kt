@@ -4,9 +4,11 @@ import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.events.EventType
 import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.Impl
+import com.github.synnerz.akutz.gui.Config
 import java.io.File
 import java.net.URL
 import java.net.URLClassLoader
+import kotlin.concurrent.thread
 
 /**
  * Taken from ChatTriggers under MIT License
@@ -32,13 +34,15 @@ object ModuleManager {
                 lmaoNotScuffed = true
             }
             if (lmaoNotScuffed) return@forEach
-//            val serverMeta = ModuleUpdater.getMetadata(it.moduleName!!)
-//            if (serverMeta != null) {
-//                if (ModuleUpdater.compareVersion(serverMeta.version!!, it.version!!) > 0) {
-//                    println("Updating module ${it.moduleName!!} from version ${it.version} to ${serverMeta.version}")
-//                    ModuleUpdater.downloadModule(it.moduleName!!)
-//                }
-//            } else println("Failed to get metadata for module ${it.moduleName!!}")
+            if (Config.get("autoUpdate")) {
+                val serverMeta = ModuleUpdater.getMetadata(it.moduleName!!)
+                if (serverMeta != null) {
+                    if (ModuleUpdater.compareVersion(serverMeta.version!!, it.version!!) > 0) {
+                        println("Updating module ${it.moduleName!!} from version ${it.version} to ${serverMeta.version}")
+                        ModuleUpdater.downloadModule(it.moduleName!!)
+                    }
+                } else println("Failed to get metadata for module ${it.moduleName!!}")
+            }
             classLoader!!.addAllURLs(it.jars!!.map { File(it).toURI().toURL() })
         }
     }
@@ -73,10 +77,22 @@ object ModuleManager {
             classLoader?.close()
             if (file.deleteRecursively()) {
                 Impl.shutdown()
-                setup()
+                Impl.setup()
+                if (Config.get("threadLoading")) {
+                    thread {
+                        setup()
+                        start()
+                    }
+                } else {
+                    setup()
+                    start()
+                }
                 return true
             }
-        } catch (_: Exception) {}
+        } catch (e: Exception) {
+            e.printError()
+            e.printStackTrace()
+        }
 
         return false
     }
