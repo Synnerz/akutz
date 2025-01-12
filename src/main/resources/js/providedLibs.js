@@ -22,9 +22,9 @@ const getRelFileName = () => {
   /*
   Error
       at require (<anonymous>:7:15)
-      at .\config\Akutz\test\index.js:12:1
+      at .\config\Akutz\modules\test\index.js:12:1
   */
-  return stack.split("\n")[3].slice("    at .\\config\\Akutz\\".length).split(":").slice(0, -2).join(":")
+  return stack.split("\n")[3].slice("    at .\\config\\Akutz\\modules\\".length).split(":").slice(0, -2).join(":")
 }
 
 globalThis.$import = (path, rel = getRelFileName()) => {
