@@ -49,8 +49,6 @@ object Impl {
     val inDev = Launch.blackboard.getOrDefault("fml.deobfuscatedEnvironment", false) as Boolean
     var mappings: HashMap<String, Any>? = null
         internal set
-    var possibleModule: String = ""
-        internal set
 
     fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
         v8runtime ?: return cb(null)
@@ -94,17 +92,7 @@ object Impl {
 
         v8runtime = enginePool.engine.v8Runtime
         EngineCache.load(v8runtime!!)
-        eventLoop = EventLoop(v8runtime!!)
-        timerHandler = TimerHandler(eventLoop!!)
 
-        v8runtime!!.setPromiseRejectCallback { _, _, err ->
-            // Note: if the error comes from an actual un-handled promise
-            // the "possibleModule" will be wrong since this is set on execution and a promise
-            // is to be expected to run afterward or similar behavior
-            // meaning this will only work if the module errors on load
-            printError("$err | Possibly from \"$possibleModule\" module")
-            possibleModule = ""
-        }
         v8runtime!!.setV8ModuleResolver { runtime, resourceName, v8ModuleReferrer ->
             val requestedModule = Paths.get(v8ModuleReferrer.resourceName)
                 .parent
@@ -155,6 +143,9 @@ object Impl {
     fun clear() {
         if (!isLoaded()) return
 
+        timerHandler!!.close()
+        eventLoop!!.close()
+
         if (javetJVMInterceptor != null) {
             javetJVMInterceptor!!.unregister(v8runtime!!.globalObject)
             javetJVMInterceptor = null
@@ -173,28 +164,30 @@ object Impl {
         v8runtime!!.lowMemoryNotification()
         enginePool.releaseEngine(enginePool.engine)
         v8runtime!!.close()
-        timerHandler!!.close()
-        eventLoop!!.close()
         EngineCache.clear()
         v8runtime = null
     }
 
     fun execute(script: File, moduleName: String) {
-        possibleModule = moduleName
         val module = v8runtime!!
             .getExecutor(script.readText())
             .setResourceName(script.path)
             .setModule(true)
             .compileV8Module()
         try {
-            module.executeVoid()
+            // Scuffed workaround but it works for stacktrace
+            val promise = module.execute<V8ValuePromise>()
+            v8runtime!!.await()
+            val result = (promise as V8ValuePromise).getResult<V8Value>()
+            if (result is V8ValueError) {
+                printError("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
+                throw Exception("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
+            }
             modulesLoaded.add(module)
         } catch (e: Exception) {
             v8runtime!!.removeV8Module(module)
             modulesLoaded.remove(module)
             e.printStackTrace()
-            e.printError()
-            possibleModule = ""
         }
     }
 
@@ -234,4 +227,9 @@ object Impl {
      * to make <set>Timeout/Interval/Immediate
      */
     fun getTimersHandler() = timerHandler
+
+    internal fun setupEventLoop() {
+        eventLoop = EventLoop(v8runtime!!)
+        timerHandler = TimerHandler(eventLoop!!)
+    }
 }
