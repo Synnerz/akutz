@@ -62,7 +62,7 @@ abstract class BaseTimersFunction(
             timerId = getEventLoop().vertx.setPeriodic(delay) {
                 if (isClosed) return@setPeriodic
                 try {
-                    callback?.call<V8Value?>(null, null)
+                    callback?.call<V8Value?>(null, getV8Runtime().createV8ValueUndefined())
                 } catch (e: Exception) {
                     e.printError()
                     e.printStackTrace()
@@ -75,7 +75,7 @@ abstract class BaseTimersFunction(
         timerId = getEventLoop().vertx.setTimer(delay) {
             if (isClosed) return@setTimer
             try {
-                callback?.call<V8Value?>(null, null)
+                callback?.call<V8Value?>(null, getV8Runtime().createV8ValueUndefined())
             } catch (e: Exception) {
                 e.printError()
                 e.printStackTrace()
