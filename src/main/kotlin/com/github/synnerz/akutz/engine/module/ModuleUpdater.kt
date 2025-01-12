@@ -1,10 +1,12 @@
 package com.github.synnerz.akutz.engine.module
 
 import com.github.synnerz.akutz.Akutz
+import com.github.synnerz.akutz.console.Console.printError
 import java.io.File
 import java.net.URL
 import java.nio.charset.Charset
-import java.util.zip.*
+import java.util.zip.ZipEntry
+import java.util.zip.ZipInputStream
 
 object ModuleUpdater {
     private fun getUrl(module: String, file: String) =
@@ -42,8 +44,9 @@ object ModuleUpdater {
                 zipPath.outputStream().use { stream.copyTo(it) }
             }
         } catch (e: Exception) {
+            printError("Module with name \"$module\" was not found in the repo")
+            e.printError()
             e.printStackTrace()
-            println("Module with name $module was not found in the repo")
             return false
         }
 
