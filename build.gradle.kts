@@ -15,6 +15,8 @@ val version: String by project
 val mixinGroup = "$baseGroup.mixin"
 val modid: String by project
 val transformerFile = file("src/main/resources/akutz_at.cfg")
+val javetplatform = "windows-x86_64"
+val javetversion = "4.1.1"
 
 java {
     toolchain.languageVersion.set(JavaLanguageVersion.of(8))
@@ -77,7 +79,7 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
     shadowImpl("com.caoccao.javet:javet:4.1.1")
     implementation("net.bytebuddy:byte-buddy:1.15.5")
-    shadowImpl("com.caoccao.javet:javet-v8-windows-x86_64:4.1.1")
+    shadowImpl("com.caoccao.javet:javet-v8-$javetplatform:$javetversion")
     shadowImpl("com.caoccao.javet.buddy:javet-buddy:0.4.0")
     // TODO: probably exclude useless classes that we do not use
     shadowImpl("io.vertx:vertx-core:3.9.9")
@@ -114,7 +116,8 @@ tasks.processResources {
 
 
 val remapJar by tasks.named<net.fabricmc.loom.task.RemapJarTask>("remapJar") {
-    archiveClassifier.set("")
+    val prefix = if (javetplatform == "windows-x86_64") "" else javetplatform
+    archiveClassifier.set(prefix)
     from(tasks.shadowJar)
     input.set(tasks.shadowJar.get().archiveFile)
 }
@@ -128,7 +131,14 @@ tasks.shadowJar {
     destinationDirectory.set(layout.buildDirectory.dir("intermediates"))
     archiveClassifier.set("non-obfuscated-with-deps")
     configurations = listOf(shadowImpl)
-    exclude("META-INF/LICENSE**", "META-INF/NOTICE", "META-INF/NOTICE.txt", "LICENSE.txt", "META-INF/LICENSE.txt", "**/module-info.class")
+    exclude(
+        "META-INF/LICENSE**",
+        "META-INF/NOTICE",
+        "META-INF/NOTICE.txt",
+        "LICENSE.txt",
+        "META-INF/LICENSE.txt",
+        "**/module-info.class"
+    )
     doLast {
         configurations.forEach {
             println("Copying dependencies into mod: ${it.files}")
