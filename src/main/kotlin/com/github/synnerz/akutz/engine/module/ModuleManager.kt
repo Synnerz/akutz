@@ -17,7 +17,7 @@ import kotlin.concurrent.thread
  */
 object ModuleManager {
     private var installedModules: List<ModuleMetadata>? = null
-    private var classLoader: ModifiedURLClassLoader? = null
+    // private var classLoader: ModifiedURLClassLoader? = null
 
     fun setup() {
         Akutz.configLocation.mkdirs()
@@ -26,15 +26,13 @@ object ModuleManager {
             it.name?.lowercase()
         }
 
-        classLoader = ModifiedURLClassLoader()
+        // classLoader = ModifiedURLClassLoader()
         installedModules!!.forEach {
-            var lmaoNotScuffed = false
-            it.requires?.forEach { r ->
-                if (installedModules!!.any { v -> v.moduleName == r }) return
-                import(r)
-                lmaoNotScuffed = true
+            if (importRequires(it)) {
+                teardown()
+                setup()
+                return
             }
-            if (lmaoNotScuffed) return@forEach
             if (Config.get("autoUpdate") && Config.get("threadLoading")) {
                 // TODO: just change this to be cached and only do website request after 5mins if it was cached
                 thread {
@@ -47,39 +45,62 @@ object ModuleManager {
                     } else printError("Failed to get metadata for module ${it.moduleName!!}")
                 }
             }
-            classLoader!!.addAllURLs(it.jars!!.map { File(it).toURI().toURL() })
+            // classLoader!!.addAllURLs(it.jars!!.map { File(it).toURI().toURL() })
         }
         Impl.setupEventLoop()
     }
 
     fun teardown() {
-        classLoader?.close()
-        classLoader = null
+        // classLoader?.close()
+        // classLoader = null
     }
 
     fun start() {
-        installedModules!!.forEach {
-            if (it.entry == null) return
-            Impl.execute(File(it.directory, it.entry!!), it.moduleName!!)
+        for (module in installedModules!!) {
+            // Avoid loading modules that don't have entry or name
+            // if a module does not have a name it will fail when attempting to find it inside
+            // the cached modules [installedModules]
+            if (module.entry == null || module.name == null) continue
+            Impl.execute(File(module.directory, module.entry!!), module.moduleName!!)
         }
         EventType.Load.triggerAll()
     }
 
-    fun import(module: String) {
-        if (installedModules!!.any { it.moduleName == module }) throw Exception("Module already installed")
-        if (ModuleUpdater.downloadModule(module)) {
-            teardown()
-            setup()
+    fun importRequires(metadata: ModuleMetadata): Boolean {
+        if (metadata.requires == null || metadata.requires!!.isEmpty()) return false
+
+        var importedModule = false
+
+        for (name in metadata.requires!!) {
+            if (isModuleInstalled(name)) continue
+            ModuleUpdater.downloadModule(name)
+            importedModule = true
         }
+
+        return importedModule
+    }
+
+    fun import(module: String): Boolean {
+        if (isModuleInstalled(module)) return false
+        thread {
+            if (ModuleUpdater.downloadModule(module)) {
+                teardown()
+                setup()
+            }
+        }
+        return true
     }
 
     fun deleteModule(moduleName: String): Boolean {
         val module = installedModules?.find { it.name?.lowercase() == moduleName.lowercase() } ?: return false
         val file = module.directory ?: return false
-        check(file.exists()) { "Module directory does not exist." }
+        if (!file.exists()) {
+            printError("Module directory for module \"${module.name}\" does not exist")
+            return false
+        }
 
         try {
-            classLoader?.close()
+            // classLoader?.close()
             if (file.deleteRecursively()) {
                 Impl.shutdown()
                 Impl.setup()
@@ -95,6 +116,9 @@ object ModuleManager {
         return false
     }
 
+    fun isModuleInstalled(name: String):
+            Boolean = installedModules?.any { it.name?.lowercase() == name.lowercase() } ?: false
+
     private fun parseModule(dir: File): ModuleMetadata {
         val mfile = File(dir, "metadata.json")
         var metadata = ModuleMetadata()
@@ -105,7 +129,8 @@ object ModuleManager {
                 // TODO: maybe change this in the future for a better "api"
                 metadata.moduleName = dir.name
                 metadata.directory = dir
-                metadata.jars = (metadata.jars ?: emptyList()).map { File(dir, it).path }
+                // TODO: currently disabled
+                // metadata.jars = (metadata.jars ?: emptyList()).map { File(dir, it).path }
             } catch (exception: Exception) {
                 printError("Module ${dir.name} has invalid metadata.json")
                 exception.printError()
