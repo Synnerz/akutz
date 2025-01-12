@@ -1,10 +1,9 @@
 package com.github.synnerz.akutz.engine.impl.custom.event.timers
 
-import com.caoccao.javet.utils.JavetResourceUtils
 import com.caoccao.javet.values.V8Value
 import com.caoccao.javet.values.reference.V8ValueFunction
 import com.caoccao.javet.values.reference.V8ValueObject
-import com.github.synnerz.akutz.console.Console
+import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.custom.event.BaseCallable
 import com.github.synnerz.akutz.engine.impl.custom.event.BaseFunction
 import com.github.synnerz.akutz.engine.impl.custom.event.EventLoop
@@ -15,7 +14,7 @@ class TimerHandler(
 ) : BaseCallable() {
     private var closed: Boolean = false
     val readWriteLock = ReentrantReadWriteLock()
-    val functionMap: MutableMap<Int, BaseFunction> = mutableMapOf()
+    val functionMap = mutableMapOf<Int, BaseFunction>()
 
     /**
      * * Puts the specified function into the [functionMap]
@@ -54,10 +53,13 @@ class TimerHandler(
         try {
             writeLock.lock()
             functionMap.values.removeAll {
-                JavetResourceUtils.safeClose(it)
+                (it as BaseTimersFunction).close()
                 return@removeAll true
             }
             super.close()
+        } catch (e: Exception) {
+            e.printError()
+            e.printStackTrace()
         } finally {
             writeLock.unlock()
             closed = true
@@ -74,40 +76,34 @@ class TimerHandler(
      */
     fun isValidCallback(callback: V8Value) {
         if (callback is V8ValueFunction) return
-        Console.printError("provided callback \"$callback\" is not a valid Function")
+        printError("provided callback \"$callback\" is not a valid Function")
         throw IllegalArgumentException("provided callback \"$callback\" is not a valid Function")
     }
 
     fun cancel(value: V8Value, name: String) {
         if (value !is V8ValueObject) {
-            Console.printError("Argument $name is invalid.")
+            printError("Argument $name is invalid.")
             throw IllegalArgumentException("Argument $name is invalid.")
         }
 
         val timerfn = get(value)
         if (timerfn == null) {
-            Console.printError("Argument $name is invalid")
+            printError("Argument $name is invalid")
             throw IllegalArgumentException("Argument $name is invalid")
         }
 
         (timerfn as BaseTimersFunction).cancel()
     }
 
-    fun clearImmediate(value: V8Value) {
-        cancel(value, "immediate")
-    }
+    fun clearImmediate(value: V8Value) = cancel(value, "immediate")
 
-    fun clearInterval(value: V8Value) {
-        cancel(value, "interval")
-    }
+    fun clearInterval(value: V8Value) = cancel(value, "interval")
 
-    fun clearTimeout(value: V8Value) {
-        cancel(value, "timeout")
-    }
+    fun clearTimeout(value: V8Value) = cancel(value, "timeout")
 
     fun isValidDelay(delay: Int) {
         if (delay <= 0) {
-            Console.printError("delay \"$delay\" must be greater or equal to \"1\"")
+            printError("delay \"$delay\" must be greater or equal to \"1\"")
             throw IllegalArgumentException("delay \"$delay\" must be greater or equal to \"1\"")
         }
     }
