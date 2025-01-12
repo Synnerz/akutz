@@ -12,9 +12,10 @@ import com.github.synnerz.akutz.gui.Config
 import com.github.synnerz.akutz.gui.ConfigGui
 import net.minecraft.client.entity.EntityPlayerSP
 import java.awt.Desktop
-import kotlin.concurrent.thread
 
 object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
+    private var reloads = 0
+
     override fun processCommand(player: EntityPlayerSP, args: Array<String>) {
         if (args.isEmpty()) return ChatLib.chat(getHelp())
 
@@ -24,18 +25,14 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
                 PersistentData.INSTANCES.clear()
                 Impl.shutdown()
                 Impl.setup()
-                if (Config.get("threadLoading")) {
-                    thread {
-                        ModuleManager.setup()
-                        ModuleManager.start()
-                    }
-                } else {
-                    if (Config.get("autoUpdate")) {
-                        ChatLib.chat("§b§lAkutz§r: §cLooks like you just attempted to load akutz while having Auto Update Modules enabled, it is not recommended to reload while having this feature enabled and Thread Loading disabled as it may cause a crash (the probabilities of this happening are very high)")
-                    }
-                    ModuleManager.setup()
-                    ModuleManager.start()
+                if (Config.get("autoUpdate")) reloads++
+                if (reloads >= 5) {
+                    ChatLib.chat("§b§lAkutz§r: §bDetected \"5\" \"/az (re)load\" done while having Auto Update Modules enabled, it is recommended to disable this while you are debugging your module")
+                    reloads = 0
                 }
+                ModuleManager.setup()
+                ModuleManager.start()
+
                 ChatLib.chat("§b§lAkutz§r: §bLoaded modules.")
             }
             "unload" -> {
@@ -76,17 +73,18 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
     }
 
     private fun getHelp() = """
-        §b§lAkutz§r: §bthe BETTER minecraft javascript framework.
+        &b&m${ChatLib.getChatBreak()}
         §b§lAliases§r: §eakutz, az, akz
         §a/akutz load §e- §bLoads the modules in the folder.
         §a/akutz unload §e- §bUnloads the modules that were loaded.
         §a/akutz reload §e- §b(Alias for §a/akutz load§b does the same thing).
         §a/akutz file§8(s) §e- §bOpens the modules folder.
-        §a/akutz import §e- §7Currently disabled.
+        §a/akutz import §e- §bImports a module.
         §a/akutz delete §e- §bDeletes an installed module.
         §a/akutz module§8(s) §e- §bOpens a gui that displays all the modules you currently have installed.
         §a/akutz console §e- §bOpens a console for error debugging.
-        §a/akutz console §e- §bOpens akutz configurations.
+        §a/akutz config §e- §bOpens akutz configurations.
         §a/akutz help §e- §bDisplays this message in chat.
+        &b&m${ChatLib.getChatBreak()}
     """.trimIndent()
 }
