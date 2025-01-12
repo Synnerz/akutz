@@ -2,6 +2,7 @@ package com.github.synnerz.akutz.engine.module
 
 import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.console.Console
 import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.Impl
 import com.github.synnerz.akutz.gui.Config
@@ -34,17 +35,21 @@ object ModuleManager {
                 lmaoNotScuffed = true
             }
             if (lmaoNotScuffed) return@forEach
-            if (Config.get("autoUpdate")) {
-                val serverMeta = ModuleUpdater.getMetadata(it.moduleName!!)
-                if (serverMeta != null) {
-                    if (ModuleUpdater.compareVersion(serverMeta.version!!, it.version!!) > 0) {
-                        println("Updating module ${it.moduleName!!} from version ${it.version} to ${serverMeta.version}")
-                        ModuleUpdater.downloadModule(it.moduleName!!)
-                    }
-                } else println("Failed to get metadata for module ${it.moduleName!!}")
+            if (Config.get("autoUpdate") && Config.get("threadLoading")) {
+                // TODO: just change this to be cached and only do website request after 5mins if it was cached
+                thread {
+                    val serverMeta = ModuleUpdater.getMetadata(it.moduleName!!)
+                    if (serverMeta != null) {
+                        if (ModuleUpdater.compareVersion(serverMeta.version!!, it.version!!) > 0) {
+                            Console.println("Updating module ${it.moduleName!!} from version ${it.version} to ${serverMeta.version}")
+                            ModuleUpdater.downloadModule(it.moduleName!!)
+                        }
+                    } else printError("Failed to get metadata for module ${it.moduleName!!}")
+                }
             }
             classLoader!!.addAllURLs(it.jars!!.map { File(it).toURI().toURL() })
         }
+        Impl.setupEventLoop()
     }
 
     fun teardown() {
@@ -78,15 +83,8 @@ object ModuleManager {
             if (file.deleteRecursively()) {
                 Impl.shutdown()
                 Impl.setup()
-                if (Config.get("threadLoading")) {
-                    thread {
-                        setup()
-                        start()
-                    }
-                } else {
-                    setup()
-                    start()
-                }
+                setup()
+                start()
                 return true
             }
         } catch (e: Exception) {
