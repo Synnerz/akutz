@@ -5,6 +5,7 @@ import com.caoccao.javet.exceptions.JavetException
 import com.caoccao.javet.interfaces.IJavetClosable
 import com.caoccao.javet.interop.V8Runtime
 import com.caoccao.javet.utils.SimpleMap
+import com.github.synnerz.akutz.console.Console.printError
 import io.vertx.core.Vertx
 import java.util.concurrent.TimeUnit
 import java.util.concurrent.atomic.AtomicInteger
@@ -51,8 +52,12 @@ open class EventLoop(
                 SimpleMap.of<String, Any>(JavetError.PARAMETER_MESSAGE, "Failed to shutdown the event loop")
             )
         } catch (e: JavetException) {
+            e.printError()
+            e.printStackTrace()
             throw e
         } catch (e: InterruptedException) {
+            e.printError()
+            e.printStackTrace()
             throw JavetException(
                 JavetError.RuntimeCloseFailure,
                 SimpleMap.of<String, Any>(JavetError.PARAMETER_MESSAGE, "Event loop shutdown was interrupted")
@@ -61,10 +66,7 @@ open class EventLoop(
             closed = true
         }
 
-        if (!closed) return
-
         if (!opts.pooled) vertx.close()
-        if (opts.gcBeforeClose) v8runtime.lowMemoryNotification()
     }
 
     override fun isClosed(): Boolean {
