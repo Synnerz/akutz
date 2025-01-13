@@ -26,7 +26,7 @@ class Akutz {
     companion object {
         const val MOD_ID = "akutz"
         const val MOD_NAME = "Akutz"
-        const val VERSION = "1.0.0-b.1"
+        const val VERSION = "1.0.0-b.2"
         @JvmStatic
         val configLocation = File("./config/Akutz/modules/")
         val gson = Gson()
