@@ -102,7 +102,6 @@ DropItem
 ```
 If you needed any of these events we are sure you can come up with a good workaround for them!<br>
 As for the methods, you'll have to find that out (for now, in a near future we'll highly likely list them).<br>
-We also currently do not have a good way to print out errors, so sadly they go to your minecraft logs which is not as good as having a console like [ChatTriggers](https://github.com/ChatTriggers/ChatTriggers/) does, we hope to fix this soon.
 
 ## Special Thanks
 Massive thanks to [ChatTriggers](https://github.com/ChatTriggers/ChatTriggers/) for being the motivation behind this project as well as the (_mostly_) base api of it.
