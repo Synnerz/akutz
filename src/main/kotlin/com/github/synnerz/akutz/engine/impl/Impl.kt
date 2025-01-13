@@ -181,12 +181,18 @@ object Impl {
             val result = (promise as V8ValuePromise).getResult<V8Value>()
             if (result is V8ValueError) {
                 printError("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
-                throw Exception("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
+                throw IllegalArgumentException("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
             }
             modulesLoaded.add(module)
+        } catch (e: IllegalArgumentException) {
+            v8runtime!!.removeV8Module(module)
+            modulesLoaded.remove(module)
+            e.printStackTrace()
         } catch (e: Exception) {
             v8runtime!!.removeV8Module(module)
             modulesLoaded.remove(module)
+            printError("Error in module \"$moduleName\"")
+            e.printError()
             e.printStackTrace()
         }
     }
