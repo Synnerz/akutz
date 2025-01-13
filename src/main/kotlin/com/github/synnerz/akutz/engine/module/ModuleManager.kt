@@ -16,7 +16,7 @@ import kotlin.concurrent.thread
  * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/engine/module/ModuleMetadata.kt)
  */
 object ModuleManager {
-    private var installedModules: List<ModuleMetadata>? = null
+    private var installedModules = listOf<ModuleMetadata>()
     // private var classLoader: ModifiedURLClassLoader? = null
 
     fun setup() {
@@ -27,7 +27,7 @@ object ModuleManager {
         }
 
         // classLoader = ModifiedURLClassLoader()
-        installedModules!!.forEach {
+        installedModules.forEach {
             if (importRequires(it)) {
                 teardown()
                 setup()
@@ -53,10 +53,11 @@ object ModuleManager {
     fun teardown() {
         // classLoader?.close()
         // classLoader = null
+        installedModules = listOf()
     }
 
     fun start() {
-        for (module in installedModules!!) {
+        for (module in installedModules) {
             // Avoid loading modules that don't have entry or name
             // if a module does not have a name it will fail when attempting to find it inside
             // the cached modules [installedModules]
@@ -92,7 +93,7 @@ object ModuleManager {
     }
 
     fun deleteModule(moduleName: String): Boolean {
-        val module = installedModules?.find { it.name?.lowercase() == moduleName.lowercase() } ?: return false
+        val module = installedModules.find { it.name?.lowercase() == moduleName.lowercase() } ?: return false
         val file = module.directory ?: return false
         if (!file.exists()) {
             printError("Module directory for module \"${module.name}\" does not exist")
@@ -117,7 +118,7 @@ object ModuleManager {
     }
 
     fun isModuleInstalled(name: String):
-            Boolean = installedModules?.any { it.name?.lowercase() == name.lowercase() } ?: false
+            Boolean = installedModules.any { it.name?.lowercase() == name.lowercase() }
 
     private fun parseModule(dir: File): ModuleMetadata {
         val mfile = File(dir, "metadata.json")
@@ -164,12 +165,12 @@ object ModuleManager {
     internal fun getCrashList(): MutableList<String> {
         val mut = mutableListOf<String>()
 
-        installedModules?.forEach {
+        installedModules.forEach {
             mut.add("Module{name=${it.name}, version=${it.version}}")
         }
 
         return mut
     }
 
-    internal fun getInstalledModules(): List<ModuleMetadata>? = installedModules
+    internal fun getInstalledModules(): List<ModuleMetadata> = installedModules
 }
