@@ -52,8 +52,7 @@ object AkutzCommand : BaseCommand("Akutz", listOf("akutz", "az", "akz")) {
             }
             "import" -> {
                 if (args.getOrNull(1).isNullOrEmpty()) return ChatLib.chat("§b§lAkutz§r: §cPlease specify a module name")
-                if (ModuleManager.import(args[1])) ChatLib.chat("§b§lAkutz§r: §bSuccessfully installed module \"${args[1]}\"")
-                else ChatLib.chat("§b§lAkutz§r: §cThere was a problem installing module \"${args[1]}\"")
+                ModuleManager.import(args[1])
             }
             "delete" -> {
                 if (args.getOrNull(1).isNullOrEmpty()) return ChatLib.chat("§b§lAkutz§r: §cPlease specify a module name to delete")

@@ -2,6 +2,7 @@ package com.github.synnerz.akutz.engine.module
 
 import com.github.synnerz.akutz.Akutz
 import com.github.synnerz.akutz.api.events.EventType
+import com.github.synnerz.akutz.api.libs.ChatLib
 import com.github.synnerz.akutz.console.Console
 import com.github.synnerz.akutz.console.Console.printError
 import com.github.synnerz.akutz.engine.impl.Impl
@@ -81,15 +82,20 @@ object ModuleManager {
         return importedModule
     }
 
-    fun import(module: String): Boolean {
-        if (isModuleInstalled(module)) return false
+    fun import(module: String) {
+        if (isModuleInstalled(module)) {
+            ChatLib.chat("&b&lAkutz&r: &cModule \"$module\" is already installed.")
+            return
+        }
         thread {
             if (ModuleUpdater.downloadModule(module)) {
+                ChatLib.chat("&b&lAkutz&r: &bSuccessfully installed module \"$module\"")
                 teardown()
                 setup()
+            } else {
+                ChatLib.chat("&b&lAkutz&r: &cThere was a problem installing module \"$module\"")
             }
         }
-        return true
     }
 
     fun deleteModule(moduleName: String): Boolean {
