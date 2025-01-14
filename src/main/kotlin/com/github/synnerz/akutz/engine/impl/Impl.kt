@@ -35,7 +35,14 @@ import com.github.synnerz.akutz.gui.Config
 import com.github.synnerz.akutz.listeners.MouseListener
 import net.minecraft.launchwrapper.Launch
 import java.io.File
+import java.net.URL
+import java.net.URLConnection
 import java.nio.file.Paths
+import java.security.KeyStore
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 
 object Impl {
     private var enginePool: IJavetEnginePool<V8Runtime> =
@@ -49,6 +56,29 @@ object Impl {
     val inDev = Launch.blackboard.getOrDefault("fml.deobfuscatedEnvironment", false) as Boolean
     var mappings: HashMap<String, Any>? = null
         internal set
+
+    /**
+     * * Taken from ChatTriggers under MIT License
+     * * [Link](https://github.com/ChatTriggers/ChatTriggers/blob/master/src/main/kotlin/com/chattriggers/ctjs/CTJS.kt)
+     */
+    val sslContext by lazy {
+        try {
+            val kstore = KeyStore.getInstance("JKS")
+            kstore.load(this::class.java.getResourceAsStream("/azkeystore.jks"), "changeit".toCharArray())
+            val keyFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
+            val trustFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+            keyFactory.init(kstore, null)
+            trustFactory.init(kstore)
+            val ctx = SSLContext.getInstance("TLS")
+            ctx?.init(keyFactory.keyManagers, trustFactory.trustManagers, null)
+            ctx
+        } catch (e: Exception) {
+            printError("Failed to load keystore")
+            e.printError()
+            e.printStackTrace()
+            null
+        }
+    }
 
     fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
         v8runtime ?: return cb(null)
@@ -237,5 +267,18 @@ object Impl {
     internal fun setupEventLoop() {
         eventLoop = EventLoop(v8runtime!!)
         timerHandler = TimerHandler(eventLoop!!)
+    }
+
+    @JvmStatic
+    fun openConnection(url: String): URLConnection {
+        val connection = URL(url).openConnection()
+        connection.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36")
+        if (connection is HttpsURLConnection && sslContext != null) {
+            connection.sslSocketFactory = sslContext!!.socketFactory
+        }
+        connection.connectTimeout = 3000
+        connection.readTimeout = 3000
+
+        return connection
     }
 }
