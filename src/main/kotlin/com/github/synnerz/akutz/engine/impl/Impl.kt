@@ -126,17 +126,20 @@ object Impl {
         EngineCache.load(v8runtime!!)
 
         v8runtime!!.setV8ModuleResolver { runtime, resourceName, v8ModuleReferrer ->
-            val dir = Paths.get(v8ModuleReferrer.resourceName)
-            val requestedModule = dir
-                .parent
-                ?.resolve("$resourceName${if (resourceName.endsWith(".js")) "" else ".js"}")
-                ?.normalize()
-            val module = modulesLoaded["$requestedModule"]
-                ?: runtime.getExecutor(requestedModule!!)
-                    ?.setResourceName("$requestedModule")
-                    ?.compileV8Module()
+            val dir = Paths.get(v8ModuleReferrer.resourceName).parent
+            val resourcePath = dir.resolve(resourceName)
+            val requestedModule =
+                if (resourcePath.isDirectory()) resourcePath.resolve("index.js").normalize()
+                else dir
+                    .resolve("$resourceName${if (resourceName.endsWith(".js")) "" else ".js"}")
+                    .normalize()
 
-            modulesLoaded["$requestedModule"] = module!!
+            val module = modulesLoaded["$requestedModule"]
+                ?: runtime.getExecutor(requestedModule)
+                    .setResourceName("$requestedModule")
+                    .compileV8Module()
+
+            modulesLoaded["$requestedModule"] = module
 
             return@setV8ModuleResolver module
         }
@@ -218,7 +221,7 @@ object Impl {
                 printError("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
                 throw IllegalArgumentException("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
             }
-            modulesLoaded[module.resourceName] = module//.add(module)
+            modulesLoaded[module.resourceName] = module
         } catch (e: IllegalArgumentException) {
             v8runtime!!.removeV8Module(module)
             modulesLoaded.remove(module.resourceName)
