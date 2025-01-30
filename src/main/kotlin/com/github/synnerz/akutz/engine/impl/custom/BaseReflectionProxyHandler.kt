@@ -93,6 +93,15 @@ abstract class BaseReflectionProxyHandler<T, E : Exception>(
         super.initializePublicMethods(currentClass, conversionMode, staticMode)
     }
 
+    override fun addMethod(method: Method?, startIndex: Int, map: MutableMap<String, MutableList<Method>>?) {
+        if (method == null || map == null) return
+
+        val methodName = method.name
+        val methodList = map.computeIfAbsent(methodName) { ArrayList() }
+
+        methodList.add(method)
+    }
+
     override fun getPrototypeOf(target: V8Value?): V8Value {
         val value = ProxyPrototypeStore.getPrototype(
             v8runtime, proxyMode, classDescriptor.targetClass
