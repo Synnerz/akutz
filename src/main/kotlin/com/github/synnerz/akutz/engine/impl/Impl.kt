@@ -43,6 +43,7 @@ import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
+import kotlin.io.path.isDirectory
 
 object Impl {
     private var enginePool: IJavetEnginePool<V8Runtime> =
@@ -52,7 +53,7 @@ object Impl {
     private var timerHandler: TimerHandler? = null
     private var javetJVMInterceptor: JVMInterceptor? = null
     private var javetProxyConverter: ProxyConverter? = null
-    private var modulesLoaded = mutableListOf<IV8Module>()
+    private var modulesLoaded = mutableMapOf<String, IV8Module>()
     val inDev = Launch.blackboard.getOrDefault("fml.deobfuscatedEnvironment", false) as Boolean
     var mappings: HashMap<String, Any>? = null
         internal set
@@ -100,7 +101,8 @@ object Impl {
         val mod = v8runtime?.getExecutor(src)?.compileV8Module()
         val res = mod?.execute<V8ValuePromise>()
         res ?: return cb(null)
-        modulesLoaded.add(mod)
+        // TODO: fix me
+        // modulesLoaded.add(mod)
         res.register(object : IV8ValuePromise.IListener {
             override fun onCatch(v8Value: V8Value?) {
                 cb(null)
@@ -124,14 +126,17 @@ object Impl {
         EngineCache.load(v8runtime!!)
 
         v8runtime!!.setV8ModuleResolver { runtime, resourceName, v8ModuleReferrer ->
-            val requestedModule = Paths.get(v8ModuleReferrer.resourceName)
+            val dir = Paths.get(v8ModuleReferrer.resourceName)
+            val requestedModule = dir
                 .parent
                 ?.resolve("$resourceName${if (resourceName.endsWith(".js")) "" else ".js"}")
                 ?.normalize()
-            val module = runtime.getExecutor(requestedModule!!)
-                ?.compileV8Module()
+            val module = modulesLoaded["$requestedModule"]
+                ?: runtime.getExecutor(requestedModule!!)
+                    ?.setResourceName("$requestedModule")
+                    ?.compileV8Module()
 
-            modulesLoaded.add(module!!)
+            modulesLoaded["$requestedModule"] = module!!
 
             return@setV8ModuleResolver module
         }
@@ -186,7 +191,7 @@ object Impl {
             javetProxyConverter = null
         }
         for (v8Module in modulesLoaded) {
-            v8runtime!!.removeV8Module(v8Module.resourceName)
+            v8runtime!!.removeV8Module(v8Module.value.resourceName)
         }
         modulesLoaded.clear()
         ForgeEvent.unregisterEvents()
@@ -213,14 +218,14 @@ object Impl {
                 printError("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
                 throw IllegalArgumentException("Error in module \"$moduleName\" ${module.exception?.stack ?: "No stacktrace"}")
             }
-            modulesLoaded.add(module)
+            modulesLoaded[module.resourceName] = module//.add(module)
         } catch (e: IllegalArgumentException) {
             v8runtime!!.removeV8Module(module)
-            modulesLoaded.remove(module)
+            modulesLoaded.remove(module.resourceName)
             e.printStackTrace()
         } catch (e: Exception) {
             v8runtime!!.removeV8Module(module)
-            modulesLoaded.remove(module)
+            modulesLoaded.remove(module.resourceName)
             printError("Error in module \"$moduleName\"")
             e.printError()
             e.printStackTrace()
