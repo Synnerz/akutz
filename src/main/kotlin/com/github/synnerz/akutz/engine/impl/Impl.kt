@@ -82,40 +82,38 @@ object Impl {
     }
 
     fun loadModuleDynamic(caller: String, path: String, cb: (IV8ValueObject?) -> Unit) {
-        v8runtime ?: return cb(null)
-        val src = Paths.get(
-            Paths.get(Akutz.configLocation.path).toString(),
-            Paths.get(caller).parent.resolve(path).normalize().toString()
-        ).normalize()
-        val resourceName = src.toString()
+        try {
+            v8runtime ?: return cb(null)
+            val src = Paths.get(Akutz.configLocation.path)
+                .resolve(caller).parent
+                .resolve(path).normalize()
+            val resourceName = src.toFile().canonicalPath
 
-        val lockF = v8runtime!!.javaClass.getDeclaredField("v8ModuleLock")
-        lockF.setAccessible(true)
-        val mapF = v8runtime!!.javaClass.getDeclaredField("v8ModuleMap")
-        mapF.setAccessible(true)
-        synchronized(lockF.get(v8runtime)) {
-            val mod = (mapF.get(v8runtime) as Map<*, *>)[resourceName]
-            if (mod != null) return cb((mod as IV8Module).namespace as IV8ValueObject)
+            val cachedModule = modulesLoaded[resourceName]
+            if (cachedModule != null) return cb(cachedModule.namespace as IV8ValueObject)
+
+            val mod = v8runtime?.getExecutor(src)?.setResourceName(resourceName)?.compileV8Module()
+            val res = mod?.execute<V8ValuePromise>()
+            res ?: return cb(null)
+            modulesLoaded[resourceName] = mod
+            res.register(object : IV8ValuePromise.IListener {
+                override fun onCatch(v8Value: V8Value?) {
+                    cb(null)
+                }
+
+                override fun onFulfilled(v8Value: V8Value?) {
+                    cb(mod.namespace as IV8ValueObject)
+                }
+
+                override fun onRejected(v8Value: V8Value?) {
+                    cb(null)
+                }
+            })
+            v8runtime?.await()
+        } catch (e: Exception) {
+            e.printError()
+            e.printStackTrace()
         }
-
-        val mod = v8runtime?.getExecutor(src)?.compileV8Module()
-        val res = mod?.execute<V8ValuePromise>()
-        res ?: return cb(null)
-        // TODO: fix me
-        // modulesLoaded.add(mod)
-        res.register(object : IV8ValuePromise.IListener {
-            override fun onCatch(v8Value: V8Value?) {
-                cb(null)
-            }
-
-            override fun onFulfilled(v8Value: V8Value?) {
-                cb(mod.namespace as IV8ValueObject)
-            }
-
-            override fun onRejected(v8Value: V8Value?) {
-                cb(null)
-            }
-        })
     }
 
     fun setup() {
@@ -133,10 +131,11 @@ object Impl {
                 else dir
                     .resolve("$resourceName${if (resourceName.endsWith(".js")) "" else ".js"}")
                     .normalize()
+            val moduleName = requestedModule.toFile().canonicalPath
 
-            val module = modulesLoaded["$requestedModule"]
+            val module = modulesLoaded[moduleName]
                 ?: runtime.getExecutor(requestedModule)
-                    .setResourceName("$requestedModule")
+                    .setResourceName(moduleName)
                     .compileV8Module()
 
             modulesLoaded["$requestedModule"] = module
@@ -207,9 +206,12 @@ object Impl {
     }
 
     fun execute(script: File, moduleName: String) {
+        val resourceName = script.canonicalPath
+        if (modulesLoaded.containsKey(resourceName)) return
+
         val module = v8runtime!!
             .getExecutor(script.readText())
-            .setResourceName(script.path)
+            .setResourceName(resourceName)
             .setModule(true)
             .compileV8Module()
         try {
