@@ -24,17 +24,17 @@ const getRelFileName = () => {
       at require (<anonymous>:7:15)
       at .\config\Akutz\modules\test\index.js:12:1
   */
-  return stack
+  const reg = /Akutz[\\/]modules[\\/](.*)\:\d\:\d/
+  const [ _, pfrom ] = stack.match(reg)
+  return pfrom
 }
 
 globalThis.$import = (path, rel = getRelFileName()) => {
   const stack = new Error().stack
   if (!stack) throw "cannot resolve path"
-  const reg = /Akutz[\\/]modules[\\/](.*)\:\d\:\d/
-  const [ _, pfrom ] = rel.match(reg)
 
   return new Promise((res, rej) => {
-    impl.loadModuleDynamic(pfrom, path.endsWith(".js") ? path : path + ".js", val => {
+    impl.loadModuleDynamic(rel, path.endsWith(".js") ? path : path + ".js", val => {
       if (val) res(val)
       else rej("failed to import file")
     })
@@ -48,7 +48,6 @@ globalThis.require = () => {
 const Paths = Java.type("java.nio.file.Paths")
 const configLocation = Paths.get(Java.type("com.github.synnerz.akutz.Akutz").getConfigLocation().getAbsolutePath())
 
-// TODO: fix me
 Object.defineProperties(globalThis, {
   __filename: {
     configurable: false,
