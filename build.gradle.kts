@@ -78,7 +78,7 @@ dependencies {
     }
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
     shadowImpl("com.caoccao.javet:javet:4.1.1")
-    implementation("net.bytebuddy:byte-buddy:1.15.5")
+    shadowImpl("net.bytebuddy:byte-buddy:1.15.5")
     shadowImpl("com.caoccao.javet:javet-v8-$javetplatform:$javetversion")
     shadowImpl("com.caoccao.javet.buddy:javet-buddy:0.4.0")
     // TODO: probably exclude useless classes that we do not use
